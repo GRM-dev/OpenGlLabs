@@ -98,24 +98,9 @@ void Scene::PrepareObjects()
 	glGenVertexArrays(VAO_cnt, VAOs);
 	// przygotuj bufory VBO
 	glGenBuffers(VBO_cnt, VBOs);
-	float vtab[9]; // tablica 12 wierzcholkow
-	// wypelnij wspolrzednymi (x,y,z)
-	vtab[0] = -0.5f; vtab[1] = -0.5f; vtab[2] = 0.0f;
-	vtab[3] = 0.0f; vtab[4] = 0.5f; vtab[5] = 0.0f;
-	vtab[6] = 0.5f; vtab[7] = -0.5f; vtab[8] = 0.0f;
-	// podlacz pierwszy obiekt z VAOs
-	glBindVertexArray(VAOs[0]);
-	// podlacz pierwszy bufor VBOs
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-	// wypelnij bufor wspolrzednymi wierzcholka
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vtab), vtab, GL_STATIC_DRAW);
-	// wybierz atrybut indeksie 0 (wskazany w shaderze)
-	glEnableVertexAttribArray(0);
-	// powiaz dane z bufora ze wskazanym atrybutem
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	
 	Polygon(4,0.5,VAOs[1],VBOs[1]);
-	Polygon(6, 1, VAOs[2], VBOs[2]);
+	Epicycloid(10, 0.2,0.2, VAOs[2], VBOs[2]);
 }
 //--------------------------------------------------------------------------------------------
 // Odpowiada za skalowanie sceny przy zmianach rozmiaru okna
@@ -265,7 +250,42 @@ void Scene::Polygon(int n, float r,GLuint VAO, GLuint VBO)
 	delete []coords;
 }
 //--------------------------------------------------------------------------------------------
+// generuje epicycloide
+// r - promien maly
+// R - promien duzy
+// n - liczba wierzcholkow
+// VAO identyfikator VAO 
+// VBO identyfikator VBO
+void Scene::Epicycloid(int n, float R, float r, GLuint VAO, GLuint VBO)
+{
+	float t = 0.0f;
 
+	float *coords = new float[3 * n]; // tablica ze wspolrzednymi (x,y,z) wierzcholkow 
+
+	for (int i = 0; i < n; i++)
+	{
+		coords[i * 3 + 0] = (R + r)*cos(t) - cos(t*(r + R) / r)*r;
+		coords[i * 3 + 1] = (R + r)*sin(t) - sin(t*(r + R) / r)*r;
+		coords[i * 3 + 2] = 0.0;
+		t += 5 * ((float)M_PI / 180.0f);
+	}
+
+	// podlacz obiekt z VAO
+	glBindVertexArray(VAO);
+
+	// podlacz bufor VBO
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	// wypelnij bufor wspolrzednymi wierzcholka 
+	glBufferData(GL_ARRAY_BUFFER, n * 3 * sizeof(float), coords, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	// powiaz dane z bufora ze wskazanym atrybutem
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	delete[]coords;
+}
+//--------------------------------------------------------------------------------------------
 // rysuje scene OpenGL 
 void Scene::Draw()
 {
@@ -273,7 +293,7 @@ void Scene::Draw()
 	//glBindVertexArray(VAOs[0]);
 	//glDrawArrays(GL_LINE_LOOP, 0, 3);
 	glBindVertexArray(VAOs[1]);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+	//glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 	glBindVertexArray(VAOs[2]);
 	glDrawArrays(GL_LINE_STRIP, 0, 1000);
 }	
