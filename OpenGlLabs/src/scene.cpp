@@ -9,7 +9,11 @@
 //									ZALEZNOSCI 
 //--------------------------------------------------------------------------------------------
 
+#define _USE_MATH_DEFINES
+
 #include "scene.h"
+#include <math.h>
+#include <string>
 
 //--------------------------------------------------------------------------------------------
 // zglasza wyjatek z komunikatem do debuggowania 
@@ -110,7 +114,7 @@ void Scene::PrepareObjects()
 	// powiaz dane z bufora ze wskazanym atrybutem
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	
-	Polygon(3,0.5,VAOs[1],VBOs[1]);
+	Polygon(4,0.5,VAOs[1],VBOs[1]);
 	Polygon(6, 1, VAOs[2], VBOs[2]);
 }
 //--------------------------------------------------------------------------------------------
@@ -233,17 +237,16 @@ void Scene::Polygon(int n, float r,GLuint VAO, GLuint VBO)
 {
 	if (n<3) ThrowException("Wielokat: nieprawidlowy parametr");
 	
-	float kat = n*3.14;
-	float dkat = kat/360.0; 
+	float kat = 360.0f/n;
+	float dkat =((float) M_PI)/180.0f; 
 
-	float *coords=new float[3*n]; // tablica ze wspolrzednymi (x,y,z) wierzcholkow 
+	float *coords = new float[3*n]; // tablica ze wspolrzednymi (x,y,z) wierzcholkow 
 
 	for (int i = 0; i < n; i++)
 	{
-		coords[3*i] = cos(i*kat)*r;
-		coords[3*i + 1] =  sin(i*kat)*r;
-		coords[3*i + 2] = 0;
-		kat += dkat;
+		coords[3*i + 0] = cos(i*kat*dkat)*r;
+		coords[3*i + 1] =  sin(i*kat*dkat)*r;
+		coords[3*i + 2] = 0.0f;
 	}
 	
 	// podlacz obiekt z VAO
@@ -270,8 +273,8 @@ void Scene::Draw()
 	//glBindVertexArray(VAOs[0]);
 	//glDrawArrays(GL_LINE_LOOP, 0, 3);
 	glBindVertexArray(VAOs[1]);
-	glDrawArrays(GL_LINE_LOOP, 0, 3);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 	glBindVertexArray(VAOs[2]);
-	glDrawArrays(GL_LINE_LOOP, 0, 3);
+	glDrawArrays(GL_LINE_STRIP, 0, 1000);
 }	
 //------------------------------- KONIEC PLIKU -----------------------------------------------
