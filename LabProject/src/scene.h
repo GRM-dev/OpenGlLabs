@@ -25,27 +25,27 @@ class Scene
 public:
 
 Scene(int new_width,int new_height); //  domyslny konstruktor
-~Scene(); // domyslny destruktor 
+~Scene(); // domyslny destruktor
 
 void Draw(); // rysuje zawartosc sceny
 
-void Resize(int new_width, int new_height); // zmienia rozmiar sceny 
+void Resize(int new_width, int new_height); // zmienia rozmiar sceny
 
 void Init(); // procedura inicjujaca przetwarzanie
 
 void KeyPressed(unsigned char key, int x, int y); // obsluga klawiatury
 
-GLuint LoadShader(GLenum type,const char *file_name); // laduje program shadera z zewnetrznego pliku 
+GLuint LoadShader(GLenum type,const char *file_name); // laduje program shadera z zewnetrznego pliku
 
 private:
 
-void PreparePrograms(); // przygotowuje programy przetwarzania 
-void PrepareObjects(); // przygotowuje obiekty do wyswietlenia 
+void PreparePrograms(); // przygotowuje programy przetwarzania
+void PrepareObjects(); // przygotowuje obiekty do wyswietlenia
 
-void Polygon(int n, float r,GLuint VOA, GLuint VBO); // rysuje wielokat foremny 
-void Epicycloid(int n, float R, float r, GLuint VAO, GLuint VBO); //rysuje epicykloide
+void Polygon(int n, float r,GLuint VOA, GLuint VBO); // rysuje wielokat foremny
+void Epicycloid(int n, float R, float r, GLuint VAO, GLuint VBO); // rysuje epicyklojde
 
-// rozmiary sceny 
+// rozmiary sceny
 int width;
 int height;
 
@@ -55,14 +55,14 @@ GLuint vertex_shader;
 GLuint fragment_shader;
 
 
-// zasoby obiektow 
-#define VAO_cnt 3 // liczba tablic wierzcholkow obiektow (= liczba obiektow)  
+// zasoby obiektow
+#define VAO_cnt 3 // liczba tablic wierzcholkow obiektow (= liczba obiektow)
 #define VBO_cnt 3 // liczba buforow skojarzonych z VAOs
 
-GLuint VAOs[VAO_cnt]; // id tablic wierzcholkow obiektow 
-GLuint VBOs[VBO_cnt]; // id tablic buforów 
+GLuint VAOs[VAO_cnt]; // id tablic wierzcholkow obiektow
+GLuint VBOs[VBO_cnt]; // id tablic buforów
 
-// komunikaty diagnostyczne 
+// komunikaty diagnostyczne
 char _msg[1024];
 
 };

@@ -6,19 +6,19 @@
 // Description: Glowny plik programu
 //
 //--------------------------------------------------------------------------------------------
-//									ZALEZNOSI 
+//									ZALEZNOSI
 //--------------------------------------------------------------------------------------------
 #include "main.h"
 #include "scene.h"
 
 //--------------------------------------------------------------------------------------------
-// ZMIENNE GLOBALNE 
+// ZMIENNE GLOBALNE
 //--------------------------------------------------------------------------------------------
-int window;  // uchwyt do okna OGL 
+int window;  // uchwyt do okna OGL
 Scene *SC; // scena OpenGL
 
 //--------------------------------------------------------------------------------------------
-// KOD WINAPI DLA VISUAL STUDIO 
+// KOD WINAPI DLA VISUAL STUDIO
 //--------------------------------------------------------------------------------------------
 HGLRC           hRC=NULL;
 HDC             hDC=NULL;
@@ -40,7 +40,7 @@ GLvoid KillGLWindow(GLvoid)
 		wglDeleteContext(hRC);
 		hRC=NULL;
 	}
-	
+
 	if (hDC) {
 		ReleaseDC(hWnd,hDC);
 		hDC=NULL;
@@ -55,7 +55,7 @@ GLvoid KillGLWindow(GLvoid)
 	hInstance=NULL;
 }
 //--------------------------------------------------------------------------------------------
-// Alokuje zasoby i tworzy okno aplikacji z OpenGL 
+// Alokuje zasoby i tworzy okno aplikacji z OpenGL
 BOOL CreateGLWindow(char* title, int width, int height, int bits)
 {
 	GLuint		PixelFormat;
@@ -84,7 +84,7 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits)
 	if (!RegisterClass(&wc))
 	{
 	  MessageBox(NULL,
-       "Rejestracja klasy zakonczona niepowodzeniem", 
+       "Rejestracja klasy zakonczona niepowodzeniem",
        "ERROR",MB_OK|MB_ICONEXCLAMATION);
 	  return FALSE;
 	}
@@ -107,11 +107,11 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits)
 					NULL)))
 	{
 		KillGLWindow();
-		MessageBox(NULL,"Utworzenie okna zakonczone niepowodzeniem", 
+		MessageBox(NULL,"Utworzenie okna zakonczone niepowodzeniem",
 			"ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return FALSE;
 	}
-	
+
 	static	PIXELFORMATDESCRIPTOR pfd=
 	{
 		sizeof(PIXELFORMATDESCRIPTOR),
@@ -156,7 +156,7 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits)
 		KillGLWindow();
 		return FALSE;
 	}
-	
+
 
 	ShowWindow(hWnd,SW_SHOW);
 	SetForegroundWindow(hWnd);
@@ -167,35 +167,36 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits)
 
 	HFONT hLogFont = (HFONT) GetStockObject(DEFAULT_GUI_FONT);
 	SendMessage(hListBox,WM_SETFONT,(WPARAM) hLogFont,0);
-	
+
 	SC->Resize(width, height);
 	SC->Init();
 
 	return TRUE;
 }
 //--------------------------------------------------------------------------------------------
-// Przetwarza komunikaty systemowe wysylane do okna aplikacji 
+// Przetwarza komunikaty systemowe wysylane do okna aplikacji
 LRESULT CALLBACK WndProc(	HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM	lParam)
 {
 
 	switch (uMsg)
 	{
-		
-	  case WM_CREATE: // utworzenie okna 
-      
+
+	  case WM_CREATE: // utworzenie okna
+
 	  break;
 
 
-		case WM_ACTIVATE:         // aktywacja okna 
+		case WM_ACTIVATE:         // aktywacja okna
 		{
 			return 0;
 		}
 
         case WM_PAINT:         // odrysowanie okna
 		{
-				SC->Draw();
-				SwapBuffers(hDC);
-				break;
+			SC->Draw();
+			SwapBuffers(hDC);
+			break;
+			break;
 		}
 
 		case WM_SYSCOMMAND:     // zdarzenia systemowe
@@ -208,32 +209,32 @@ LRESULT CALLBACK WndProc(	HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM	lParam)
 			}
 			break;
 		}
-		case WM_CLOSE:         // zamkniecie okna 
+		case WM_CLOSE:         // zamkniecie okna
 		{
 			PostQuitMessage(0);
 			return 0;
 		}
-		case WM_KEYDOWN:      // nacisniecie klawisza 
-		{			
+		case WM_KEYDOWN:      // nacisniecie klawisza
+		{
 			POINT cPos;
 			GetCursorPos(&cPos);
 			SC->KeyPressed(wParam,cPos.x,cPos.y);
 			return 0;
 		}
-		case WM_KEYUP:        // zwolnienie klawisza 
-		{			
+		case WM_KEYUP:        // zwolnienie klawisza
+		{
 			return 0;
 		}
-		 case WM_SIZE:      // zmiana rozmiaru okna 
+		 case WM_SIZE:      // zmiana rozmiaru okna
 		{
-			// aktualizuj zmienne z rozmiarem okna 
+			// aktualizuj zmienne z rozmiarem okna
 			wWidth = LOWORD(lParam);
 			wHeight = HIWORD(lParam);
-			
-			// przeskaluj scene OGL 
+
+			// przeskaluj scene OGL
 			SC->Resize(wWidth,wHeight);
 
-			//przesun kontrolke z logiem 
+			//przesun kontrolke z logiem
 			MoveWindow(hListBox,0,wHeight-100,wWidth,100,true);
 
 			return 0;
@@ -244,7 +245,7 @@ LRESULT CALLBACK WndProc(	HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM	lParam)
 }
 
 //--------------------------------------------------------------------------------------------
-// glowny podprogram 
+// glowny podprogram
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	MSG	msg;
@@ -258,8 +259,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		while(GetMessage( &msg, NULL, 0, 0)) // pobierz komunikat z kolejki systemowej
 		{
-			TranslateMessage(&msg); // przetwarzaj komunikat w obszarze okna 
-			DispatchMessage(&msg); // usun komunikat z kolejki systemowej 
+			TranslateMessage(&msg); // przetwarzaj komunikat w obszarze okna
+			DispatchMessage(&msg); // usun komunikat z kolejki systemowej
 		}
 
 	}
@@ -268,16 +269,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			MessageBox(0,e,"Wystapi³ wyj¹tek",0);
 	}
 	catch(...) // unhandled exceptions
-	{	
-			KillGLWindow(); // usun zasoby okna 
+	{
+			KillGLWindow(); // usun zasoby okna
 			if (SC) delete SC;
 	}
 
-	KillGLWindow(); // usun zasoby okna 
+	KillGLWindow(); // usun zasoby okna
 
 	if (SC) delete SC;
 
 	return 0;
 }
 //--------------------------------------------------------------------------------------------
-// koniec pliku 
+// koniec pliku
