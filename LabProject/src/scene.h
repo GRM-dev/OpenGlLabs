@@ -43,7 +43,7 @@ void PreparePrograms(); // przygotowuje programy przetwarzania
 void PrepareObjects(); // przygotowuje obiekty do wyswietlenia
 
 void Polygon(int n, float r,GLuint VOA, GLuint VBO); // rysuje wielokat foremny
-void Epicycloid(int n, float R, float r, GLuint VAO, GLuint VBO); // rysuje epicyklojde
+void Epicycloid(int n, float R, float r, GLuint VAO, GLuint VBO); // rysuje epicykloide
 
 // rozmiary sceny
 int width;

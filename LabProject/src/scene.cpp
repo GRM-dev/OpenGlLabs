@@ -100,8 +100,7 @@ void Scene::PrepareObjects()
 	// przygotuj bufory VBO
 	glGenBuffers(VBO_cnt, VBOs);
 
-	float vtab[9]; // tablica 12 wierzcholkow
-	// wypelnij wspolrzednymi (x,y,z)
+	float vtab[9]; // tablica 3 wierzcholkow
 	vtab[0] = -0.5f; vtab[1] = -0.5f; vtab[2] = 0.0f;
 	vtab[3] = 0.0f;	vtab[4] = 0.5f; vtab[5] = 0.0f;
 	vtab[6] = 0.5f; vtab[7] = -0.5f; vtab[8] = 0.0f;
