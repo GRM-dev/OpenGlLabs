@@ -42,6 +42,7 @@ private:
 void PreparePrograms(); // przygotowuje programy przetwarzania
 void PrepareObjects(); // przygotowuje obiekty do wyswietlenia
 
+void Triangle(GLuint VAO, GLuint VBO); // rysuje trojkat
 void Polygon(int n, float r,GLuint VOA, GLuint VBO); // rysuje wielokat foremny
 void Epicycloid(int n, float R, float r, GLuint VAO, GLuint VBO); // rysuje epicykloide
 
@@ -53,7 +54,6 @@ int height;
 GLuint program;
 GLuint vertex_shader;
 GLuint fragment_shader;
-
 
 // zasoby obiektow
 #define VAO_cnt 3 // liczba tablic wierzcholkow obiektow (= liczba obiektow)

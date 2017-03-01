@@ -100,25 +100,11 @@ void Scene::PrepareObjects()
 	// przygotuj bufory VBO
 	glGenBuffers(VBO_cnt, VBOs);
 
-	float vtab[9]; // tablica 3 wierzcholkow
-	vtab[0] = -0.5f; vtab[1] = -0.5f; vtab[2] = 0.0f;
-	vtab[3] = 0.0f;	vtab[4] = 0.5f; vtab[5] = 0.0f;
-	vtab[6] = 0.5f; vtab[7] = -0.5f; vtab[8] = 0.0f;
-
-	// podlacz pierwszy obiekt z VAOs
-	glBindVertexArray(VAOs[0]);
-	// podlacz pierwszy bufor VBOs
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-	// wypelnij bufor wspolrzednymi wierzcholka
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vtab), vtab, GL_STATIC_DRAW);
-	// wybierz atrybut indeksie 0 (wskazany w shaderze)
-	glEnableVertexAttribArray(0);
-	// powiaz dane z bufora ze wskazanym atrybutem
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
+	Triangle(VAOs[0], VBOs[0]);
 	Polygon(6, 1, VAOs[1], VBOs[1]);
 	Epicycloid(1000, 0.2f, 0.35f, VAOs[2], VBOs[2]);
 }
+
 //--------------------------------------------------------------------------------------------
 // Odpowiada za skalowanie sceny przy zmianach rozmiaru okna
 void Scene::Resize(int new_width, int new_height)
@@ -229,6 +215,27 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 {
 	if (key == ESCAPE) ThrowException("Zatrzymaj program");
 }
+
+// generuje trojkat
+void Scene::Triangle(GLuint VAO, GLuint VBO)
+{
+	float vtab[9]; // tablica 3 wierzcholkow
+	vtab[0] = -0.5f; vtab[1] = -0.5f; vtab[2] = 0.0f;
+	vtab[3] = 0.0f;	vtab[4] = 0.5f; vtab[5] = 0.0f;
+	vtab[6] = 0.5f; vtab[7] = -0.5f; vtab[8] = 0.0f;
+
+	// podlacz pierwszy obiekt z VAOs
+	glBindVertexArray(VAO);
+	// podlacz pierwszy bufor VBOs
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// wypelnij bufor wspolrzednymi wierzcholka
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vtab), vtab, GL_STATIC_DRAW);
+	// wybierz atrybut indeksie 0 (wskazany w shaderze)
+	glEnableVertexAttribArray(0);
+	// powiaz dane z bufora ze wskazanym atrybutem
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+}
+
 //--------------------------------------------------------------------------------------------
 // generuje zbior wspolrzednych wielokata foremnego
 // r - promien okregu opisanego na wielokacie
