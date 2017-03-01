@@ -117,7 +117,7 @@ void Scene::PrepareObjects()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	Polygon(6, 1, VAOs[1], VBOs[1]);
-	Epicycloid(1000, 0.2, 0.35, VAOs[2], VBOs[2]);
+	Epicycloid(1000, 0.2f, 0.35f, VAOs[2], VBOs[2]);
 }
 //--------------------------------------------------------------------------------------------
 // Odpowiada za skalowanie sceny przy zmianach rozmiaru okna
