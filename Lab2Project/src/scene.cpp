@@ -98,7 +98,10 @@ void Scene::PrepareObjects()
 
 	float pos_tab[12]; // tablica 12 wspolrzednych (4 wierzcholki)
 
-	// TODO: wypelnij wspolrzednymi (x,y,z)
+	pos_tab[0] = -0.5f; pos_tab[1] = 0.5f;   pos_tab[2] = 0.0f;
+	pos_tab[3] = 0.5f;  pos_tab[4] = 0.5f;   pos_tab[5] = 0.0f;
+	pos_tab[6] = -0.5f; pos_tab[7] = -0.5f;  pos_tab[8] = 0.0f;
+	pos_tab[9] = 0.5f;  pos_tab[10] = -0.5f; pos_tab[11] = 0.0f;
 
 	// podlacz pierwszy obiekt z VAOs
 	glBindVertexArray(VAOs[0]);
@@ -110,6 +113,25 @@ void Scene::PrepareObjects()
 	glEnableVertexAttribArray(0);
 	// powiaz dane z bufora ze wskazanym atrybutem
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	float col_tab[12]; // tablica kolorow (4 wierzcholki)
+	// wypelnij kolorami (r,g,b)
+	col_tab[0] = 1.0f; 	col_tab[1] = 0.0f; 	col_tab[2] = 0.0f;
+	// czerwony
+	col_tab[3] = 0.0f; 	col_tab[4] = 1.0f; 	col_tab[5] = 0.0f;
+	// zielony
+	col_tab[6] = 0.0f; col_tab[7] = 0.0f; col_tab[8] = 1.0f;
+	// niebieski
+	col_tab[9] = 1.0f; col_tab[10] = 1.0f; col_tab[11] = 0.0f;
+	// zolty
+	// podlacz pierwszy bufor VBOs
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
+	// wypelnij bufor wspolrzednymi wierzcholka
+	glBufferData(GL_ARRAY_BUFFER, sizeof(col_tab), col_tab, GL_STATIC_DRAW);
+	// wybierz atrybut indeksie 1 (wskazany w shaderze)
+	glEnableVertexAttribArray(1);
+	// powiaz dane z bufora ze wskazanym atrybutem
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 }
 //--------------------------------------------------------------------------------------------
