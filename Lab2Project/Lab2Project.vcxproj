@@ -164,11 +164,13 @@
   <ItemGroup>
     <ClCompile Include="src\common.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mrectangle.cpp" />
     <ClCompile Include="src\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\main.h" />
+    <ClInclude Include="src\mrectangle.h" />
     <ClInclude Include="src\scene.h" />
   </ItemGroup>
   <ItemGroup>

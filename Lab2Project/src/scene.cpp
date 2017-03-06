@@ -19,8 +19,9 @@ Scene::Scene(int new_width, int new_height)
 {
 	width = new_width;
 	height = new_height;
-	dX = 0;
-	dY = 0;
+	r1 = new MRectangle(0.0f, 0.0f, 1.0f, 1.0f);
+	r2 = new MRectangle(0.0f, 1.0f, 0.0f, 0.0f);
+	MRectangle t(0.0f, 1.0f, 0.0f, 0.0f);
 }
 //--------------------------------------------------------------------------------------------
 // Domyslny destruktor
@@ -34,6 +35,8 @@ Scene::~Scene()
 
 	// usub tablice atrybutow wierzcholkow
 	glDeleteVertexArrays(VAO_cnt, VAOs);
+	delete r1;
+	delete r2;
 }
 //--------------------------------------------------------------------------------------------
 // przygotowuje programy cienionwania
@@ -98,39 +101,29 @@ void Scene::PrepareObjects()
 	// przygotuj bufory VBO
 	glGenBuffers(VBO_cnt, VBOs);
 
-	float pos_tab[12]; // tablica 12 wspolrzednych (4 wierzcholki)
-
-	pos_tab[0] = -0.5f; pos_tab[1] = 0.5f;   pos_tab[2] = 0.0f;
-	pos_tab[3] = 0.5f;  pos_tab[4] = 0.5f;   pos_tab[5] = 0.0f;
-	pos_tab[6] = -0.5f; pos_tab[7] = -0.5f;  pos_tab[8] = 0.0f;
-	pos_tab[9] = 0.5f;  pos_tab[10] = -0.5f; pos_tab[11] = 0.0f;
-
+	PrepareRect(VAOs[0], VBOs[0], VBOs[1], *r1);
+	PrepareRect(VAOs[1], VBOs[2], VBOs[3], *r2);
+}
+void Scene::PrepareRect(GLuint vao, GLuint vbo_pos, GLuint vbo_col, MRectangle r)
+{
 	// podlacz pierwszy obiekt z VAOs
-	glBindVertexArray(VAOs[0]);
+	glBindVertexArray(vao);
 	// podlacz pierwszy bufor VBOs
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_pos);
 	// wypelnij bufor wspolrzednymi wierzcholka
-	glBufferData(GL_ARRAY_BUFFER, sizeof(pos_tab), pos_tab, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(r.pos_tab), r.pos_tab, GL_STATIC_DRAW);
 	// wybierz atrybut indeksie 0 (wskazany w shaderze)
 	glEnableVertexAttribArray(0);
 	// powiaz dane z bufora ze wskazanym atrybutem
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	float col_tab[12]; // tablica kolorow (4 wierzcholki)
-	// wypelnij kolorami (r,g,b)
-	col_tab[0] = 1.0f; 	col_tab[1] = 0.0f; 	col_tab[2] = 0.0f;  // czerwony
-	col_tab[3] = 0.0f; 	col_tab[4] = 1.0f; 	col_tab[5] = 0.0f;	// zielony
-	col_tab[6] = 0.0f; col_tab[7] = 0.0f; col_tab[8] = 1.0f;	// niebieski
-	col_tab[9] = 1.0f; col_tab[10] = 1.0f; col_tab[11] = 0.0f;	// zolty
 	// podlacz pierwszy bufor VBOs
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_col);
 	// wypelnij bufor wspolrzednymi wierzcholka
-	glBufferData(GL_ARRAY_BUFFER, sizeof(col_tab), col_tab, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(r.col_tab), r.col_tab, GL_STATIC_DRAW);
 	// wybierz atrybut indeksie 1 (wskazany w shaderze)
 	glEnableVertexAttribArray(1);
 	// powiaz dane z bufora ze wskazanym atrybutem
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
 }
 //--------------------------------------------------------------------------------------------
 // Odpowiada za skalowanie sceny przy zmianach rozmiaru okna
@@ -247,18 +240,16 @@ void Scene::Init()
 void Scene::KeyPressed(unsigned char key, int x, int y)
 {
 	if (key == ESCAPE) ThrowException("Zatrzymaj program");
-	if (key == UP_KEY) dY += 0.1;
-	if (key == DOWN_KEY) dY -= 0.1;
-	if (key == LEFT_KEY) dX += 0.1;
-	if (key == RIGHT_KEY) dX -= 0.1;
 
-	// pobierz polozenie zmiennej ze shadera pod dX_loc
-	GLint dX_loc = glGetUniformLocation(program, "dX");
-	// podstaw wartsc pod dX_loc (spowoduje nadpisanie zmiennej w shaderze)
-	glUniform1f(dX_loc, dX);
-	GLint dY_loc = glGetUniformLocation(program, "dY");
-	glUniform1f(dY_loc, dY);
+	if (key == UP_KEY) r1->y += 0.1;
+	if (key == DOWN_KEY) r1->y -= 0.1;
+	if (key == LEFT_KEY) r1->x += 0.1;
+	if (key == RIGHT_KEY) r1->x -= 0.1;
 
+	if (key == W_KEY) r2->y += 0.1;
+	if (key == S_KEY) r2->y -= 0.1;
+	if (key == A_KEY) r2->x += 0.1;
+	if (key == D_KEY) r2->x -= 0.1;
 
 	sprintf(_msg, "%d", key);
 	PrintLog(_msg);
@@ -267,12 +258,25 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 // rysuje scene OpenGL
 void Scene::Draw()
 {
-
 	// czyscimy bufor kolorow
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	// pobierz polozenie zmiennej ze shadera pod dX_loc
+	GLint dX_loc = glGetUniformLocation(program, "dX");
+	// podstaw wartsc pod dX_loc (spowoduje nadpisanie zmiennej w shaderze)
+	glUniform1f(dX_loc, r1->x);
+	GLint dY_loc = glGetUniformLocation(program, "dY");
+	glUniform1f(dY_loc, r1->y);
 	//wybierz obiekt identyfikowany przez VAO
 	glBindVertexArray(VAOs[0]);
 	//narysuj go
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	dX_loc = glGetUniformLocation(program, "dX");
+	glUniform1f(dX_loc, r2->x);
+	dY_loc = glGetUniformLocation(program, "dY");
+	glUniform1f(dY_loc, r2->y);
+	glBindVertexArray(VAOs[1]);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------
