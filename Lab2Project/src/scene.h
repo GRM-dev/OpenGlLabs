@@ -15,6 +15,10 @@
 
 //----------------------------------- DEFINES -------------------------------------------------
 #define ESCAPE 27
+#define UP_KEY 38
+#define DOWN_KEY 40
+#define LEFT_KEY 37
+#define RIGHT_KEY 39
 
 //--------------------------------------------------------------------------------------------
 // 								CLASS INTERFACE
@@ -38,7 +42,8 @@ public:
 	GLuint LoadShader(GLenum type, const char *file_name); // laduje program shadera z zewnetrznego pliku
 
 private:
-
+	float dX; // przesuniecie obiektu po X
+	float dY; // przesuniecie obiektu po Y
 
 	void PreparePrograms(); // przygotowuje programy przetwarzania
 	void PrepareObjects(); // przygotowuje obiekty do wyswietlenia

@@ -19,6 +19,8 @@ Scene::Scene(int new_width, int new_height)
 {
 	width = new_width;
 	height = new_height;
+	dX = 0;
+	dY = 0;
 }
 //--------------------------------------------------------------------------------------------
 // Domyslny destruktor
@@ -245,6 +247,21 @@ void Scene::Init()
 void Scene::KeyPressed(unsigned char key, int x, int y)
 {
 	if (key == ESCAPE) ThrowException("Zatrzymaj program");
+	if (key == UP_KEY) dY += 0.1;
+	if (key == DOWN_KEY) dY -= 0.1;
+	if (key == LEFT_KEY) dX += 0.1;
+	if (key == RIGHT_KEY) dX -= 0.1;
+
+	// pobierz polozenie zmiennej ze shadera pod dX_loc
+	GLint dX_loc = glGetUniformLocation(program, "dX");
+	// podstaw wartsc pod dX_loc (spowoduje nadpisanie zmiennej w shaderze)
+	glUniform1f(dX_loc, dX);
+	GLint dY_loc = glGetUniformLocation(program, "dY");
+	glUniform1f(dY_loc, dY);
+
+
+	sprintf(_msg, "%d", key);
+	PrintLog(_msg);
 }
 //--------------------------------------------------------------------------------------------
 // rysuje scene OpenGL
