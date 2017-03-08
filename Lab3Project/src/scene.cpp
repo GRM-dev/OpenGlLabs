@@ -102,6 +102,23 @@ void Scene::PrepareObjects()
 	Axes->AddVertex(0.0, 0.0, 0.0);
 	Axes->AddVertex(0.0, 0.0, 10.0);
 	Axes->EndObject();
+
+	// sciany prostopadle do OX
+	Cube = new glObject();
+	Cube->SetColor(0.5, 0.0, 0.0);
+	Cube->BeginObject(GL_TRIANGLE_STRIP);
+	Cube->AddVertex(0.5, 0.5, 0.5);
+	Cube->AddVertex(0.5, -0.5, 0.5);
+	Cube->AddVertex(0.5, 0.5, -0.5);
+	Cube->AddVertex(0.5, -0.5, -0.5);
+	Cube->EndObject();
+	Cube->SetColor(0.3, 0.0, 0.0);
+	Cube->BeginObject(GL_TRIANGLE_STRIP);
+	Cube->AddVertex(-0.5, 0.5, 0.5);
+	Cube->AddVertex(-0.5, -0.5, 0.5);
+	Cube->AddVertex(-0.5, 0.5, -0.5);
+	Cube->AddVertex(-0.5, -0.5, -0.5);
+	Cube->EndObject();
 }
 //--------------------------------------------------------------------------------------------
 // Odpowiada za skalowanie sceny przy zmianach rozmiaru okna
@@ -215,6 +232,8 @@ void Scene::Init()
 	// przygotuj obiekty do wyswietlenia
 	PrepareObjects();
 
+	glEnable(GL_DEPTH_TEST);
+	glClearDepth(1.0);
 }
 //--------------------------------------------------------------------------------------------
 // kontrola naciskania klawiszy klawiatury
@@ -237,7 +256,7 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 void Scene::Draw()
 {
 	// czyscimy bufor kolorow
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	int iModelViewLoc = glGetUniformLocation(program, "modelViewMatrix");
 	int iProjectionLoc = glGetUniformLocation(program, "projectionMatrix");
@@ -246,5 +265,6 @@ void Scene::Draw()
 	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
 
 	Axes->Draw();
+	Cube->Draw();
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------

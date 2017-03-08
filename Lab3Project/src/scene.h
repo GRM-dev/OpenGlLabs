@@ -47,6 +47,7 @@ float rot_x; //  obrot obiektu wzgledem X
 float rot_y; //  obrot obiektu wzgledem Y
 
 glObject *Axes;
+glObject *Cube;
 
 glm::mat4 mProjection;
 glm::mat4 mModelView;
