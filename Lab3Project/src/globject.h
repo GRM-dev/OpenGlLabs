@@ -1,6 +1,8 @@
 #ifndef globject_H
 #define globject_H
 
+#define MAX_VAO 10 // maksymalna liczba tablic VAO w obiekcie
+
 #include "common.h"
 //--------------------------------------------------------------------------------------------
 // 								CLASS INTERFACE
@@ -9,7 +11,6 @@ class glObject
 {
 
 public:
-
 	glObject(); //  domyslny konstruktor
 	~glObject(); // domyslny destruktor
 
@@ -20,10 +21,7 @@ public:
 	void Draw(); // rysuje obiekt na scenie z u¿yciem zadanego przymitywu
 
 private:
-
-
 	int lVAO; // liczba zdefiniowanych tablic VAO
-#define MAX_VAO 10 // maksymalna liczba tablic VAO w obiekcie
 
 	GLuint VAO[MAX_VAO]; // id tablic wierzcholkow obiektow
 	GLuint VBO[2 * MAX_VAO]; // id buforow wierzcholkow
@@ -39,11 +37,8 @@ private:
 	float col_g;
 	float col_b;
 
-
 	// komunikaty diagnostyczne
 	char _msg[1024];
-
 };
-
 #endif
 

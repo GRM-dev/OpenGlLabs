@@ -3,7 +3,7 @@
 #define _common_h
 #define IS_WIN32 1
 
-#define PROJECT_NAME "lab2"
+#define PROJECT_NAME "lab3"
 
 #define INITIAL_WIDTH 800
 

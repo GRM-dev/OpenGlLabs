@@ -29,7 +29,6 @@ void glObject::SetColor(float r, float g, float b)
 //--------------------------------------------------------------------------------------------
 void glObject::BeginObject(GLenum P)
 {
-
 	lVAO++;
 	// przypisz rodzaj prymitywu do narysowania VAO
 	Primitives[lVAO - 1] = P;
@@ -99,13 +98,14 @@ void glObject::EndObject()
 //--------------------------------------------------------------------------------------------
 void glObject::Draw()
 {
-	for (int i = 0; i < lVAO; i++)
-	{
-		glBindVertexArray(VAO[i]);
-		glDrawArrays(Primitives[i], 0, lCoords[i] / 3);
-		glBindVertexArray(0);
+	if (lVAO) {
+		for (int i = 0; i < lVAO; i++)
+		{
+			glBindVertexArray(VAO[i]);
+			glDrawArrays(Primitives[i], 0, lCoords[i] / 3);
+			glBindVertexArray(0);
+		}
 	}
 }
-
 //--------------------------------------------------------------------------------------------
 // the end

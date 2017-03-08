@@ -87,6 +87,21 @@ void Scene::PreparePrograms()
 //--------------------------------------------------------------------------------------------
 void Scene::PrepareObjects()
 {
+	Axes = new glObject();
+	Axes->BeginObject(GL_LINES);
+	Axes->SetColor(1.0, 0.0, 0.0);
+	// os X w kolorze czerwonym
+	Axes->AddVertex(0.0, 0.0, 0.0);
+	Axes->AddVertex(10.0, 0.0, 0.0);
+	Axes->SetColor(0.0, 1.0, 0.0);
+	// os Y w kolorze zielonym
+	Axes->AddVertex(0.0, 0.0, 0.0);
+	Axes->AddVertex(0.0, 10.0, 0.0);
+	Axes->SetColor(0.0, 0.0, 1.0);
+	// os Z w kolorze niebieskim
+	Axes->AddVertex(0.0, 0.0, 0.0);
+	Axes->AddVertex(0.0, 0.0, 10.0);
+	Axes->EndObject();
 }
 //--------------------------------------------------------------------------------------------
 // Odpowiada za skalowanie sceny przy zmianach rozmiaru okna
@@ -99,6 +114,7 @@ void Scene::Resize(int new_width, int new_height)
 	// rozszerz obszar renderowania do obszaru o wymiarach 'width' x 'height'
 	glViewport(0, 100, width, height);
 
+	mProjection = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 //--------------------------------------------------------------------------------------------
 // laduje program shadera z zewnetrznego pliku
@@ -223,5 +239,12 @@ void Scene::Draw()
 	// czyscimy bufor kolorow
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	int iModelViewLoc = glGetUniformLocation(program, "modelViewMatrix");
+	int iProjectionLoc = glGetUniformLocation(program, "projectionMatrix");
+	glUniformMatrix4fv(iProjectionLoc, 1, GL_FALSE, glm::value_ptr(mProjection));
+	glm::mat4 mModelView = glm::lookAt(glm::vec3(5.0, 5.0, 5.0), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
+
+	Axes->Draw();
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------

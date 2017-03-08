@@ -29,42 +29,41 @@ class Scene
 public:
 
 Scene(int new_width,int new_height); //  domyslny konstruktor
-~Scene(); // domyslny destruktor 
+~Scene(); // domyslny destruktor
 
 void Draw(); // rysuje zawartosc sceny
 
-void Resize(int new_width, int new_height); // zmienia rozmiar sceny 
+void Resize(int new_width, int new_height); // zmienia rozmiar sceny
 
 void Init(); // procedura inicjujaca przetwarzanie
 
 void KeyPressed(unsigned char key, int x, int y); // obsluga klawiatury
 
-GLuint LoadShader(GLenum type,const char *file_name); // laduje program shadera z zewnetrznego pliku 
+GLuint LoadShader(GLenum type,const char *file_name); // laduje program shadera z zewnetrznego pliku
 
 private:
 
 float rot_x; //  obrot obiektu wzgledem X
 float rot_y; //  obrot obiektu wzgledem Y
 
-
 glObject *Axes;
 
+glm::mat4 mProjection;
+glm::mat4 mModelView;
 
+void PreparePrograms(); // przygotowuje programy przetwarzania
+void PrepareObjects(); // przygotowuje obiekty do wyswietlenia
 
-void PreparePrograms(); // przygotowuje programy przetwarzania 
-void PrepareObjects(); // przygotowuje obiekty do wyswietlenia 
-
-// rozmiary sceny 
+// rozmiary sceny
 int width;
 int height;
-
 
 // zasoby programu przetwarzania
 GLuint program;
 GLuint vertex_shader;
 GLuint fragment_shader;
 
-// komunikaty diagnostyczne 
+// komunikaty diagnostyczne
 char _msg[1024];
 
 };
