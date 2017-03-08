@@ -20,10 +20,10 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{E6D83544-38FA-43C6-8377-DEBC60662F0E}</ProjectGuid>
+    <ProjectGuid>{B5D858F0-2B19-4C8B-A4FA-5F15CD27688D}</ProjectGuid>
     <RootNamespace>LabProject</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>Lab1Project</ProjectName>
+    <ProjectName>Lab3Project</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -163,17 +163,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\common.cpp" />
+    <ClCompile Include="src\globject.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\globject.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\scene.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Shaders\fs.glsl" />
-    <None Include="..\Shaders\vs.glsl" />
+    <None Include="..\Shaders\fs_3.glsl" />
+    <None Include="..\Shaders\vs_3.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
