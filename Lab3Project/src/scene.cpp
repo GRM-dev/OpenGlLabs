@@ -93,18 +93,18 @@ void Scene::PrepareObjects()
 	// os X w kolorze czerwonym
 	Axes->AddVertex(0.0, 0.0, 0.0);
 	Axes->AddVertex(10.0, 0.0, 0.0);
-	Axes->SetColor(0.0, 1.0, 0.0);
 	// os Y w kolorze zielonym
+	Axes->SetColor(0.0, 1.0, 0.0);
 	Axes->AddVertex(0.0, 0.0, 0.0);
 	Axes->AddVertex(0.0, 10.0, 0.0);
-	Axes->SetColor(0.0, 0.0, 1.0);
 	// os Z w kolorze niebieskim
+	Axes->SetColor(0.0, 0.0, 1.0);
 	Axes->AddVertex(0.0, 0.0, 0.0);
 	Axes->AddVertex(0.0, 0.0, 10.0);
 	Axes->EndObject();
 
-	// sciany prostopadle do OX
 	Cube = new glObject();
+	// sciany prostopadle do OX
 	Cube->SetColor(0.5, 0.0, 0.0);
 	Cube->BeginObject(GL_TRIANGLE_STRIP);
 	Cube->AddVertex(0.5, 0.5, 0.5);
@@ -117,6 +117,36 @@ void Scene::PrepareObjects()
 	Cube->AddVertex(-0.5, 0.5, 0.5);
 	Cube->AddVertex(-0.5, -0.5, 0.5);
 	Cube->AddVertex(-0.5, 0.5, -0.5);
+	Cube->AddVertex(-0.5, -0.5, -0.5);
+	Cube->EndObject();
+	// sciany prostopadle do OY
+	Cube->SetColor(0.0, 0.5, 0.0);
+	Cube->BeginObject(GL_TRIANGLE_STRIP);
+	Cube->AddVertex(0.5, 0.5, 0.5);
+	Cube->AddVertex(-0.5, 0.5, 0.5);
+	Cube->AddVertex(0.5, 0.5, -0.5);
+	Cube->AddVertex(-0.5, 0.5, -0.5);
+	Cube->EndObject();
+	Cube->SetColor(0.0, 0.3, 0.0);
+	Cube->BeginObject(GL_TRIANGLE_STRIP);
+	Cube->AddVertex(-0.5, -0.5, 0.5);
+	Cube->AddVertex(0.5, -0.5, 0.5);
+	Cube->AddVertex(-0.5, -0.5, -0.5);
+	Cube->AddVertex(0.5, -0.5, -0.5);
+	Cube->EndObject();
+	// sciany prostopadle do OZ
+	Cube->SetColor(0.0, 0.0, 0.5);
+	Cube->BeginObject(GL_TRIANGLE_STRIP);
+	Cube->AddVertex(0.5, 0.5, 0.5);
+	Cube->AddVertex(-0.5, 0.5, 0.5);
+	Cube->AddVertex(0.5, -0.5, 0.5);
+	Cube->AddVertex(-0.5, -0.5, 0.5);
+	Cube->EndObject();
+	Cube->SetColor(0.0, 0.0, 0.3);
+	Cube->BeginObject(GL_TRIANGLE_STRIP);
+	Cube->AddVertex(0.5, 0.5, -0.5);
+	Cube->AddVertex(-0.5, 0.5, -0.5);
+	Cube->AddVertex(0.5, -0.5, -0.5);
 	Cube->AddVertex(-0.5, -0.5, -0.5);
 	Cube->EndObject();
 }
@@ -241,7 +271,6 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 {
 	if (key == ESCAPE) ThrowException("Zatrzymaj program");
 
-
 	switch (key)
 	{
 	case 37: {rot_y -= 5.0f; break; }
@@ -249,7 +278,6 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 	case 39: {rot_y += 5.0f; break; }
 	case 40: {rot_x += 5.0f; break; }
 	}
-
 }
 //--------------------------------------------------------------------------------------------
 // rysuje scene OpenGL
