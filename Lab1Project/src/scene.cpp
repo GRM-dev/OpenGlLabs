@@ -62,7 +62,7 @@ void Scene::PreparePrograms()
 		GLint logLength;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetProgramInfoLog(program, logLength, NULL, log);
+		glGetProgramInfoLog(program, logLength, nullptr, log);
 		PrintLog(log);
 		delete[] log;
 		ThrowException("Blad linkowania programu");
@@ -81,7 +81,7 @@ void Scene::PreparePrograms()
 		GLint logLength;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetProgramInfoLog(program, logLength, NULL, log);
+		glGetProgramInfoLog(program, logLength, nullptr, log);
 		PrintLog(log);
 		delete[] log;
 		ThrowException("Blad walidacji programu");
@@ -121,12 +121,12 @@ void Scene::Resize(int new_width, int new_height)
 GLuint Scene::LoadShader(GLenum type, const char *file_name)
 {
 	// zmienna plikowa
-	FILE *fil = NULL;
+	FILE *fil = nullptr;
 	// sproboj otworzyc plik
 	fil = fopen(file_name, "rb");
 	// sprawdz, czy plik sie otworzyl
 	sprintf(_msg, "Nie mozna otworzyc %s", file_name);
-	if (fil == NULL)  ThrowException(_msg);
+	if (fil == nullptr)  ThrowException(_msg);
 
 	// okresl rozmiar pliku
 	fseek(fil, 0, SEEK_END);
@@ -149,7 +149,7 @@ GLuint Scene::LoadShader(GLenum type, const char *file_name)
 	GLuint shader = glCreateShader(type);
 
 	// przypisanie zrodla do shadera
-	glShaderSource(shader, 1, const_cast<const GLchar**>(&srcBuf), NULL);
+	glShaderSource(shader, 1, const_cast<const GLchar**>(&srcBuf), nullptr);
 
 	// sprzatanie
 	delete[] srcBuf;
@@ -166,7 +166,7 @@ GLuint Scene::LoadShader(GLenum type, const char *file_name)
 		GLint logLength;
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetShaderInfoLog(shader, logLength, NULL, log);
+		glGetShaderInfoLog(shader, logLength, nullptr, log);
 		sprintf(_msg, "Blad kompilacji pliku shadera %s", file_name);
 		PrintLog(_msg);
 		PrintLog(log);
@@ -233,7 +233,7 @@ void Scene::Triangle(GLuint VAO, GLuint VBO)
 	// wybierz atrybut indeksie 0 (wskazany w shaderze)
 	glEnableVertexAttribArray(0);
 	// powiaz dane z bufora ze wskazanym atrybutem
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 //--------------------------------------------------------------------------------------------
@@ -269,7 +269,7 @@ void Scene::Polygon(int n, float r, GLuint VAO, GLuint VBO)
 
 	glEnableVertexAttribArray(0);
 	// powiaz dane z bufora ze wskazanym atrybutem
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	delete[]coords;
 }
@@ -306,7 +306,7 @@ void Scene::Epicycloid(int n, float R, float r, GLuint VAO, GLuint VBO)
 
 	glEnableVertexAttribArray(0);
 	// powiaz dane z bufora ze wskazanym atrybutem
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	delete[]coords;
 }

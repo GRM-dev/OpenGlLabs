@@ -19,6 +19,11 @@
 
 //----------------------------------- DEFINES -------------------------------------------------
 
+#define K_UP 0
+#define K_DOWN 1
+#define K_LEFT 2
+#define K_RIGHT 3
+
 //--------------------------------------------------------------------------------------------
 // 								CLASS INTERFACE
 //--------------------------------------------------------------------------------------------
@@ -34,10 +39,19 @@ public:
 	void Resize(int new_width, int new_height); // zmienia rozmiar sceny
 
 	void Init(); // procedura inicjujaca przetwarzanie
+	void RunLogic();
 
+	bool IsLogicRunning();
 	void KeyPressed(unsigned char key, int x, int y); // obsluga klawiatury
+	void KeyUnPressed(unsigned char key, int x, int y);
+	void Run();
 
 	GLuint LoadShader(GLenum type, const char *file_name); // laduje program shadera z zewnetrznego pliku
+
+	bool KEYS[4];
+	bool LogicRunning;
+	GLint iModelViewLoc;
+	GLint iProjectionLoc;
 
 private:
 	float drx = 0.03f;
@@ -51,6 +65,8 @@ private:
 	float pos_x;
 	float pos_y;
 	float pos_z;
+
+	bool turbo;
 
 	glObject *Axes;
 	glObject *Cube;
@@ -74,6 +90,7 @@ private:
 
 	// komunikaty diagnostyczne
 	char _msg[1024];
+	volatile bool lock;
 
 };
 

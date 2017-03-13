@@ -10,6 +10,8 @@
 //--------------------------------------------------------------------------------------------
 
 #include "scene.h"
+#include <chrono>
+#include <thread>
 
 //--------------------------------------------------------------------------------------------
 // zglasza wyjatek z komunikatem do debuggowania
@@ -19,6 +21,7 @@ Scene::Scene(int new_width, int new_height)
 {
 	width = new_width;
 	height = new_height;
+	turbo = false;
 	rot_x = 0.0;
 	rot_y = 0.0;
 	pos_x = 0.0;
@@ -28,7 +31,12 @@ Scene::Scene(int new_width, int new_height)
 	Cube = nullptr;
 	Plane = nullptr;
 	up_vec = new glm::vec3(0.0f, 1.0f, 0.0f);
-	KeyPressed(VK_UP, 0, 0);
+	KEYS[K_UP] = false;
+	KEYS[K_DOWN] = false;
+	KEYS[K_LEFT] = false;
+	KEYS[K_RIGHT] = false;
+	/*KeyPressed(VK_UP, 0, 0);
+	KeyUnPressed(VK_UP, 0, 0);*/
 }
 //--------------------------------------------------------------------------------------------
 // Domyslny destruktor
@@ -285,35 +293,64 @@ void Scene::Init()
 
 	glEnable(GL_DEPTH_TEST);
 	glClearDepth(1.0);
+	iModelViewLoc = glGetUniformLocation(program, "modelViewMatrix");
+	iProjectionLoc = glGetUniformLocation(program, "projectionMatrix");
 }
+
+void Scene::RunLogic()
+{
+	if (KEYS[K_UP])
+	{
+		KEYS[K_UP] = true;
+		pos_x += cos(rot_x)*(turbo ? 5 * dx : dx);
+		pos_z += sin(rot_x)*(turbo ? 5 * dz : dz);
+		rot_y += turbo ? 5 * dy : dy;
+	}
+	if (KEYS[K_DOWN])
+	{
+		KEYS[K_DOWN] = true;
+		pos_x -= cos(rot_x)*(turbo ? 5 * dx : dx);
+		pos_z -= sin(rot_x)*(turbo ? 5 * dz : dz);
+		rot_y -= turbo ? 4 * dy : dy;
+	}
+	if (KEYS[K_LEFT])
+	{
+		KEYS[K_LEFT] = true;
+		rot_x -= drx;
+	}
+	if (KEYS[K_RIGHT])
+	{
+		KEYS[K_RIGHT] = true;
+		rot_x += drx;
+	}
+	pos_y = abs(sin(rot_y))*dry + 0.8;
+}
+
 //--------------------------------------------------------------------------------------------
 // kontrola naciskania klawiszy klawiatury
 void Scene::KeyPressed(unsigned char key, int x, int y)
 {
 	if (key == VK_ESCAPE) ThrowException("Zatrzymaj program");
 
-	if (key == VK_UP)
+	if (key == VK_SPACE)
 	{
-		pos_x += cos(rot_x)*dx;
-		rot_y += dy;
-		pos_z += sin(rot_x)*dz;
+		turbo = !turbo;
 	}
-	if (key == VK_DOWN)
-	{
-		pos_x -= cos(rot_x)*dx;
-		rot_y -= dy;
-		pos_z -= sin(rot_x)*dz;
+	switch (key) {
+	case VK_UP:
+		KEYS[K_UP] = true;
+		break;
+	case VK_DOWN:
+		KEYS[K_DOWN] = true;
+		break;
+	case VK_LEFT:
+		KEYS[K_LEFT] = true;
+		break;
+	case VK_RIGHT:
+		KEYS[K_RIGHT] = true;
+		break;
 	}
-
-	if (key == VK_LEFT)
-	{
-		rot_x -= drx;
-	}
-	if (key == VK_RIGHT)
-	{
-		rot_x += drx;
-	}
-	pos_y = abs(sin(rot_y))*dry + 0.8;
+	RunLogic();
 	/*switch (key)
 	{
 	case VK_LEFT: {rot_y -= 5.0f; break; }
@@ -322,14 +359,54 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 	case VK_DOWN: {rot_x += 5.0f; break; }
 	}*/
 }
+void Scene::KeyUnPressed(unsigned char key, int x, int y)
+{
+	switch (key) {
+	case VK_UP:
+		KEYS[K_UP] = false;
+		break;
+	case VK_DOWN:
+		KEYS[K_DOWN] = false;
+		break;
+	case VK_LEFT:
+		KEYS[K_LEFT] = false;
+		break;
+	case VK_RIGHT:
+		KEYS[K_RIGHT] = false;
+		break;
+	}
+}
+
+void Scene::Run()
+{
+	while (IsLogicRunning()) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		RunLogic();
+		Draw();
+	}
+	LogicRunning = false;
+}
+
+bool Scene::IsLogicRunning()
+{
+	for (int i = 0; i < sizeof(KEYS); i++)
+	{
+		if (KEYS[i])
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 //--------------------------------------------------------------------------------------------
 // rysuje scene OpenGL
 void Scene::Draw()
 {
+	while (lock) {}
+	lock = true;
 	// czyscimy bufor kolorow
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	int iModelViewLoc = glGetUniformLocation(program, "modelViewMatrix");
-	int iProjectionLoc = glGetUniformLocation(program, "projectionMatrix");
 	glUniformMatrix4fv(iProjectionLoc, 1, GL_FALSE, glm::value_ptr(mProjection));
 
 	glm::vec3 eye = glm::vec3(pos_x, pos_y, pos_z);
@@ -362,5 +439,7 @@ void Scene::Draw()
 	mModelView = glm::translate(mModelView, glm::vec3(1.5, 0.0, 0.0));
 	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
 	Cube->Draw();
+
+	lock = false;
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------
