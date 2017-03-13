@@ -21,7 +21,7 @@ Scene::Scene(int new_width, int new_height)
 	height = new_height;
 	rot_x = 0.0;
 	rot_y = 0.0;
-	Axes = NULL;
+	Axes = nullptr;
 }
 //--------------------------------------------------------------------------------------------
 // Domyslny destruktor
@@ -55,7 +55,7 @@ void Scene::PreparePrograms()
 		GLint logLength;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetProgramInfoLog(program, logLength, NULL, log);
+		glGetProgramInfoLog(program, logLength, nullptr, log);
 		PrintLog(log);
 		delete[] log;
 		ThrowException("Blad linkowania programu");
@@ -74,7 +74,7 @@ void Scene::PreparePrograms()
 		GLint logLength;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetProgramInfoLog(program, logLength, NULL, log);
+		glGetProgramInfoLog(program, logLength, nullptr, log);
 		PrintLog(log);
 		delete[] log;
 		ThrowException("Blad walidacji programu");
@@ -168,12 +168,12 @@ void Scene::Resize(int new_width, int new_height)
 GLuint Scene::LoadShader(GLenum type, const char *file_name)
 {
 	// zmienna plikowa
-	FILE *fil = NULL;
+	FILE *fil = nullptr;
 	// sproboj otworzyc plik
 	fil = fopen(file_name, "rb");
 	// sprawdz, czy plik sie otworzyl
 	sprintf(_msg, "Nie mozna otworzyc %s", file_name);
-	if (fil == NULL)  ThrowException(_msg);
+	if (fil == nullptr)  ThrowException(_msg);
 
 	// okresl rozmiar pliku
 	fseek(fil, 0, SEEK_END);
@@ -196,7 +196,7 @@ GLuint Scene::LoadShader(GLenum type, const char *file_name)
 	GLuint shader = glCreateShader(type);
 
 	// przypisanie zrodla do shadera
-	glShaderSource(shader, 1, const_cast<const GLchar**>(&srcBuf), NULL);
+	glShaderSource(shader, 1, const_cast<const GLchar**>(&srcBuf), nullptr);
 
 	// sprzatanie
 	delete[] srcBuf;
@@ -213,7 +213,7 @@ GLuint Scene::LoadShader(GLenum type, const char *file_name)
 		GLint logLength;
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetShaderInfoLog(shader, logLength, NULL, log);
+		glGetShaderInfoLog(shader, logLength, nullptr, log);
 		sprintf(_msg, "Blad kompilacji pliku shadera %s", file_name);
 		PrintLog(_msg);
 		PrintLog(log);
@@ -225,7 +225,6 @@ GLuint Scene::LoadShader(GLenum type, const char *file_name)
 		sprintf(_msg, "Plik shadera %s skompilowany", file_name);
 		PrintLog(_msg);
 	}
-
 	return shader; // zwroc id shadera
 }
 //--------------------------------------------------------------------------------------------
@@ -289,10 +288,31 @@ void Scene::Draw()
 	int iModelViewLoc = glGetUniformLocation(program, "modelViewMatrix");
 	int iProjectionLoc = glGetUniformLocation(program, "projectionMatrix");
 	glUniformMatrix4fv(iProjectionLoc, 1, GL_FALSE, glm::value_ptr(mProjection));
-	glm::mat4 mModelView = glm::lookAt(glm::vec3(5.0, 5.0, 5.0), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
 
+	glm::mat4 mModelView = glm::lookAt(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
 	Axes->Draw();
+
+	mModelView = glm::rotate(mModelView, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
+	mModelView = glm::rotate(mModelView, rot_x, glm::vec3(1.0f, 0.0f, 0.0f));
+	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
+	Cube->Draw();
+
+	mModelView = glm::scale(mModelView, glm::vec3(0.5, 0.5, 0.5));
+	mModelView = glm::translate(mModelView, glm::vec3(0.75, 0.75, 0.75));
+	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
+	Cube->Draw();
+
+	mModelView = glm::translate(mModelView, glm::vec3(-1.5, 0.0, 0.0));
+	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
+	Cube->Draw();
+
+	mModelView = glm::translate(mModelView, glm::vec3(0.0, 0.0, -1.5));
+	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
+	Cube->Draw();
+
+	mModelView = glm::translate(mModelView, glm::vec3(1.5, 0.0, 0.0));
+	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
 	Cube->Draw();
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------
