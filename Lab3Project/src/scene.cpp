@@ -21,7 +21,14 @@ Scene::Scene(int new_width, int new_height)
 	height = new_height;
 	rot_x = 0.0;
 	rot_y = 0.0;
+	pos_x = 0.0;
+	pos_y = 0.0;
+	pos_z = 0.0;
 	Axes = nullptr;
+	Cube = nullptr;
+	Plane = nullptr;
+	up_vec = new glm::vec3(0.0f, 1.0f, 0.0f);
+	KeyPressed(VK_UP, 0, 0);
 }
 //--------------------------------------------------------------------------------------------
 // Domyslny destruktor
@@ -30,6 +37,9 @@ Scene::~Scene()
 	// usun program przetwarzania
 	if (glIsProgram(program)) glDeleteProgram(program);
 	if (Axes) delete Axes;
+	if (Cube) delete Cube;
+	if (Plane) delete Plane;
+	if (up_vec) delete up_vec;
 }
 //--------------------------------------------------------------------------------------------
 // przygotowuje programy cienionwania
@@ -149,6 +159,18 @@ void Scene::PrepareObjects()
 	Cube->AddVertex(0.5, -0.5, -0.5);
 	Cube->AddVertex(-0.5, -0.5, -0.5);
 	Cube->EndObject();
+
+	Plane = new glObject();
+	Plane->SetColor(0.3, 0.3, 0.3);
+	Plane->BeginObject(GL_LINES);
+	for (float p = -100.0; p <= 100.0; p = p + 5.0)
+	{
+		Plane->AddVertex(-100.0f, 0.0f, p);
+		Plane->AddVertex(100.0f, 0.0f, p);
+		Plane->AddVertex(p, 0.0f, -100.0);
+		Plane->AddVertex(p, 0.0f, 100.0);
+	} Plane->EndObject();
+
 }
 //--------------------------------------------------------------------------------------------
 // Odpowiada za skalowanie sceny przy zmianach rozmiaru okna
@@ -268,15 +290,37 @@ void Scene::Init()
 // kontrola naciskania klawiszy klawiatury
 void Scene::KeyPressed(unsigned char key, int x, int y)
 {
-	if (key == ESCAPE) ThrowException("Zatrzymaj program");
+	if (key == VK_ESCAPE) ThrowException("Zatrzymaj program");
 
-	switch (key)
+	if (key == VK_UP)
 	{
-	case 37: {rot_y -= 5.0f; break; }
-	case 38: {rot_x -= 5.0f; break; }
-	case 39: {rot_y += 5.0f; break; }
-	case 40: {rot_x += 5.0f; break; }
+		pos_x += cos(rot_x)*dx;
+		rot_y += dy;
+		pos_z += sin(rot_x)*dz;
 	}
+	if (key == VK_DOWN)
+	{
+		pos_x -= cos(rot_x)*dx;
+		rot_y -= dy;
+		pos_z -= sin(rot_x)*dz;
+	}
+
+	if (key == VK_LEFT)
+	{
+		rot_x -= drx;
+	}
+	if (key == VK_RIGHT)
+	{
+		rot_x += drx;
+	}
+	pos_y = abs(sin(rot_y))*dry + 0.8;
+	/*switch (key)
+	{
+	case VK_LEFT: {rot_y -= 5.0f; break; }
+	case VK_UP: {rot_x -= 5.0f; break; }
+	case VK_RIGHT: {rot_y += 5.0f; break; }
+	case VK_DOWN: {rot_x += 5.0f; break; }
+	}*/
 }
 //--------------------------------------------------------------------------------------------
 // rysuje scene OpenGL
@@ -284,17 +328,21 @@ void Scene::Draw()
 {
 	// czyscimy bufor kolorow
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	int iModelViewLoc = glGetUniformLocation(program, "modelViewMatrix");
 	int iProjectionLoc = glGetUniformLocation(program, "projectionMatrix");
 	glUniformMatrix4fv(iProjectionLoc, 1, GL_FALSE, glm::value_ptr(mProjection));
 
-	glm::mat4 mModelView = glm::lookAt(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec3 eye = glm::vec3(pos_x, pos_y, pos_z);
+	glm::vec3 center = eye + glm::vec3(cos(rot_x), 0.0f, sin(rot_x));
+	glm::mat4 mModelView = glm::lookAt(eye, center, *up_vec);
+	mModelView = glm::rotate(mModelView, rot_x, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
-	Axes->Draw();
 
-	mModelView = glm::rotate(mModelView, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
-	mModelView = glm::rotate(mModelView, rot_x, glm::vec3(1.0f, 0.0f, 0.0f));
+	Axes->Draw();
+	Plane->Draw();
+
+	/*mModelView = glm::rotate(mModelView, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
+	mModelView = glm::rotate(mModelView, rot_x, glm::vec3(1.0f, 0.0f, 0.0f));*/
 	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
 	Cube->Draw();
 
