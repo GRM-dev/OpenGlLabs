@@ -44,7 +44,6 @@ public:
 	bool IsLogicRunning();
 	void KeyPressed(unsigned char key, int x, int y); // obsluga klawiatury
 	void KeyUnPressed(unsigned char key, int x, int y);
-	void Run();
 
 	GLuint LoadShader(GLenum type, const char *file_name); // laduje program shadera z zewnetrznego pliku
 

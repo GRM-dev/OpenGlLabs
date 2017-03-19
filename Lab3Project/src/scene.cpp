@@ -377,16 +377,6 @@ void Scene::KeyUnPressed(unsigned char key, int x, int y)
 	}
 }
 
-void Scene::Run()
-{
-	while (IsLogicRunning()) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
-		RunLogic();
-		Draw();
-	}
-	LogicRunning = false;
-}
-
 bool Scene::IsLogicRunning()
 {
 	for (int i = 0; i < sizeof(KEYS); i++)
