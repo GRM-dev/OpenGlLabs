@@ -19,7 +19,10 @@ public:
 	void BeginObject(GLenum P); // rozpoczyna generowanie nowego kszta³tu
 	void EndObject(); // tworzy obiekt po wypelnieniu wierzcholkami
 	void AddVertex(float x, float y, float z); // dodaje wierzcholek do listy
-	void Draw(); // rysuje obiekt na scenie z u¿yciem zadanego przymitywu
+	void Draw();
+	int CalcNormal(float A[], float B[], float C[], float * N);
+	// rysuje obiekt na scenie z u¿yciem zadanego przymitywu
+	int Normalize(float* N);
 
 	void MakeEgg(GLfloat a, GLfloat b, GLfloat slices, GLfloat stacks);
 

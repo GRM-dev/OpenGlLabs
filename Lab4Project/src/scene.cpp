@@ -6,13 +6,10 @@
 // Description: Implementacja klasy sceny OpenGL
 //
 //--------------------------------------------------------------------------------------------
-//									ZALEZNOSI
+//									ZALEZNOSCI
 //--------------------------------------------------------------------------------------------
 
 #include "scene.h"
-
-//--------------------------------------------------------------------------------------------
-// zglasza wyjatek z komunikatem do debuggowania
 
 //--------------------------------------------------------------------------------------------
 Scene::Scene(int new_width, int new_height)
@@ -23,6 +20,7 @@ Scene::Scene(int new_width, int new_height)
 	rot_y = 0.0;
 	Axes = nullptr;
 	Cube = nullptr;
+	Watermelon = nullptr;
 	LightAmbient = 0.5;
 }
 //--------------------------------------------------------------------------------------------
@@ -33,6 +31,7 @@ Scene::~Scene()
 	if (glIsProgram(program)) glDeleteProgram(program);
 	if (Axes) delete Axes;
 	if (Cube) delete Cube;
+	if (Watermelon) delete Watermelon;
 }
 //--------------------------------------------------------------------------------------------
 // przygotowuje programy cienionwania
@@ -92,7 +91,7 @@ void Scene::PrepareObjects()
 {
 	Cube = new glObject();
 	Axes = new glObject();
-	Egg = new glObject();
+	Watermelon = new glObject();
 
 	Axes->BeginObject(GL_LINES);
 	Axes->SetColor(1.0, 0.0, 0.0); // os X w kolorze czerwonym
@@ -107,9 +106,9 @@ void Scene::PrepareObjects()
 	Axes->EndObject();
 
 	Cube->SetColor(0.0, 0.5, 0.0);
-	Cube->SetNormal(1.0, 0.0, 0.0);
 
 	// sciany prostopadle do OX
+	Cube->SetNormal(1.0, 0.0, 0.0);
 	Cube->BeginObject(GL_TRIANGLE_STRIP);
 	Cube->AddVertex(0.5, 0.5, 0.5);
 	Cube->AddVertex(0.5, -0.5, 0.5);
@@ -118,7 +117,7 @@ void Scene::PrepareObjects()
 	Cube->EndObject();
 
 	Cube->BeginObject(GL_TRIANGLE_STRIP);
-	Cube->SetNormal(1.0, 0.0, 0.0);
+	Cube->SetNormal(-1.0, 0.0, 0.0);
 	Cube->AddVertex(-0.5, 0.5, 0.5);
 	Cube->AddVertex(-0.5, -0.5, 0.5);
 	Cube->AddVertex(-0.5, 0.5, -0.5);
@@ -159,8 +158,7 @@ void Scene::PrepareObjects()
 	Cube->AddVertex(0.5, -0.5, -0.5);
 	Cube->EndObject();
 
-
-	Egg->MakeEgg(1.3, 0.7, 10, 50);
+	Watermelon->MakeEgg(1.4, 1.7, 15, 90);
 }
 //--------------------------------------------------------------------------------------------
 // Odpowiada za skalowanie sceny przy zmianach rozmiaru okna
@@ -173,7 +171,7 @@ void Scene::Resize(int new_width, int new_height)
 	// rozszerz obszar renderowania do obszaru o wymiarach 'width' x 'height'
 	glViewport(0, 100, width, height);
 
-	mProjection = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	mProjection = glm::perspective(45.0f, static_cast<GLfloat>(width) / static_cast<GLfloat>(height), 0.1f, 100.0f);
 }
 //--------------------------------------------------------------------------------------------
 // laduje program shadera z zewnetrznego pliku
@@ -288,8 +286,23 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 	case 38: {rot_x -= 5.0f; break; }
 	case 39: {rot_y += 5.0f; break; }
 	case 40: {rot_x += 5.0f; break; }
-	case 112: { LightAmbient += 0.1f; break; }		 // F1
-	case 113: { LightAmbient -= 0.1f; break; }		// F2
+	case 112:		// F1
+	{
+		LightAmbient += 0.1f;
+		if (LightAmbient > 1.0)
+		{
+			LightAmbient = 1.0;
+		}
+		break;
+	}
+	case 113:		// F2
+	{
+		LightAmbient -= 0.1f;
+		if (LightAmbient < 0.0)
+		{
+			LightAmbient = 0.0;
+		} break;
+	}
 	}
 }
 //--------------------------------------------------------------------------------------------
@@ -303,12 +316,12 @@ void Scene::Draw()
 	int _Projection = glGetUniformLocation(program, "projectionMatrix");
 	glUniformMatrix4fv(_Projection, 1, GL_FALSE, glm::value_ptr(mProjection));
 
-	glm::mat4 mModelView = glm::lookAt(glm::vec3(5.0f, 5.0f, 5.0f),
+	glm::mat4 mModelView = glm::lookAt(glm::vec3(10.0f, 5.0f, 5.0f),
 		glm::vec3(0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView));
 
-	glm::vec3 LightDirection = glm::vec3(0.0, -1.0, 0.0); // kierunek swiatla
+	glm::vec3 LightDirection = glm::vec3(1.0, 0.0, 0.0); // kierunek swiatla
 	int _LightDirection = glGetUniformLocation(program, "LightDirection");
 	glUniform3fv(_LightDirection, 1, glm::value_ptr(LightDirection));
 	glm::vec3 LightColor = glm::vec3(1.0, 1.0, 1.0); // kolor swiatla
@@ -330,6 +343,6 @@ void Scene::Draw()
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 
 	Cube->Draw();
-	Egg->Draw();
+	Watermelon->Draw();
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------
