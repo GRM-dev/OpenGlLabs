@@ -21,8 +21,8 @@ Scene::Scene(int new_width, int new_height)
 	height = new_height;
 	rot_x = 0.0;
 	rot_y = 0.0;
-	Axes = NULL;
-	Cube = NULL;
+	Axes = nullptr;
+	Cube = nullptr;
 
 }
 //--------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ void Scene::PreparePrograms()
 		GLint logLength;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetProgramInfoLog(program, logLength, NULL, log);
+		glGetProgramInfoLog(program, logLength, nullptr, log);
 		PrintLog(log);
 		delete[] log;
 		ThrowException("Blad linkowania programu");
@@ -77,7 +77,7 @@ void Scene::PreparePrograms()
 		GLint logLength;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetProgramInfoLog(program, logLength, NULL, log);
+		glGetProgramInfoLog(program, logLength, nullptr, log);
 		PrintLog(log);
 		delete[] log;
 		ThrowException("Blad walidacji programu");
@@ -179,12 +179,12 @@ void Scene::Resize(int new_width, int new_height)
 GLuint Scene::LoadShader(GLenum type, const char *file_name)
 {
 	// zmienna plikowa
-	FILE *fil = NULL;
+	FILE *fil = nullptr;
 	// sproboj otworzyc plik
 	fil = fopen(file_name, "rb");
 	// sprawdz, czy plik sie otworzyl
 	sprintf(_msg, "Nie mozna otworzyc %s", file_name);
-	if (fil == NULL)  ThrowException(_msg);
+	if (fil == nullptr)  ThrowException(_msg);
 
 	// okresl rozmiar pliku
 	fseek(fil, 0, SEEK_END);
@@ -207,7 +207,7 @@ GLuint Scene::LoadShader(GLenum type, const char *file_name)
 	GLuint shader = glCreateShader(type);
 
 	// przypisanie zrodla do shadera
-	glShaderSource(shader, 1, const_cast<const GLchar**>(&srcBuf), NULL);
+	glShaderSource(shader, 1, const_cast<const GLchar**>(&srcBuf), nullptr);
 
 	// sprzatanie
 	delete[] srcBuf;
@@ -224,7 +224,7 @@ GLuint Scene::LoadShader(GLenum type, const char *file_name)
 		GLint logLength;
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetShaderInfoLog(shader, logLength, NULL, log);
+		glGetShaderInfoLog(shader, logLength, nullptr, log);
 		sprintf(_msg, "Blad kompilacji pliku shadera %s", file_name);
 		PrintLog(_msg);
 		PrintLog(log);
@@ -247,21 +247,21 @@ void Scene::Init()
 	GLenum err = glewInit();
 	if (GLEW_OK != err)
 	{
-		sprintf(_msg, "GLew error: %s\n", glewGetErrorString(err));
+		sprintf(_msg, "GLew error: %p\n", glewGetErrorString(err));
 		ThrowException(_msg);
 	}
 
 	// pobierz informacje o wersji openGL
 	sprintf(_msg, "OpenGL vendor: ");
-	strcat(_msg, (const char*)glGetString(GL_VENDOR));
+	strcat(_msg, reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
 	PrintLog(_msg);
 
 	sprintf(_msg, "OpenGL renderer: ");
-	strcat(_msg, (const char*)glGetString(GL_RENDERER));
+	strcat(_msg, reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
 	PrintLog(_msg);
 
 	sprintf(_msg, "OpenGL version: ");
-	strcat(_msg, (const char*)glGetString(GL_VERSION));
+	strcat(_msg, reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	PrintLog(_msg);
 
 	//  ustaw kolor tla sceny (RGB Z=1.0)
@@ -308,10 +308,7 @@ void Scene::Draw()
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView));
 
-
 	Axes->Draw();
-
-
 	Cube->Draw();
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------

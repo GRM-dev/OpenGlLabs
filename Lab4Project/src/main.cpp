@@ -20,11 +20,11 @@ Scene *SC; // scena OpenGL
 //--------------------------------------------------------------------------------------------
 // KOD WINAPI DLA VISUAL STUDIO
 //--------------------------------------------------------------------------------------------
-HGLRC           hRC = NULL;
-HDC             hDC = NULL;
-HWND            hWnd = NULL;
+HGLRC           hRC = nullptr;
+HDC             hDC = nullptr;
+HWND            hWnd = nullptr;
 HINSTANCE       hInstance;
-HWND hListBox = NULL;
+HWND hListBox = nullptr;
 
 int wHeight = INITIAL_HEIGHT;
 int wWidth = INITIAL_WIDTH;
@@ -36,23 +36,23 @@ LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 GLvoid KillGLWindow(GLvoid)
 {
 	if (hRC) {
-		wglMakeCurrent(NULL, NULL);
+		wglMakeCurrent(nullptr, nullptr);
 		wglDeleteContext(hRC);
-		hRC = NULL;
+		hRC = nullptr;
 	}
 
 	if (hDC) {
 		ReleaseDC(hWnd, hDC);
-		hDC = NULL;
+		hDC = nullptr;
 	}
 
 	if (hWnd) {
 		DestroyWindow(hWnd);
-		hWnd = NULL;
+		hWnd = nullptr;
 	}
 
 	UnregisterClass("OpenGL", hInstance);
-	hInstance = NULL;
+	hInstance = nullptr;
 }
 //--------------------------------------------------------------------------------------------
 // Alokuje zasoby i tworzy okno aplikacji z OpenGL
@@ -60,37 +60,35 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits)
 {
 	GLuint		PixelFormat;
 	WNDCLASS	wc;
-	DWORD		dwExStyle;
-	DWORD		dwStyle;
 
 	RECT WindowRect;
-	WindowRect.left = (long)0;
-	WindowRect.right = (long)width;
-	WindowRect.top = (long)0;
-	WindowRect.bottom = (long)height;
+	WindowRect.left = 0l;
+	WindowRect.right = static_cast<long>(width);
+	WindowRect.top = 0l;
+	WindowRect.bottom = static_cast<long>(height);
 
-	hInstance = GetModuleHandle(NULL);
+	hInstance = GetModuleHandle(nullptr);
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wc.lpfnWndProc = (WNDPROC)WndProc;
+	wc.lpfnWndProc = static_cast<WNDPROC>(WndProc);
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = NULL;
-	wc.lpszMenuName = NULL;
+	wc.hIcon = LoadIcon(nullptr, IDI_WINLOGO);
+	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	wc.hbrBackground = nullptr;
+	wc.lpszMenuName = nullptr;
 	wc.lpszClassName = "OpenGL";
 
 	if (!RegisterClass(&wc))
 	{
-		MessageBox(NULL,
+		MessageBox(nullptr,
 			"Rejestracja klasy zakonczona niepowodzeniem",
 			"ERROR", MB_OK | MB_ICONEXCLAMATION);
 		return FALSE;
 	}
 
-	dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
-	dwStyle = WS_OVERLAPPEDWINDOW;
+	DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+	DWORD dwStyle = WS_OVERLAPPEDWINDOW;
 
 	AdjustWindowRectEx(&WindowRect, dwStyle, FALSE, dwExStyle);
 
@@ -101,13 +99,13 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits)
 		30, 30,
 		WindowRect.right - WindowRect.left,
 		WindowRect.bottom - WindowRect.top,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
 		hInstance,
-		NULL)))
+		nullptr)))
 	{
 		KillGLWindow();
-		MessageBox(NULL, "Utworzenie okna zakonczone niepowodzeniem",
+		MessageBox(nullptr, "Utworzenie okna zakonczone niepowodzeniem",
 			"ERROR", MB_OK | MB_ICONEXCLAMATION);
 		return FALSE;
 	}
@@ -162,11 +160,11 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits)
 	SetForegroundWindow(hWnd);
 	SetFocus(hWnd);
 
-	hListBox = CreateWindowEx(WS_EX_CLIENTEDGE, "LISTBOX", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL,
-		0, wHeight - 100, wWidth, 100, hWnd, NULL, hInstance, NULL);
+	hListBox = CreateWindowEx(WS_EX_CLIENTEDGE, "LISTBOX", nullptr, WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL,
+		0, wHeight - 100, wWidth, 100, hWnd, nullptr, hInstance, nullptr);
 
-	HFONT hLogFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
-	SendMessage(hListBox, WM_SETFONT, (WPARAM)hLogFont, 0);
+	HFONT hLogFont = static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT));
+	SendMessage(hListBox, WM_SETFONT, reinterpret_cast<WPARAM>(hLogFont), 0);
 
 	SC->Resize(width, height);
 	SC->Init();
@@ -177,27 +175,21 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits)
 // Przetwarza komunikaty systemowe wysylane do okna aplikacji
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM	lParam)
 {
-
 	switch (uMsg)
 	{
-
 	case WM_CREATE: // utworzenie okna
 
 		break;
-
-
 	case WM_ACTIVATE:         // aktywacja okna
 	{
 		return 0;
 	}
-
 	case WM_PAINT:         // odrysowanie okna
 	{
 		SC->Draw();
 		SwapBuffers(hDC);
 		break;
 	}
-
 	case WM_SYSCOMMAND:     // zdarzenia systemowe
 	{
 		switch (wParam)
@@ -241,7 +233,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM	lParam)
 		return 0;
 	}
 	}
-
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
@@ -250,7 +241,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM	lParam)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	MSG	msg;
-
 	try
 	{
 		SC = new Scene(wWidth, wHeight);
@@ -258,27 +248,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (!CreateGLWindow(PROJECT_NAME, wWidth, wHeight, 16)) // utworz okno z widokiem sceny OPENGL
 			return 0;
 
-		while (GetMessage(&msg, NULL, 0, 0)) // pobierz komunikat z kolejki systemowej
+		while (GetMessage(&msg, nullptr, 0, 0)) // pobierz komunikat z kolejki systemowej
 		{
 			TranslateMessage(&msg); // przetwarzaj komunikat w obszarze okna
 			DispatchMessage(&msg); // usun komunikat z kolejki systemowej
 		}
-
 	}
 	catch (char *e)
 	{
-		MessageBox(0, e, "Wystapi³ wyj¹tek", 0);
+		MessageBox(nullptr, e, "Wystapi³ wyj¹tek", 0);
 	}
 	catch (...) // unhandled exceptions
 	{
-		KillGLWindow(); // usun zasoby okna
-		if (SC) delete SC;
 	}
-
 	KillGLWindow(); // usun zasoby okna
-
-	if (SC) delete SC;
-
+	if (SC) { delete SC; }
 	return 0;
 }
 //--------------------------------------------------------------------------------------------

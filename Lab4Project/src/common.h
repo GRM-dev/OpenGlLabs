@@ -3,7 +3,7 @@
 #define _common_h
 #define IS_WIN32 1
 
-#define PROJECT_NAME "lab2"
+#define PROJECT_NAME "lab4"
 
 #define INITIAL_WIDTH 800
 
@@ -18,9 +18,9 @@
 
 #include "glew.h"
 
-#pragma comment(lib,"glew32.lib")	
+#pragma comment(lib,"glew32.lib")
 #pragma comment(lib,"glu32.lib")
-#pragma comment(lib,"opengl32.lib")	
+#pragma comment(lib,"opengl32.lib")
 
 #include <stdio.h>
 #include <string.h>
