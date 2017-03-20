@@ -48,6 +48,7 @@ private:
 
 	glObject *Cube;
 	glObject *Axes;
+	glObject *Egg;
 
 	void PreparePrograms(); // przygotowuje programy przetwarzania
 	void PrepareObjects(); // przygotowuje obiekty do wyswietlenia

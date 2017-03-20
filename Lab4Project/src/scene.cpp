@@ -92,6 +92,7 @@ void Scene::PrepareObjects()
 {
 	Cube = new glObject();
 	Axes = new glObject();
+	Egg = new glObject();
 
 	Axes->BeginObject(GL_LINES);
 	Axes->SetColor(1.0, 0.0, 0.0); // os X w kolorze czerwonym
@@ -109,7 +110,6 @@ void Scene::PrepareObjects()
 	Cube->SetNormal(1.0, 0.0, 0.0);
 
 	// sciany prostopadle do OX
-
 	Cube->BeginObject(GL_TRIANGLE_STRIP);
 	Cube->AddVertex(0.5, 0.5, 0.5);
 	Cube->AddVertex(0.5, -0.5, 0.5);
@@ -134,7 +134,6 @@ void Scene::PrepareObjects()
 	Cube->AddVertex(0.5, 0.5, 0.5);
 	Cube->EndObject();
 
-
 	Cube->BeginObject(GL_TRIANGLE_STRIP);
 	Cube->SetNormal(0.0, -1.0, 0.0);
 	Cube->AddVertex(-0.5, -0.5, -0.5);
@@ -152,7 +151,6 @@ void Scene::PrepareObjects()
 	Cube->AddVertex(0.5, -0.5, 0.5);
 	Cube->EndObject();
 
-
 	Cube->BeginObject(GL_TRIANGLE_STRIP);
 	Cube->SetNormal(0.0, 0.0, -1.0);
 	Cube->AddVertex(-0.5, 0.5, -0.5);
@@ -160,6 +158,9 @@ void Scene::PrepareObjects()
 	Cube->AddVertex(0.5, 0.5, -0.5);
 	Cube->AddVertex(0.5, -0.5, -0.5);
 	Cube->EndObject();
+
+
+	Egg->MakeEgg(1.3, 0.7, 10, 50);
 }
 //--------------------------------------------------------------------------------------------
 // Odpowiada za skalowanie sceny przy zmianach rozmiaru okna
@@ -290,7 +291,6 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 	case 112: { LightAmbient += 0.1f; break; }		 // F1
 	case 113: { LightAmbient -= 0.1f; break; }		// F2
 	}
-
 }
 //--------------------------------------------------------------------------------------------
 // rysuje scene OpenGL
@@ -308,7 +308,7 @@ void Scene::Draw()
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView));
 
-	glm::vec3 LightDirection = glm::vec3(0.0, -1.0, 0.0); // kierunek swiatla 
+	glm::vec3 LightDirection = glm::vec3(0.0, -1.0, 0.0); // kierunek swiatla
 	int _LightDirection = glGetUniformLocation(program, "LightDirection");
 	glUniform3fv(_LightDirection, 1, glm::value_ptr(LightDirection));
 	glm::vec3 LightColor = glm::vec3(1.0, 1.0, 1.0); // kolor swiatla
@@ -330,5 +330,6 @@ void Scene::Draw()
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 
 	Cube->Draw();
+	Egg->Draw();
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------

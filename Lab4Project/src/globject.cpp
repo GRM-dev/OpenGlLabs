@@ -75,14 +75,16 @@ void glObject::MakeEgg(GLfloat a, GLfloat b, GLfloat slices, GLfloat stacks)
 
 	while (x <= a) // iteruj wzdluz OX az nie uzyskasz x=a
 	{
-
 		if (x + slice_delta < a) // wyznacz r1 z przeksztalconego wzoru na elipse lub przypisz r2=0 dla x=a
+		{
 			r2 = (sqrt((a*a - (x + slice_delta)*(x + slice_delta)))*b) / a;
+		}
 		else
+		{
 			r2 = 0.0;
+		}
 
 		phi1 = 0.0; // zeruj poczatkowa wartosc kata dla tworzenia okregu
-
 
 		while (phi1 <= 360.0) // iteruj tworzenie okregu
 		{
@@ -94,7 +96,6 @@ void glObject::MakeEgg(GLfloat a, GLfloat b, GLfloat slices, GLfloat stacks)
 			v4[0] = x + slice_delta; v4[1] = r2*cos(phi1*3.14 / 180); v4[2] = r2*sin(phi1*3.14 / 180);
 
 			// pierwszy trojkat
-
 			AddVertex(v1[0], v1[1], v1[2]);
 			AddVertex(v2[0], v2[1], v2[2]);
 			AddVertex(v3[0], v3[1], v3[2]);
