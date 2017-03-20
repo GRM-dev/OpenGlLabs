@@ -14,9 +14,6 @@
 #include <thread>
 
 //--------------------------------------------------------------------------------------------
-// zglasza wyjatek z komunikatem do debuggowania
-
-//--------------------------------------------------------------------------------------------
 Scene::Scene(int new_width, int new_height)
 {
 	width = new_width;
@@ -24,6 +21,7 @@ Scene::Scene(int new_width, int new_height)
 	turbo = false;
 	rot_x = 0.0;
 	rot_y = 0.0;
+	rot_wx = 0.0;
 	pos_x = 0.0;
 	pos_y = 0.0;
 	pos_z = 0.0;
@@ -271,15 +269,15 @@ void Scene::Init()
 
 	// pobierz informacje o wersji openGL
 	sprintf(_msg, "OpenGL vendor: ");
-	strcat(_msg, (const char*)glGetString(GL_VENDOR));
+	strcat(_msg, reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
 	PrintLog(_msg);
 
 	sprintf(_msg, "OpenGL renderer: ");
-	strcat(_msg, (const char*)glGetString(GL_RENDERER));
+	strcat(_msg, reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
 	PrintLog(_msg);
 
 	sprintf(_msg, "OpenGL version: ");
-	strcat(_msg, (const char*)glGetString(GL_VERSION));
+	strcat(_msg, reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	PrintLog(_msg);
 
 	//  ustaw kolor tla sceny (RGB Z=1.0)
@@ -324,13 +322,21 @@ void Scene::RunLogic()
 		rot_x += drx;
 	}
 	pos_y = abs(sin(rot_y))*dry + 0.8;
+	if(KEYS[K_A])
+	{
+		rot_wx -= dwrx;
+	}
+	if (KEYS[K_D])
+	{
+		rot_wx += dwrx;
+	}
 }
 
 //--------------------------------------------------------------------------------------------
 // kontrola naciskania klawiszy klawiatury
 void Scene::KeyPressed(unsigned char key, int x, int y)
 {
-	if (key == VK_ESCAPE) ThrowException("Zatrzymaj program");
+	if (key == VK_ESCAPE) { ThrowException("Zatrzymaj program"); }
 
 	if (key == VK_SPACE)
 	{
@@ -348,6 +354,12 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 		break;
 	case VK_RIGHT:
 		KEYS[K_RIGHT] = true;
+		break;
+	case 0x41: //A
+		KEYS[K_A] = true;
+		break;
+	case 0x44: //D
+		KEYS[K_D] = true;
 		break;
 	}
 	RunLogic();
@@ -374,33 +386,25 @@ void Scene::KeyUnPressed(unsigned char key, int x, int y)
 	case VK_RIGHT:
 		KEYS[K_RIGHT] = false;
 		break;
+	case 0x41: //A
+		KEYS[K_A] = false;
+		break;
+	case 0x44: //D
+		KEYS[K_D] = false;
+		break;
 	}
-}
-
-bool Scene::IsLogicRunning()
-{
-	for (int i = 0; i < sizeof(KEYS); i++)
-	{
-		if (KEYS[i])
-		{
-			return true;
-		}
-	}
-	return false;
 }
 
 //--------------------------------------------------------------------------------------------
 // rysuje scene OpenGL
 void Scene::Draw()
 {
-	while (lock) {}
-	lock = true;
 	// czyscimy bufor kolorow
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUniformMatrix4fv(iProjectionLoc, 1, GL_FALSE, glm::value_ptr(mProjection));
 
 	glm::vec3 eye = glm::vec3(pos_x, pos_y, pos_z);
-	glm::vec3 center = eye + glm::vec3(cos(rot_x), 0.0f, sin(rot_x));
+	glm::vec3 center = eye + glm::vec3(cos(rot_x)+ cos(rot_wx), 0.0f, sin(rot_x)+sin(rot_wx));
 	glm::mat4 mModelView = glm::lookAt(eye, center, *up_vec);
 	mModelView = glm::rotate(mModelView, rot_x, glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
@@ -429,7 +433,5 @@ void Scene::Draw()
 	mModelView = glm::translate(mModelView, glm::vec3(1.5, 0.0, 0.0));
 	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
 	Cube->Draw();
-
-	lock = false;
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------

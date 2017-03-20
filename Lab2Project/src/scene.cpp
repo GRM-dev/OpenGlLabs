@@ -21,7 +21,6 @@ Scene::Scene(int new_width, int new_height)
 	height = new_height;
 	r1 = new MRectangle(0.0f, 0.0f, 1.0f, 1.0f);
 	r2 = new MRectangle(0.0f, 1.0f, 0.0f, 0.0f);
-	MRectangle t(0.0f, 1.0f, 0.0f, 0.0f);
 }
 //--------------------------------------------------------------------------------------------
 // Domyslny destruktor

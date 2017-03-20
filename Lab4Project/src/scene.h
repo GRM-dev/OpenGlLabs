@@ -64,6 +64,8 @@ private:
 	GLuint vertex_shader;
 	GLuint fragment_shader;
 
+	float LightAmbient;
+
 	// komunikaty diagnostyczne
 	char _msg[1024];
 };

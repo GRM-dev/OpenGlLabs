@@ -23,6 +23,8 @@
 #define K_DOWN 1
 #define K_LEFT 2
 #define K_RIGHT 3
+#define K_A 4
+#define K_D 5
 
 //--------------------------------------------------------------------------------------------
 // 								CLASS INTERFACE
@@ -41,13 +43,12 @@ public:
 	void Init(); // procedura inicjujaca przetwarzanie
 	void RunLogic();
 
-	bool IsLogicRunning();
 	void KeyPressed(unsigned char key, int x, int y); // obsluga klawiatury
 	void KeyUnPressed(unsigned char key, int x, int y);
 
 	GLuint LoadShader(GLenum type, const char *file_name); // laduje program shadera z zewnetrznego pliku
 
-	bool KEYS[4];
+	bool KEYS[6];
 	bool LogicRunning;
 	GLint iModelViewLoc;
 	GLint iProjectionLoc;
@@ -55,8 +56,10 @@ public:
 private:
 	float drx = 0.03f;
 	float dry = 0.7f;
+	float dwrx = 0.03f;
 	float rot_x; //  obrot obiektu wzgledem X
 	float rot_y; //  obrot obiektu wzgledem Y
+	float rot_wx; //obrot wiezyczki
 
 	float dx = 0.1f;
 	float dy = 0.1f;
