@@ -106,6 +106,7 @@ void Scene::PrepareObjects()
 	Axes->EndObject();
 
 	Cube->SetColor(0.0, 0.5, 0.0);
+	Cube->SetNormal(1.0, 0.0, 0.0);
 
 	// sciany prostopadle do OX
 
@@ -116,9 +117,8 @@ void Scene::PrepareObjects()
 	Cube->AddVertex(0.5, -0.5, -0.5);
 	Cube->EndObject();
 
-
-
 	Cube->BeginObject(GL_TRIANGLE_STRIP);
+	Cube->SetNormal(1.0, 0.0, 0.0);
 	Cube->AddVertex(-0.5, 0.5, 0.5);
 	Cube->AddVertex(-0.5, -0.5, 0.5);
 	Cube->AddVertex(-0.5, 0.5, -0.5);
@@ -126,8 +126,8 @@ void Scene::PrepareObjects()
 	Cube->EndObject();
 
 	// sciany prostopadle do OY
-
 	Cube->BeginObject(GL_TRIANGLE_STRIP);
+	Cube->SetNormal(0.0, 1.0, 0.0);
 	Cube->AddVertex(-0.5, 0.5, -0.5);
 	Cube->AddVertex(-0.5, 0.5, 0.5);
 	Cube->AddVertex(0.5, 0.5, -0.5);
@@ -136,6 +136,7 @@ void Scene::PrepareObjects()
 
 
 	Cube->BeginObject(GL_TRIANGLE_STRIP);
+	Cube->SetNormal(0.0, -1.0, 0.0);
 	Cube->AddVertex(-0.5, -0.5, -0.5);
 	Cube->AddVertex(-0.5, -0.5, 0.5);
 	Cube->AddVertex(0.5, -0.5, -0.5);
@@ -143,8 +144,8 @@ void Scene::PrepareObjects()
 	Cube->EndObject();
 
 	// sciany prostopadle do OZ
-
 	Cube->BeginObject(GL_TRIANGLE_STRIP);
+	Cube->SetNormal(0.0, 0.0, 1.0);
 	Cube->AddVertex(-0.5, 0.5, 0.5);
 	Cube->AddVertex(-0.5, -0.5, 0.5);
 	Cube->AddVertex(0.5, 0.5, 0.5);
@@ -153,13 +154,12 @@ void Scene::PrepareObjects()
 
 
 	Cube->BeginObject(GL_TRIANGLE_STRIP);
+	Cube->SetNormal(0.0, 0.0, -1.0);
 	Cube->AddVertex(-0.5, 0.5, -0.5);
 	Cube->AddVertex(-0.5, -0.5, -0.5);
 	Cube->AddVertex(0.5, 0.5, -0.5);
 	Cube->AddVertex(0.5, -0.5, -0.5);
 	Cube->EndObject();
-
-
 }
 //--------------------------------------------------------------------------------------------
 // Odpowiada za skalowanie sceny przy zmianach rozmiaru okna
@@ -288,7 +288,7 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 	case 39: {rot_y += 5.0f; break; }
 	case 40: {rot_x += 5.0f; break; }
 	case 112: { LightAmbient += 0.1f; break; }		 // F1
-	case 113: { LightAmbient -= 0.1sf; break; }		// F2
+	case 113: { LightAmbient -= 0.1f; break; }		// F2
 	}
 
 }
@@ -308,18 +308,26 @@ void Scene::Draw()
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView));
 
-	Axes->Draw();
-	glm::mat4 mTransform = glm::mat4(4);
-	mTransform = glm::rotate(mTransform, rot_x, glm::vec3(1.0f, 0.0f, 0.0f));
-	mTransform = glm::rotate(mTransform, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
-	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
-
+	glm::vec3 LightDirection = glm::vec3(0.0, -1.0, 0.0); // kierunek swiatla 
+	int _LightDirection = glGetUniformLocation(program, "LightDirection");
+	glUniform3fv(_LightDirection, 1, glm::value_ptr(LightDirection));
 	glm::vec3 LightColor = glm::vec3(1.0, 1.0, 1.0); // kolor swiatla
 	int _LightColor = glGetUniformLocation(program, "LightColor");
 	glUniform3fv(_LightColor, 1, glm::value_ptr(LightColor));
+
 	int _LightAmbient = glGetUniformLocation(program, "LightAmbient");
 	glUniform1f(_LightAmbient, LightAmbient);
+	int _NormalMatrix = glGetUniformLocation(program, "normalMatrix");
+	glm::mat4 mTransform = glm::mat4(1.0);
+	glUniformMatrix4fv(_NormalMatrix, 1, GL_FALSE,
+		glm::value_ptr(glm::transpose(glm::inverse(mTransform))));
 
+	Axes->Draw();
+
+	mTransform = glm::rotate(glm::mat4(1.0), rot_x, glm::vec3(1.0f, 0.0f, 0.0f));
+	mTransform = glm::rotate(mTransform, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
+	glUniformMatrix4fv(_NormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(mTransform))));
+	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 
 	Cube->Draw();
 }
