@@ -20,7 +20,7 @@ Scene::Scene(int new_width, int new_height)
 	height = new_height;
 	turbo = false;
 	rot_x = 0.0;
-	rot_y = 0.0;
+	pos_vy = 0.0;
 	rot_wx = 0.0;
 	pos_x = 0.0;
 	pos_y = 0.0;
@@ -302,14 +302,14 @@ void Scene::RunLogic()
 		KEYS[K_UP] = true;
 		pos_x += cos(rot_x)*(turbo ? 5 * dx : dx);
 		pos_z += sin(rot_x)*(turbo ? 5 * dz : dz);
-		rot_y += turbo ? 5 * dy : dy;
+		pos_vy += turbo ? 5 * dy : dy;
 	}
 	if (KEYS[K_DOWN])
 	{
 		KEYS[K_DOWN] = true;
 		pos_x -= cos(rot_x)*(turbo ? 5 * dx : dx);
 		pos_z -= sin(rot_x)*(turbo ? 5 * dz : dz);
-		rot_y -= turbo ? 4 * dy : dy;
+		pos_vy -= turbo ? 5 * dy : dy;
 	}
 	if (KEYS[K_LEFT])
 	{
@@ -321,7 +321,7 @@ void Scene::RunLogic()
 		KEYS[K_RIGHT] = true;
 		rot_x += drx;
 	}
-	pos_y = abs(sin(rot_y))*dry + 0.8;
+	pos_y = abs(sin(2*pos_vy))*dry + 0.8;
 	if(KEYS[K_A])
 	{
 		rot_wx -= dwrx;
@@ -399,14 +399,14 @@ void Scene::KeyUnPressed(unsigned char key, int x, int y)
 // rysuje scene OpenGL
 void Scene::Draw()
 {
-	// czyscimy bufor kolorow
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	glUniformMatrix4fv(iProjectionLoc, 1, GL_FALSE, glm::value_ptr(mProjection));
 
 	glm::vec3 eye = glm::vec3(pos_x, pos_y, pos_z);
-	glm::vec3 center = eye + glm::vec3(cos(rot_x)+ cos(rot_wx), 0.0f, sin(rot_x)+sin(rot_wx));
+	glm::vec3 center = eye + glm::vec3(cos(rot_x+rot_wx), 0.0f, sin(rot_x+rot_wx));
 	glm::mat4 mModelView = glm::lookAt(eye, center, *up_vec);
-	mModelView = glm::rotate(mModelView, rot_x, glm::vec3(0.0f, 1.0f, 0.0f));
+	//mModelView = glm::rotate(mModelView, 10*rot_wx, glm::vec3(0.0f, 5.0f, 0.0f));
 	glUniformMatrix4fv(iModelViewLoc, 1, GL_FALSE, glm::value_ptr(mModelView));
 
 	Axes->Draw();

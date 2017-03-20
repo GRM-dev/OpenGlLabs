@@ -177,7 +177,6 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits)
 // Przetwarza komunikaty systemowe wysylane do okna aplikacji
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM	lParam)
 {
-
 	switch (uMsg)
 	{
 
@@ -195,7 +194,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM	lParam)
 	{
 		SC->Draw();
 		SwapBuffers(hDC);
-		break;
 		break;
 	}
 

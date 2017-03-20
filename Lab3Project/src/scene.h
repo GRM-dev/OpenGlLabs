@@ -55,10 +55,10 @@ public:
 
 private:
 	float drx = 0.03f;
-	float dry = 0.7f;
+	float dry = 0.2f;
 	float dwrx = 0.03f;
 	float rot_x; //  obrot obiektu wzgledem X
-	float rot_y; //  obrot obiektu wzgledem Y
+	float pos_vy; //  obrot obiektu wzgledem Y
 	float rot_wx; //obrot wiezyczki
 
 	float dx = 0.1f;
