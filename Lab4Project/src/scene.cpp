@@ -21,7 +21,11 @@ Scene::Scene(int new_width, int new_height)
 	Axes = nullptr;
 	Cube = nullptr;
 	Watermelon = nullptr;
+	Surf = nullptr;
 	LightAmbient = 0.5;
+	surf_enabled = false;
+	wave = 0.01;
+	up_vector = new glm::vec3(0.0f, 1.0f, 0.0f);
 }
 //--------------------------------------------------------------------------------------------
 // Domyslny destruktor
@@ -32,6 +36,8 @@ Scene::~Scene()
 	if (Axes) delete Axes;
 	if (Cube) delete Cube;
 	if (Watermelon) delete Watermelon;
+	if (Surf) delete Surf;
+	if (up_vector) delete up_vector;
 }
 //--------------------------------------------------------------------------------------------
 // przygotowuje programy cienionwania
@@ -92,6 +98,7 @@ void Scene::PrepareObjects()
 	Cube = new glObject();
 	Axes = new glObject();
 	Watermelon = new glObject();
+	//Surf = new glObject();
 
 	Axes->BeginObject(GL_LINES);
 	Axes->SetColor(1.0, 0.0, 0.0); // os X w kolorze czerwonym
@@ -301,7 +308,18 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 		if (LightAmbient < 0.0)
 		{
 			LightAmbient = 0.0;
-		} break;
+		}
+		break;
+	}
+	case 114:		//F3
+	{
+		wave += 0.1f;
+		break;
+	}
+	case VK_SPACE:
+	{
+		surf_enabled = !surf_enabled;
+		break;
 	}
 	}
 }
@@ -316,9 +334,18 @@ void Scene::Draw()
 	int _Projection = glGetUniformLocation(program, "projectionMatrix");
 	glUniformMatrix4fv(_Projection, 1, GL_FALSE, glm::value_ptr(mProjection));
 
-	glm::mat4 mModelView = glm::lookAt(glm::vec3(10.0f, 5.0f, 5.0f),
-		glm::vec3(0.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec3 eye;
+	if (surf_enabled)
+	{
+		eye = glm::vec3(40.0f, 15.0f, 15.0f);
+	}
+	else
+	{
+		eye = glm::vec3(10.0f, 5.0f, 5.0f);
+	}
+	glm::vec3 center = glm::vec3(0.0f);
+
+	glm::mat4 mModelView = glm::lookAt(eye, center, *up_vector);
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView));
 
 	glm::vec3 LightDirection = glm::vec3(1.0, 0.0, 0.0); // kierunek swiatla
@@ -342,7 +369,17 @@ void Scene::Draw()
 	glUniformMatrix4fv(_NormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(mTransform))));
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 
-	Cube->Draw();
-	Watermelon->Draw();
+	//Cube->Draw();
+	if (!surf_enabled)
+	{
+		Watermelon->Draw();
+	}
+	else
+	{
+		Surf = new glObject();
+		Surf->MakeSurf2(32.0, 32.0, wave, 10.0, 2.0);
+		Surf->Draw();
+		delete Surf;
+	}
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------

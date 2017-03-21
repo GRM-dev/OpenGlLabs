@@ -49,6 +49,11 @@ private:
 	glObject *Cube;
 	glObject *Axes;
 	glObject *Watermelon;
+	glObject *Surf;
+
+	bool surf_enabled;
+	glm::vec3 *up_vector;
+	float wave;
 
 	void PreparePrograms(); // przygotowuje programy przetwarzania
 	void PrepareObjects(); // przygotowuje obiekty do wyswietlenia

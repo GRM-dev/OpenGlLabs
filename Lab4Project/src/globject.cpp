@@ -259,7 +259,7 @@ int glObject::Normalize(float *N)
 	const int y = 1;
 	const int z = 2;
 	// oblicz dlugosc wektora
-	float L = (float)sqrt(N[x] * N[x] + N[y] * N[y] + N[z] * N[z]);
+	float L = static_cast<float>(sqrt(N[x] * N[x] + N[y] * N[y] + N[z] * N[z]));
 	if (L < 0.01) L = 0.01;
 	// wyznacz wspolrzedne normalnej
 	N[x] /= L;
@@ -268,74 +268,68 @@ int glObject::Normalize(float *N)
 	return 1;
 }
 //--------------------------------------------------------------------------------------------
-/*void glObject::MakeSurf(GLfloat dex, GLfloat dez, GLfloat defi, GLfloat A, GLfloat k)
+void glObject::MakeSurf(GLfloat dex, GLfloat dez, GLfloat defi, GLfloat A, GLfloat k)
 {
-GLfloat x;
-GLfloat y;
-GLfloat z;
-GLfloat r;
+	GLfloat x;
+	GLfloat y;
+	GLfloat z;
+	GLfloat r;
 
-GLfloat dx = 20/dex;
-GLfloat dz = 20/dez;
+	GLfloat dx = 20 / dex;
+	GLfloat dz = 20 / dez;
 
-//GLfloat A=10;
-//GLfloat k=2;
+	x = -10;
 
-x = -10;
+	BeginObject(GL_TRIANGLES);
 
-BeginObject(GL_TRIANGLES);
+	// wierzcholki fasety
+	float v1[3];
+	float v2[3];
+	float v3[3];
+	float v4[3];
 
-// wierzcholki fasety
-float v1[3];
-float v2[3];
-float v3[3];
-float v4[3];
+	// normalne
+	float N[3];
 
-// normalna
-float N[3];
+	SetColor(1.0, 0.0, 0.0);
 
+	while (x <= 10)
+	{
+		z = -10;
+		while (z <= 10)
+		{
+			auto Y = [](GLfloat x, GLfloat z, GLfloat A, GLfloat k, GLfloat defi)->GLfloat {
+				return (A - sqrt(x*x + z*z))*sin((A - sqrt(x*x + z*z))*k + defi); };
+			//r = A - sqrt(x*x + z*z);
+			//y = r*sin(r*k + defi); return y;
+			v1[0] = x;      v1[1] = Y(x, z + dz, A, k, defi);      v1[2] = z + dz;
+			v2[0] = x;      v2[1] = Y(x, z, A, k, defi);           v2[2] = z;
+			v3[0] = x + dx; v3[1] = Y(x + dx, z, A, k, defi);      v3[2] = z;
+			v4[0] = x + dx; v4[1] = Y(x + dx, z + dz, A, k, defi); v4[2] = z + dz;
 
-SetColor(1.0, 0.0, 0.3);
+			// pierwszy trojkat
+			CalcNormal(v1, v2, v3, N);
+			Normalize(N);
+			SetNormal(N[0], N[1], N[2]);
+			AddVertex(v1[0], v1[1], v1[2]);
+			AddVertex(v2[0], v2[1], v2[2]);
+			AddVertex(v3[0], v3[1], v3[2]);
 
-while (x <= 10)
-{
-z = -10;
+			//drugi trojkat
+			CalcNormal(v2, v3, v4, N);
+			Normalize(N);
+			AddVertex(v1[0], v1[1], v1[2]);
+			AddVertex(v3[0], v3[1], v3[2]);
+			AddVertex(v4[0], v4[1], v4[2]);
 
-while (z <= 10)
-{
-auto Y = [](GLfloat x, GLfloat z, GLfloat A, GLfloat k, GLfloat defi)->GLfloat{
-return (A - sqrt(x*x + z*z))*sin((A - sqrt(x*x + z*z))*k + defi); };
-//r = A - sqrt(x*x + z*z);
-//y = r*sin(r*k + defi); return y;
-v1[0] = x;      v1[1] = Y(x,        z + dz, A, k, defi); v1[2] = z + dz;
-v2[0] = x;      v2[1] = Y(x,        z,      A, k, defi); v2[2] = z;
-v4[0] = x + dx; v4[1] = Y(x + dx,   z + dz, A, k, defi); v4[2] = z + dz;
-v3[0] = x + dx; v3[1] = Y(x + dx,   z,      A, k, defi); v3[2] = z;
-
-// pierwszy trojkat
-CalcNormal(v1, v2, v3, N);
-Normalize(N);
-SetNormal(N[0], N[1], N[2]);
-AddVertex(v1[0], v1[1], v1[2]);
-AddVertex(v2[0], v2[1], v2[2]);
-AddVertex(v3[0], v3[1], v3[2]);
-
-//drugi trojkat
-CalcNormal(v2, v3, v4, N);
-Normalize(N);
-AddVertex(v1[0], v1[1], v1[2]);
-AddVertex(v3[0], v3[1], v3[2]);
-AddVertex(v4[0], v4[1], v4[2]);
-
-z += dz;
+			z += dz;
+		}
+		x += dx;
+	}
+	EndObject();
 }
-x += dx;
-
-}
-EndObject();
-}*/
 //----------------------------------------------------------------------
-/*void glObject::MakeSurf(GLfloat depromien, GLfloat dekat, GLfloat defi, GLfloat A, GLfloat k)
+void glObject::MakeSurf2(GLfloat depromien, GLfloat dekat, GLfloat defi, GLfloat A, GLfloat k)
 {
 	//GLfloat x[4];
 	//GLfloat y;
@@ -400,7 +394,7 @@ EndObject();
 
 
 
-			/* // pierwszy trojkat
+			// pierwszy trojkat
 			CalcNormal(v1, v2, v3, N);
 			Normalize(N);
 			SetNormal(N[0], N[1], N[2]);
@@ -413,12 +407,12 @@ EndObject();
 			Normalize(N);
 			AddVertex(v1[0], v1[1], v1[2]);
 			AddVertex(v3[0], v3[1], v3[2]);
-			AddVertex(v4[0], v4[1], v4[2]);*/
+			AddVertex(v4[0], v4[1], v4[2]);
 
-			/* CalcNormal(v1,v2,v3,N);
+			CalcNormal(v1, v2, v3, N);
 			Normalize(N);
-			SetNormal(N[0],N[1],N[2]);*/
-			/*SetNormal(v1[0], v1[1], v1[2]);
+			SetNormal(N[0], N[1], N[2]);
+			SetNormal(v1[0], v1[1], v1[2]);
 			AddVertex(v1[0], v1[1], v1[2]);
 			SetNormal(v2[0], v2[1], v2[2]);
 			AddVertex(v2[0], v2[1], v2[2]);
@@ -427,10 +421,10 @@ EndObject();
 
 			//drugi trojkat
 
-			/* CalcNormal(v1,v3,v4,N);
+			CalcNormal(v1, v3, v4, N);
 			Normalize(N);
-			SetNormal(N[0],N[1],N[2]);*/
-			/*SetNormal(v1[0], v1[1], v1[2]);
+			SetNormal(N[0], N[1], N[2]);
+			SetNormal(v1[0], v1[1], v1[2]);
 			AddVertex(v1[0], v1[1], v1[2]);
 			SetNormal(v3[0], v3[1], v3[2]);
 			AddVertex(v3[0], v3[1], v3[2]);
@@ -443,5 +437,5 @@ EndObject();
 
 	}
 	EndObject();
-}*/
+}
 // the end

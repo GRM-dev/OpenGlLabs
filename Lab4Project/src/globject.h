@@ -23,6 +23,8 @@ public:
 	int CalcNormal(float A[], float B[], float C[], float * N);
 	// rysuje obiekt na scenie z u¿yciem zadanego przymitywu
 	int Normalize(float* N);
+	void MakeSurf(GLfloat dex, GLfloat dez, GLfloat defi, GLfloat A, GLfloat k);
+	void MakeSurf2(GLfloat depromien, GLfloat dekat, GLfloat defi, GLfloat A, GLfloat k);
 
 	void MakeEgg(GLfloat a, GLfloat b, GLfloat slices, GLfloat stacks);
 
