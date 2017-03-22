@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenGlProject"
         xmlns:wpf="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
-        mc:Ignorable="d"
-        Title="Open Gl Project" Height="350" Width="525">
+        mc:Ignorable="d" Title="Open Gl Project"
+        d:DataContext="{d:DesignInstance Type=local:MainAppContext, IsDesignTimeCreatable=True}">
     <DockPanel>
-        <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
+        <StackPanel DockPanel.Dock="Right" Orientation="Vertical" Margin="5">
             <StackPanel Orientation="Horizontal">
                 <Label Content="Current Score: "/>
                 <TextBlock MinWidth="30"/>
@@ -21,7 +21,7 @@
                 <Label Content="Debug: "/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock MinWidth="100" />
+                <TextBox MinWidth="100" Height="200" Width="140" Text="{Binding Debug}"/>
             </StackPanel>
         </StackPanel>
         <wpf:OpenGLControl OpenGLVersion="OpenGL4_4" DrawFPS="True" Resized="OpenGLControl_OnResized" OpenGLDraw="OpenGLControl_OpenGLDraw" OpenGLInitialized="OpenGLControl_OpenGLInitialized"/>
