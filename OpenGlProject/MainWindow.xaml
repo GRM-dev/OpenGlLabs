@@ -1,0 +1,29 @@
+﻿<Window x:Class="OpenGlProject.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OpenGlProject"
+        xmlns:wpf="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
+        mc:Ignorable="d"
+        Title="Open Gl Project" Height="350" Width="525">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Current Score: "/>
+                <TextBlock MinWidth="30"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Best Score: "/>
+                <TextBlock MinWidth="30"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Debug: "/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock MinWidth="100" />
+            </StackPanel>
+        </StackPanel>
+        <wpf:OpenGLControl OpenGLVersion="OpenGL4_4" DrawFPS="True" Resized="OpenGLControl_OnResized" OpenGLDraw="OpenGLControl_OpenGLDraw" OpenGLInitialized="OpenGLControl_OpenGLInitialized"/>
+    </DockPanel>
+</Window>
