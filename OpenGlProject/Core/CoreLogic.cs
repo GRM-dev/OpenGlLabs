@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace OpenGlProject.Core
 {
@@ -11,26 +12,36 @@ namespace OpenGlProject.Core
     {
         private readonly Thread _thread;
         private bool _stop;
-        private TpsTimer _timer;
+        private readonly TpsTimer _timer;
 
         public CoreLogic(MainAppContext mainAppContext)
         {
             _thread = new Thread(Run);
             AppContext = mainAppContext;
             _timer = new TpsTimer();
+            KeyboardHandler.Instance.AddDownKeyListener(Key.F1, () =>
+            {
+                AppContext.Dr -= 1;
+                AppContext.Dq -= 1;
+            });
+            KeyboardHandler.Instance.AddDownKeyListener(Key.F2, () =>
+            {
+                AppContext.Dr += 1;
+                AppContext.Dq += 1;
+            });
         }
 
         private void Run()
         {
             while (!_stop)
             {
-                AppContext.RotatePyramid += 3.0f;
-                AppContext.Rquad -= 3.0f;
-                if (_timer.isFullCycle())
+                AppContext.RotatePyramid += AppContext.Dr;
+                AppContext.Rquad -= AppContext.Dq;
+                if (_timer.CurrentTicks == 1)
                 {
-
+                    AppContext.Tps = _timer.LastTps;
                 }
-                _timer.sync();
+                _timer.Sync();
             }
         }
 
@@ -38,7 +49,7 @@ namespace OpenGlProject.Core
         {
             if (!_thread.IsAlive)
             {
-                _timer.initTime(20);
+                _timer.InitTime(20);
                 _thread.Start();
             }
         }

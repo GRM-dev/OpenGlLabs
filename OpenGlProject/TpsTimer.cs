@@ -1,75 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenGlProject
 {
     public class TpsTimer
     {
-        private long lastTick;
-        private int tpsT = 0;
-        private long lastCallTime;
-        private long lastTPS = 0;
-        private int tps;
+        private long _lastTickTime;
+        private int _currentTicks;
+        private long _lastTps;
+        private int _skipTicks;
+        private int _setTicks;
+        private long _lastCallTime;
+        private int _sleepTime;
 
-        public void initTime(int tps)
+        public void InitTime(int tps)
         {
-            this.tps = tps;
-            getDelta();
-            lastCallTime = getTime();
+            _skipTicks = 1000 / tps;
+            _setTicks = tps;
+            GetDelta();
+            _lastCallTime = GetTime();
         }
 
-        public void sync()
+        public void Sync()
         {
-            updateTPS();
+            UpdateTps();
             Wait();
         }
 
-        private void updateTPS()
+        private void UpdateTps()
         {
-            long currentTime = getTime();
-            if (currentTime - lastCallTime > 1000)
+            if (IsFullCycle())
             {
-                lastTPS = tpsT;
-                tpsT = 0;
-                lastCallTime += 1000;
+                _lastTps = _currentTicks;
+                _currentTicks = 0;
+                _lastCallTime = GetTime();
             }
-            tpsT++;
+            _sleepTime = (int)(_skipTicks - CurrentTicks > 0 ? _skipTicks - CurrentTicks : 0);
+            _currentTicks++;
         }
 
         private void Wait()
         {
-
+            if (_sleepTime > 0)
+            {
+                try
+                {
+                    Thread.Sleep(_sleepTime);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                }
+                _sleepTime = 0;
+            }
         }
 
-        public bool isFullCycle()
+        public bool IsFullCycle()
         {
-            return getLastTps() == getTPS() || (getTime() - lastCallTime > 1000);
+            return _currentTicks >= _setTicks;
         }
 
-        public int getDelta()
+        public int GetDelta()
         {
-            long time = getTime();
-            int delta = (int)(time - lastTick);
-            lastTick = time;
+            long time = GetTime();
+            int delta = (int)(time - _lastTickTime);
+            _lastTickTime = time;
             return delta;
         }
 
-        public long getTime()
+        public long GetTime()
         {
             return DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         }
 
-        public int getTPS()
-        {
-            return tpsT;
-        }
-
-        public long getLastTps()
-        {
-            return lastTPS;
-        }
+        public int CurrentTicks => _currentTicks;
+        public long LastTps => _lastTps;
     }
 }

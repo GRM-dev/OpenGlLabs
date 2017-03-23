@@ -1,29 +1,45 @@
-﻿<Window x:Class="OpenGlProject.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OpenGlProject"
-        xmlns:wpf="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
-        mc:Ignorable="d" Title="Open Gl Project"
-        d:DataContext="{d:DesignInstance Type=local:MainAppContext, IsDesignTimeCreatable=True}">
+﻿<Window
+    x:Class="OpenGlProject.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:OpenGlProject"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wpf="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
+    Title="Open Gl Project"
+    d:DataContext="{d:DesignInstance Type=local:MainAppContext,
+                                     IsDesignTimeCreatable=True}"
+    mc:Ignorable="d">
     <DockPanel>
-        <StackPanel DockPanel.Dock="Right" Orientation="Vertical" Margin="5">
+        <StackPanel
+            Margin="5"
+            DockPanel.Dock="Right"
+            Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
-                <Label Content="Current Score: "/>
-                <TextBlock MinWidth="30"/>
+                <Label Content="Current Score: " />
+                <TextBlock MinWidth="30" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Label Content="Best Score: "/>
-                <TextBlock MinWidth="30"/>
+                <Label Content="Best Score: " />
+                <TextBlock MinWidth="30" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Label Content="Debug: "/>
+                <Label Content="Debug: " />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBox MinWidth="100" Height="200" Width="140" Text="{Binding Debug}"/>
+                <TextBox
+                    x:Name="TbDebug"
+                    Width="140"
+                    Height="200"
+                    MinWidth="100"
+                    Text="{Binding Debug, Mode=TwoWay}" />
             </StackPanel>
         </StackPanel>
-        <wpf:OpenGLControl OpenGLVersion="OpenGL4_4" DrawFPS="True" Resized="OpenGLControl_OnResized" OpenGLDraw="OpenGLControl_OpenGLDraw" OpenGLInitialized="OpenGLControl_OpenGLInitialized"/>
+        <wpf:OpenGLControl
+            DrawFPS="True"
+            OpenGLDraw="OpenGLControl_OpenGLDraw"
+            OpenGLInitialized="OpenGLControl_OpenGLInitialized"
+            OpenGLVersion="OpenGL4_4"
+            Resized="OpenGLControl_OnResized" />
     </DockPanel>
 </Window>

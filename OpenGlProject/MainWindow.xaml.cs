@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using OpenGlProject.Core;
 using SharpGL;
 using SharpGL.SceneGraph;
@@ -30,16 +31,26 @@ namespace OpenGlProject
         public MainWindow()
         {
             AppContext = new MainAppContext();
-            AppContext.PropertyChanged+=AppContext_OnPropertyChanged;
+            AppContext.PropertyChanged += AppContext_OnPropertyChanged;
             DataContext = AppContext;
             InitializeComponent();
             Closing += (sender, args) => { OnAppClose(); };
+            KeyHandler = new KeyboardHandler();
             Logic = new CoreLogic(AppContext);
+            KeyUp += KeyHandler.KeyUp;
+            KeyDown += KeyHandler.KeyDown;
         }
 
-        private void AppContext_OnPropertyChanged(object o, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void AppContext_OnPropertyChanged(object o, PropertyChangedEventArgs args)
         {
-
+            if (args.PropertyName == "Tps")
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        TbDebug.Text = AppContext.Debug;
+                    }
+                ));
+            }
         }
 
         private void OnAppClose()
@@ -63,9 +74,7 @@ namespace OpenGlProject
             Gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
             //  Reset the modelview matrix.
             Gl.LoadIdentity();
-            //  Move the geometry into a fairly central position.
             Gl.Translate(-1.5f, 0.0f, -6.0f);
-            //  First, rotate the modelview matrix.
             Gl.Rotate(AppContext.RotatePyramid, 0.0f, 1.0f, 0.0f);
 
             //  Draw a pyramid. Start drawing triangles.
@@ -104,13 +113,9 @@ namespace OpenGlProject
             //  Reset the modelview.
             Gl.LoadIdentity();
 
-            //  Move into a more central position.
             Gl.Translate(1.5f, 0.0f, -7.0f);
-
-            //  Rotate the cube.
             Gl.Rotate(AppContext.Rquad, 1.0f, 1.0f, 1.0f);
 
-            //  Provide the cube colors and geometry.
             Gl.Begin(OpenGL.GL_QUADS);
 
             Gl.Color(0.0f, 1.0f, 0.0f);
@@ -178,5 +183,7 @@ namespace OpenGlProject
             get { return _appContext; }
             set { _appContext = value; }
         }
+
+        public KeyboardHandler KeyHandler { get; set; }
     }
 }
