@@ -98,7 +98,8 @@ void Scene::PrepareObjects()
 	Cube = new glObject();
 	Axes = new glObject();
 	Watermelon = new glObject();
-	//Surf = new glObject();
+	Surf = new glObject();
+	Surf->MakeSurf(60.0, 60.0, wave, 10.0, 2.0);
 
 	Axes->BeginObject(GL_LINES);
 	Axes->SetColor(1.0, 0.0, 0.0); // os X w kolorze czerwonym
@@ -327,7 +328,6 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 // rysuje scene OpenGL
 void Scene::Draw()
 {
-	// czyscimy bufor kolorow
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	int _ModelView = glGetUniformLocation(program, "modelViewMatrix");
@@ -344,7 +344,6 @@ void Scene::Draw()
 		eye = glm::vec3(10.0f, 5.0f, 5.0f);
 	}
 	glm::vec3 center = glm::vec3(0.0f);
-
 	glm::mat4 mModelView = glm::lookAt(eye, center, *up_vector);
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView));
 
@@ -354,7 +353,6 @@ void Scene::Draw()
 	glm::vec3 LightColor = glm::vec3(1.0, 1.0, 1.0); // kolor swiatla
 	int _LightColor = glGetUniformLocation(program, "LightColor");
 	glUniform3fv(_LightColor, 1, glm::value_ptr(LightColor));
-
 	int _LightAmbient = glGetUniformLocation(program, "LightAmbient");
 	glUniform1f(_LightAmbient, LightAmbient);
 	int _NormalMatrix = glGetUniformLocation(program, "normalMatrix");
@@ -376,10 +374,8 @@ void Scene::Draw()
 	}
 	else
 	{
-		Surf = new glObject();
-		Surf->MakeSurf2(32.0, 32.0, wave, 10.0, 2.0);
+		Surf->Move(wave);
 		Surf->Draw();
-		delete Surf;
 	}
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------

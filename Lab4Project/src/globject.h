@@ -2,6 +2,8 @@
 #define globject_H
 
 #include "common.h"
+#include "../../Lab3Project/src/glm/glm.hpp"
+
 //--------------------------------------------------------------------------------------------
 // 								CLASS INTERFACE
 //--------------------------------------------------------------------------------------------
@@ -14,18 +16,27 @@ public:
 	~glObject(); // domyslny destruktor
 
 	void CleanUp();
+
 	void SetColor(float r, float g, float b); // ustawia biezacy kolor dla grupy wierzcholkow
 	void SetNormal(float _nx, float _ny, float _nz); // ustawia aktualna normalna
+
 	void BeginObject(GLenum P); // rozpoczyna generowanie nowego kszta³tu
 	void EndObject(); // tworzy obiekt po wypelnieniu wierzcholkami
+
+	void AddVertex(glm::vec3 v);
 	void AddVertex(float x, float y, float z); // dodaje wierzcholek do listy
+
 	void Draw();
+
+	int CalcNormal(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3* N);
 	int CalcNormal(float A[], float B[], float C[], float * N);
-	// rysuje obiekt na scenie z u¿yciem zadanego przymitywu
+	int Normalize(glm::vec3 N);
+
 	int Normalize(float* N);
+	void Move(float wave);
+	static float SetInRange(float v);
 	void MakeSurf(GLfloat dex, GLfloat dez, GLfloat defi, GLfloat A, GLfloat k);
 	void MakeSurf2(GLfloat depromien, GLfloat dekat, GLfloat defi, GLfloat A, GLfloat k);
-
 	void MakeEgg(GLfloat a, GLfloat b, GLfloat slices, GLfloat stacks);
 
 private:
