@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -25,6 +27,7 @@ namespace OpenGlProject
     /// </summary>
     public partial class MainWindow : Window
     {
+        private NotifyIcon _icon;
 
         private MainAppContext _appContext;
 
@@ -174,6 +177,28 @@ namespace OpenGlProject
             Gl.MatrixMode(OpenGL.GL_MODELVIEW);
         }
 
+        private void HideButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_icon == null)
+            {
+                _icon = new NotifyIcon
+                {
+                    Text = "Hidden Project",
+                    BalloonTipTitle = "My own project",
+                    Visible = true,
+                    Icon = new Icon(System.IO.Path.Combine(Environment.CurrentDirectory, @"Resources\Icons\tray.ico"))
+  };
+                _icon.Click += (o, args) =>
+                {
+                    Visibility = Visibility.Visible;
+                    ShowInTaskbar = true;
+                };
+            }
+            ShowInTaskbar = false;
+            Visibility = Visibility.Hidden;
+        }
+
+        public KeyboardHandler KeyHandler { get; set; }
         public OpenGL Gl { get; set; }
         public bool OpenGlInitialized { get; private set; }
         public CoreLogic Logic { get; }
@@ -183,7 +208,5 @@ namespace OpenGlProject
             get { return _appContext; }
             set { _appContext = value; }
         }
-
-        public KeyboardHandler KeyHandler { get; set; }
     }
 }

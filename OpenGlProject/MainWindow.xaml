@@ -34,6 +34,10 @@
                     MinWidth="100"
                     Text="{Binding Debug, Mode=TwoWay}" />
             </StackPanel>
+            <StackPanel>
+                <Button Content="Restart"/>
+                <Button Content="Hide" Click="HideButton_Click"/>
+            </StackPanel>
         </StackPanel>
         <wpf:OpenGLControl
             DrawFPS="True"
