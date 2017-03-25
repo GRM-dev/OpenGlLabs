@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using OpenGlProject.Core;
+using OpenGlProject.Graphic.ViewModel;
 using SharpGL;
 using SharpGL.SceneGraph;
 
@@ -27,10 +28,6 @@ namespace OpenGlProject
     /// </summary>
     public partial class MainWindow : Window
     {
-        private NotifyIcon _icon;
-
-        private MainAppContext _appContext;
-
         public MainWindow()
         {
             AppContext = new MainAppContext();
@@ -38,10 +35,7 @@ namespace OpenGlProject
             DataContext = AppContext;
             InitializeComponent();
             Closing += (sender, args) => { OnAppClose(); };
-            KeyHandler = new KeyboardHandler();
-            Logic = new CoreLogic(AppContext);
-            KeyUp += KeyHandler.KeyUp;
-            KeyDown += KeyHandler.KeyDown;
+            Core = new AppCore(this);
         }
 
         private void AppContext_OnPropertyChanged(object o, PropertyChangedEventArgs args)
@@ -58,7 +52,7 @@ namespace OpenGlProject
 
         private void OnAppClose()
         {
-            Logic?.Stop();
+            Core.Stop();
         }
 
         private void OpenGLControl_OpenGLInitialized(object sender, OpenGLEventArgs args)
@@ -67,99 +61,16 @@ namespace OpenGlProject
             Gl.Enable(OpenGL.GL_DEPTH_TEST);
             if (!OpenGlInitialized)
             {
-                Logic.Start();
+                Core.Start();
             }
             OpenGlInitialized = true;
         }
 
         private void OpenGLControl_OpenGLDraw(object sender, OpenGLEventArgs args)
         {
-            Gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
-            //  Reset the modelview matrix.
-            Gl.LoadIdentity();
-            Gl.Translate(-1.5f, 0.0f, -6.0f);
-            Gl.Rotate(AppContext.RotatePyramid, 0.0f, 1.0f, 0.0f);
-
-            //  Draw a pyramid. Start drawing triangles.
-            Gl.Begin(OpenGL.GL_TRIANGLES);
-
-            Gl.Color(1.0f, 0.0f, 0.0f);
-            Gl.Vertex(0.0f, 1.0f, 0.0f);
-            Gl.Color(0.0f, 1.0f, 0.0f);
-            Gl.Vertex(-1.0f, -1.0f, 1.0f);
-            Gl.Color(0.0f, 0.0f, 1.0f);
-            Gl.Vertex(1.0f, -1.0f, 1.0f);
-
-            Gl.Color(1.0f, 0.0f, 0.0f);
-            Gl.Vertex(0.0f, 1.0f, 0.0f);
-            Gl.Color(0.0f, 0.0f, 1.0f);
-            Gl.Vertex(1.0f, -1.0f, 1.0f);
-            Gl.Color(0.0f, 1.0f, 0.0f);
-            Gl.Vertex(1.0f, -1.0f, -1.0f);
-
-            Gl.Color(1.0f, 0.0f, 0.0f);
-            Gl.Vertex(0.0f, 1.0f, 0.0f);
-            Gl.Color(0.0f, 1.0f, 0.0f);
-            Gl.Vertex(1.0f, -1.0f, -1.0f);
-            Gl.Color(0.0f, 0.0f, 1.0f);
-            Gl.Vertex(-1.0f, -1.0f, -1.0f);
-
-            Gl.Color(1.0f, 0.0f, 0.0f);
-            Gl.Vertex(0.0f, 1.0f, 0.0f);
-            Gl.Color(0.0f, 0.0f, 1.0f);
-            Gl.Vertex(-1.0f, -1.0f, -1.0f);
-            Gl.Color(0.0f, 1.0f, 0.0f);
-            Gl.Vertex(-1.0f, -1.0f, 1.0f);
-
-            Gl.End();
-
-            //  Reset the modelview.
-            Gl.LoadIdentity();
-
-            Gl.Translate(1.5f, 0.0f, -7.0f);
-            Gl.Rotate(AppContext.Rquad, 1.0f, 1.0f, 1.0f);
-
-            Gl.Begin(OpenGL.GL_QUADS);
-
-            Gl.Color(0.0f, 1.0f, 0.0f);
-            Gl.Vertex(1.0f, 1.0f, -1.0f);
-            Gl.Vertex(-1.0f, 1.0f, -1.0f);
-            Gl.Vertex(-1.0f, 1.0f, 1.0f);
-            Gl.Vertex(1.0f, 1.0f, 1.0f);
-
-            Gl.Color(1.0f, 0.5f, 0.0f);
-            Gl.Vertex(1.0f, -1.0f, 1.0f);
-            Gl.Vertex(-1.0f, -1.0f, 1.0f);
-            Gl.Vertex(-1.0f, -1.0f, -1.0f);
-            Gl.Vertex(1.0f, -1.0f, -1.0f);
-
-            Gl.Color(1.0f, 0.0f, 0.0f);
-            Gl.Vertex(1.0f, 1.0f, 1.0f);
-            Gl.Vertex(-1.0f, 1.0f, 1.0f);
-            Gl.Vertex(-1.0f, -1.0f, 1.0f);
-            Gl.Vertex(1.0f, -1.0f, 1.0f);
-
-            Gl.Color(1.0f, 1.0f, 0.0f);
-            Gl.Vertex(1.0f, -1.0f, -1.0f);
-            Gl.Vertex(-1.0f, -1.0f, -1.0f);
-            Gl.Vertex(-1.0f, 1.0f, -1.0f);
-            Gl.Vertex(1.0f, 1.0f, -1.0f);
-
-            Gl.Color(0.0f, 0.0f, 1.0f);
-            Gl.Vertex(-1.0f, 1.0f, 1.0f);
-            Gl.Vertex(-1.0f, 1.0f, -1.0f);
-            Gl.Vertex(-1.0f, -1.0f, -1.0f);
-            Gl.Vertex(-1.0f, -1.0f, 1.0f);
-
-            Gl.Color(1.0f, 0.0f, 1.0f);
-            Gl.Vertex(1.0f, 1.0f, -1.0f);
-            Gl.Vertex(1.0f, 1.0f, 1.0f);
-            Gl.Vertex(1.0f, -1.0f, 1.0f);
-            Gl.Vertex(1.0f, -1.0f, -1.0f);
-
-            Gl.End();
-
-            //  Flush OpenGL.
+            Gl.ClearColor(0.05f, 0.1f, 0.5f, 0f);
+            Gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT | OpenGL.GL_STENCIL_BUFFER_BIT);
+            Core.Draw();
             Gl.Flush();
         }
 
@@ -177,36 +88,9 @@ namespace OpenGlProject
             Gl.MatrixMode(OpenGL.GL_MODELVIEW);
         }
 
-        private void HideButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (_icon == null)
-            {
-                _icon = new NotifyIcon
-                {
-                    Text = "Hidden Project",
-                    BalloonTipTitle = "My own project",
-                    Visible = true,
-                    Icon = new Icon(System.IO.Path.Combine(Environment.CurrentDirectory, @"Resources\Icons\tray.ico"))
-  };
-                _icon.Click += (o, args) =>
-                {
-                    Visibility = Visibility.Visible;
-                    ShowInTaskbar = true;
-                };
-            }
-            ShowInTaskbar = false;
-            Visibility = Visibility.Hidden;
-        }
-
-        public KeyboardHandler KeyHandler { get; set; }
-        public OpenGL Gl { get; set; }
+        public OpenGL Gl { get; private set; }
         public bool OpenGlInitialized { get; private set; }
-        public CoreLogic Logic { get; }
-
-        public MainAppContext AppContext
-        {
-            get { return _appContext; }
-            set { _appContext = value; }
-        }
+        public AppCore Core { get; }
+        public MainAppContext AppContext { get; }
     }
 }

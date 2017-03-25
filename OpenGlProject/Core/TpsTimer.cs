@@ -1,27 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
-namespace OpenGlProject
+namespace OpenGlProject.Core
 {
     public class TpsTimer
     {
         private long _lastTickTime;
         private int _currentTicks;
         private long _lastTps;
-        private int _skipTicks;
-        private int _setTicks;
+        private int _calcTickTime;
+        private int _setTps;
         private long _lastCallTime;
         private int _sleepTime;
 
         public void InitTime(int tps)
         {
-            _skipTicks = 1000 / tps;
-            _setTicks = tps;
+            _calcTickTime = 1000 / tps;
+            _setTps = tps;
             GetDelta();
             _lastCallTime = GetTime();
         }
@@ -34,14 +30,27 @@ namespace OpenGlProject
 
         private void UpdateTps()
         {
-            if (IsFullCycle())
+            var currentTime = GetTime();
+            var cCycleTime = (currentTime - _lastCallTime);
+            if (currentTime - _lastCallTime >= 1000)
             {
-                _lastTps = _currentTicks;
                 _currentTicks = 0;
-                _lastCallTime = GetTime();
+                if (cCycleTime == 0)
+                {
+                    _lastTps = 1;
+                }
+                else
+                {
+                    _lastTps = _setTps * 1000 / cCycleTime;
+                }
+                _lastCallTime = currentTime;
+                _sleepTime = 0;
             }
-            _sleepTime = (int)(_skipTicks - CurrentTicks > 0 ? _skipTicks - CurrentTicks : 0);
-            _currentTicks++;
+            else
+            {
+                _sleepTime = (int)(1000 - cCycleTime > 0 ? cCycleTime - (_calcTickTime * CurrentTicks) : 0);
+                _currentTicks++;
+            }
         }
 
         private void Wait()
@@ -62,13 +71,13 @@ namespace OpenGlProject
 
         public bool IsFullCycle()
         {
-            return _currentTicks >= _setTicks;
+            return _currentTicks == 0;
         }
 
-        public int GetDelta()
+        public long GetDelta()
         {
-            long time = GetTime();
-            int delta = (int)(time - _lastTickTime);
+            var time = GetTime();
+            var delta = time - _lastTickTime;
             _lastTickTime = time;
             return delta;
         }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using OpenGlProject.Graphic.ViewModel;
 
 namespace OpenGlProject.Core
 {
@@ -19,25 +20,13 @@ namespace OpenGlProject.Core
             _thread = new Thread(Run);
             AppContext = mainAppContext;
             _timer = new TpsTimer();
-            KeyboardHandler.Instance.AddDownKeyListener(Key.F1, () =>
-            {
-                AppContext.Dr -= 1;
-                AppContext.Dq -= 1;
-            });
-            KeyboardHandler.Instance.AddDownKeyListener(Key.F2, () =>
-            {
-                AppContext.Dr += 1;
-                AppContext.Dq += 1;
-            });
         }
 
         private void Run()
         {
             while (!_stop)
             {
-                AppContext.RotatePyramid += AppContext.Dr;
-                AppContext.Rquad -= AppContext.Dq;
-                if (_timer.CurrentTicks == 1)
+                if (_timer.IsFullCycle())
                 {
                     AppContext.Tps = _timer.LastTps;
                 }

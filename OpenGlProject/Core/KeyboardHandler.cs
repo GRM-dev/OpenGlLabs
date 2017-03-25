@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
+using OpenGlProject.Core.Objects;
+using Application = System.Windows.Application;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
-namespace OpenGlProject
+namespace OpenGlProject.Core
 {
     public class KeyboardHandler
     {
@@ -17,6 +17,25 @@ namespace OpenGlProject
         {
             Instance = this;
             DownKeyListeners.Add(Key.Escape, () => Application.Current.Shutdown());
+            DownKeyListeners.Add(Key.C, () =>
+            {
+                var cube = new Cube(2);
+                cube.KeyDown += (sender, args) =>
+                {
+                    if (args.KeyCode == Keys.D)
+                    {
+                        cube.Rotation.Rx += 1f;
+                    }
+                    if (args.KeyCode == Keys.A)
+                    {
+                        cube.Rotation.Ry += 1f;
+                    }
+                    if (args.KeyCode == Keys.V)
+                    {
+                        cube.Visible = !cube.Visible;
+                    }
+                };
+            });
         }
 
         public void AddUpKeyListener(Key key, Action action)

@@ -6,8 +6,9 @@
     xmlns:local="clr-namespace:OpenGlProject"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wpf="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
+    xmlns:viewModel="clr-namespace:OpenGlProject.Graphic.ViewModel"
     Title="Open Gl Project"
-    d:DataContext="{d:DesignInstance Type=local:MainAppContext,
+    d:DataContext="{d:DesignInstance Type=viewModel:MainAppContext,
                                      IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
     <DockPanel>
@@ -35,8 +36,7 @@
                     Text="{Binding Debug, Mode=TwoWay}" />
             </StackPanel>
             <StackPanel>
-                <Button Content="Restart"/>
-                <Button Content="Hide" Click="HideButton_Click"/>
+                <Button Content="Start again"/>
             </StackPanel>
         </StackPanel>
         <wpf:OpenGLControl
