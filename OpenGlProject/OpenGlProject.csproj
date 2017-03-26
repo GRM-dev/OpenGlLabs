@@ -67,15 +67,17 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Core\AppCore.cs" />
+    <Compile Include="Core\Misc\GlKeyListener.cs" />
     <Compile Include="Core\KeyboardHandler.cs" />
+    <Compile Include="Core\Misc\GlKeyEventArgs.cs" />
     <Compile Include="Core\Object\GlObject.cs" />
     <Compile Include="Core\Objects\Ball.cs" />
     <Compile Include="Core\Object\Position.cs" />
     <Compile Include="Core\Object\Rotation.cs" />
+    <Compile Include="Core\StopwatchEventArgs.cs" />
     <Compile Include="Graphic\Renderers\BallRenderer.cs" />
     <Compile Include="Core\Objects\Cube.cs" />
     <Compile Include="Graphic\Renderers\CubeRenderer.cs" />
-    <Compile Include="Core\TpsTimer.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

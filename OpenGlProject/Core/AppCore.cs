@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenGlProject.Core.Misc;
 using OpenGlProject.Graphic.Renderers;
 
 namespace OpenGlProject.Core
@@ -40,10 +36,8 @@ namespace OpenGlProject.Core
         }
 
         public KeyboardHandler KeyHandler { get; }
-
         public CoreLogic Logic { get; }
         public static AppCore Instance { get; private set; }
-
         public MainWindow Window => _window;
     }
 }

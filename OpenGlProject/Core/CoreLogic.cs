@@ -1,36 +1,58 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
+using System.Timers;
+using Microsoft.Win32;
+using OpenGlProject.Core.Object;
 using OpenGlProject.Graphic.ViewModel;
 
 namespace OpenGlProject.Core
 {
+    public delegate void TickEventHandler(CoreLogic logic, StopwatchEventArgs args);
+
     public class CoreLogic
     {
+        public static readonly int TPS = 20;
+        public readonly TimeSpan TICK_TIME = TimeSpan.FromMilliseconds(1000 / TPS);
         private readonly Thread _thread;
         private bool _stop;
-        private readonly TpsTimer _timer;
+        private Stopwatch _stopwatch;
+        private long _lastTickTime;
+        private int _currentTick;
+        private long _lastTpsCount;
+        private long _cycleCounter;
+        private TimeSpan _lastTickInvokeTime;
 
         public CoreLogic(MainAppContext mainAppContext)
         {
             _thread = new Thread(Run);
             AppContext = mainAppContext;
-            _timer = new TpsTimer();
         }
 
         private void Run()
         {
             while (!_stop)
             {
-                if (_timer.IsFullCycle())
+                if (_stopwatch.Elapsed - _lastTickInvokeTime > TICK_TIME)
                 {
-                    AppContext.Tps = _timer.LastTps;
+                    KeyboardHandler.Instance.InvokeGlobalEvents();
+                    foreach (var o in GlObject.Objects)
+                    {
+                        o.InvokeEvents();
+                    }
+                    _currentTick++;
+                    _lastTickInvokeTime = _stopwatch.Elapsed;
+                    EachTick?.Invoke(this, new StopwatchEventArgs(_cycleCounter, _stopwatch.ElapsedMilliseconds, _currentTick));
                 }
-                _timer.Sync();
+                if (_stopwatch.Elapsed > TimeSpan.FromMilliseconds(1000))
+                {
+                    EachCycle?.Invoke(this, new StopwatchEventArgs(_cycleCounter, _stopwatch.ElapsedMilliseconds, _currentTick));
+                    _lastTpsCount = _currentTick;
+                    _lastTickInvokeTime = TimeSpan.Zero;
+                    _currentTick = 0;
+                    _cycleCounter++;
+                    _stopwatch.Restart();
+                }
             }
         }
 
@@ -38,8 +60,11 @@ namespace OpenGlProject.Core
         {
             if (!_thread.IsAlive)
             {
-                _timer.InitTime(20);
+                _stopwatch = new Stopwatch();
+                _stopwatch.Start();
+                GetDelta();
                 _thread.Start();
+                EachCycle += (logic, args) => AppContext.Tps = LastTpsCount;
             }
         }
 
@@ -53,6 +78,24 @@ namespace OpenGlProject.Core
             }
         }
 
+        public long GetDelta()
+        {
+            var currentTime = GetCurrentCycleTime();
+            var delta = currentTime - _lastTickTime;
+            _lastTickTime = currentTime;
+            return delta;
+        }
+
+        public long GetCurrentCycleTime()
+        {
+            return _stopwatch.ElapsedTicks;
+        }
+
+        public event TickEventHandler EachTick;
+        public event TickEventHandler EachCycle;
+
+        public int CurrentTick => _currentTick;
+        public long LastTpsCount => _lastTpsCount;
         public MainAppContext AppContext { get; }
     }
 }

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using System.Windows.Input;
+using OpenGlProject.Core.Misc;
 using OpenGlProject.Graphic.Renderers;
-using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
 namespace OpenGlProject.Core.Object
 {
-    public delegate void KeyDownEventHandler(object sender, KeyEventArgs e);
-    public delegate void KeyUpEventHandler(object sender, KeyEventArgs e);
+    public delegate void KeyDownEventHandler(object sender, GlKeyEventArgs e);
+    public delegate void KeyUpEventHandler(object sender, GlKeyEventArgs e);
 
     public abstract class GlObject
     {
@@ -32,28 +31,33 @@ namespace OpenGlProject.Core.Object
                 _objects.Add(GetType(), new Dictionary<int, GlObject>());
             }
             _objects[GetType()].Add(_nextId++, this);
-            AppCore.Instance.Window.KeyDown += (sender, args) =>
-            {
-                var k = (Keys)KeyInterop.VirtualKeyFromKey(args.Key);
-                var e = new KeyEventArgs(k);
-                OnKeyDown(e);
-            };
             AppCore.Instance.Window.KeyUp += (sender, args) =>
             {
-                var k = (Keys)KeyInterop.VirtualKeyFromKey(args.Key);
-                var e = new KeyEventArgs(k);
-                OnKeyUp(e);
+                OnKeyUp(new GlKeyEventArgs(args.Key));
             };
         }
 
-        protected virtual void OnKeyDown(KeyEventArgs e)
+        protected virtual void OnKeyDown(GlKeyEventArgs e)
         {
             KeyDown?.Invoke(this, e);
         }
 
-        protected virtual void OnKeyUp(KeyEventArgs e)
+        protected virtual void OnKeyUp(GlKeyEventArgs e)
         {
-            KeyDown?.Invoke(this, e);
+            KeyUp?.Invoke(this, e);
+        }
+
+        public void InvokeEvents()
+        {
+            if (KeyDown == null)
+            {
+                return;
+            }
+            var downKeys = KeyboardHandler.Instance.DownKeys.Keys;
+            foreach (var k in downKeys)
+            {
+                KeyDown.Invoke(this, new GlKeyEventArgs(k));
+            }
         }
 
         public event KeyDownEventHandler KeyDown;
