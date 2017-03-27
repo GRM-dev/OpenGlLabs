@@ -16,6 +16,7 @@
 //--------------------------------------------------------------------------------------------
 int window;  // uchwyt do okna OGL
 Scene *SC; // scena OpenGL
+#define IDT_TIMER WM_USER + 200
 
 
 
@@ -199,6 +200,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM	lParam)
 		SwapBuffers(hDC);
 		break;
 	}
+	case WM_TIMER: // zdarzenie timera
+	{
+		SC->Animate();
+		SC->Draw();
+		SwapBuffers(hDC);
+		break;
+	}
 
 	case WM_SYSCOMMAND:     // zdarzenia systemowe
 	{
@@ -260,6 +268,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (!CreateGLWindow(PROJECT_NAME, wWidth, wHeight, 16)) // utworz okno z widokiem sceny OPENGL
 			return 0;
 
+		// ustaw obiekt timera
+		SetTimer(hWnd, IDT_TIMER, 10, (TIMERPROC)NULL);
+
 
 		while (GetMessage(&msg, nullptr, 0, 0)) // pobierz komunikat z kolejki systemowej
 		{
@@ -278,7 +289,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (SC) delete SC;
 	}
 
-
+	// usun zasob timera
+	KillTimer(hWnd, IDT_TIMER);
 	KillGLWindow(); // usun zasoby okna
 
 	if (SC) delete SC;

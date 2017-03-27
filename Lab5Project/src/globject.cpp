@@ -27,7 +27,7 @@ int Normalize(float *N)
 	const int y = 1;
 	const int z = 2;
 	// oblicz dlugosc wektora
-	float L = (float)sqrt(N[x] * N[x] + N[y] * N[y] + N[z] * N[z]);
+	float L = static_cast<float>(sqrt(N[x] * N[x] + N[y] * N[y] + N[z] * N[z]));
 	if (L < 0.01f) L = 0.01f;
 	// wyznacz wspolrzedne normalnej
 	N[x] /= L;
@@ -148,6 +148,22 @@ void glObject::AddVertex(float x, float y, float z, float u, float v)
 	TexCoords[lCoords[lVAO - 1] - 2] = v;
 	TexCoords[lCoords[lVAO - 1] - 1] = 0.0;
 }
+
+void glObject::SwitchTextures(GLuint t1, GLuint t2)
+{
+	for (int i = 0; i < lVAO; i++)
+	{
+		if (Textures[i] == t2)
+		{
+			Textures[i] = t1;
+		}
+		else if(Textures[i] == t1)
+		{
+			Textures[i] = t2;
+		}
+	}
+}
+
 //--------------------------------------------------------------------------------------------
 void glObject::EndObject()
 {

@@ -21,10 +21,15 @@ Scene::Scene(int new_width, int new_height)
 	height = new_height;
 	rot_x = 0.0;
 	rot_y = 0.0;
+	dx = 0.0;
+	dy = 0.0;
 	Axes = nullptr;
 	Cube = nullptr;
 	LightAmbient = 0.5;
 	Scale = 1.0;
+	c_r = 1.0;
+	c_g = 1.0;
+	c_b = 1.0;
 }
 //--------------------------------------------------------------------------------------------
 // Domyslny destruktor
@@ -285,7 +290,11 @@ void Scene::Init()
 // przeprowadza animacje sceny
 void Scene::Animate()
 {
-	rot_y += 5.0;
+	if (animate)
+	{
+		rot_y += dy;
+		rot_x += dx;
+	}
 }
 //--------------------------------------------------------------------------------------------
 // kontrola naciskania klawiszy klawiatury
@@ -302,6 +311,19 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 	case 113: {LightAmbient -= 0.1f; break; } //F2
 	case 114: {Scale += 0.1f; break; } //F3
 	case 115: {Scale -= 0.1f; break; } //F4
+	case VK_SPACE:
+	{
+		Cube->SwitchTextures(SadFace->Bind(), HappyFace->Bind());
+		break;
+	}
+	case VK_PLAY:
+	case VK_PAUSE:
+	case VK_TAB: {animate = !animate; break; }
+	case VK_F7: {dy -= 1.0; break; }
+	case VK_F8: {dy += 1.0; break; }
+	case VK_F9: {dx -= 1.0; break; }
+	case VK_F10: {dx += 1.0; break; }
+	case VK_LCONTROL: {c_r -= 0.1; c_g -= 0.1; c_b -= 0.1; break; }
 	}
 }
 //--------------------------------------------------------------------------------------------
@@ -325,8 +347,7 @@ void Scene::Draw()
 	int _LightDirection = glGetUniformLocation(program, "LightDirection");
 	glUniform3fv(_LightDirection, 1, glm::value_ptr(LightDirection));
 
-	glm::vec3 LightColor = glm::vec3(1.0, 1.0, 1.0); // kolor swiatla
-
+	glm::vec3 LightColor = glm::vec3(c_r,c_g,c_b); // kolor swiatla
 	int _LightColor = glGetUniformLocation(program, "LightColor");
 	glUniform3fv(_LightColor, 1, glm::value_ptr(LightColor));
 
@@ -340,18 +361,21 @@ void Scene::Draw()
 		glm::value_ptr(glm::transpose(glm::inverse(mTransform))));
 
 	if (Axes)
+	{
 		Axes->Draw();
+	}
 
 	mTransform = glm::rotate(glm::mat4(1.0), rot_x, glm::vec3(1.0f, 0.0f, 0.0f));
 	mTransform = glm::rotate(mTransform, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
 	mTransform = glm::scale(mTransform, glm::vec3(Scale, Scale, Scale));
 
 	glUniformMatrix4fv(_NormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(mTransform))));
-
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 
 	if (Cube)
+	{
 		Cube->Draw();
+	}
 
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------

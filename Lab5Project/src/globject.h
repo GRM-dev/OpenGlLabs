@@ -2,6 +2,8 @@
 #define globject_H
 
 #include "common.h"
+#include "texture.h"
+
 //--------------------------------------------------------------------------------------------
 // 								CLASS INTERFACE
 //--------------------------------------------------------------------------------------------
@@ -23,6 +25,7 @@ public:
 	void AddVertex(float x, float y, float z, float u = 0.0, float v = 0.0); // dodaje wierzcholek do listy ze wsp. tekstury
 
 	void Draw(); // rysuje obiekt na scenie z u¿yciem zadanego przymitywu
+	void SwitchTextures(GLuint t1, GLuint t2);
 
 private:
 

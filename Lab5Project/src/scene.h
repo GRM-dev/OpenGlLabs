@@ -49,6 +49,12 @@ private:
 	float rot_x; //  obrot obiektu wzgledem X
 	float rot_y; //  obrot obiektu wzgledem Y
 
+	float dx, dy; //predkosci obrotu
+
+	float c_r, c_g, c_b;
+
+	bool animate;
+
 	float Scale; // skala odwzorowania obiektu
 
 	float LightAmbient;
