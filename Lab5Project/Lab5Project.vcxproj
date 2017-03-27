@@ -80,7 +80,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)Dependencies\glew\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Dependencies\glew\$(Platform);$(LibraryPath)</LibraryPath>
-    <ReferencePath>$(SolutionDir)Dependencies\glew\$(Platform);$(ReferencePath)</ReferencePath>
+    <ReferencePath>$(ProjectDir)src\textures;$(SolutionDir)Dependencies\glew\$(Platform);$(ReferencePath)</ReferencePath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
     <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
     <IntDir>build\$(Configuration)\$(Platform)\</IntDir>
@@ -166,16 +166,26 @@
     <ClCompile Include="src\globject.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\scene.cpp" />
+    <ClCompile Include="src\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\globject.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\scene.h" />
+    <ClInclude Include="src\texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Shaders\fs_4.glsl" />
-    <None Include="..\Shaders\vs_4.glsl" />
+    <Image Include="src\textures\angry.bmp" />
+    <Image Include="src\textures\crying.bmp" />
+    <Image Include="src\textures\happy.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="src\textures\sad.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Shaders\fs_5.glsl" />
+    <None Include="..\Shaders\vs_5.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

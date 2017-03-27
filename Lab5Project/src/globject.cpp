@@ -90,6 +90,9 @@ void glObject::BeginObject(GLenum P, GLuint TextureId)
 	lVAO++;
 	// przypisz rodzaj prymitywu do narysowania VAO
 	Primitives[lVAO - 1] = P;
+	// przypisz Id tekstury do narysowania VAO
+	Textures[lVAO - 1] = TextureId;
+
 
 	// wyzeruj licznik wspolrzednych
 	lCoords[lVAO - 1] = 0;
@@ -194,6 +197,14 @@ void glObject::Draw()
 {
 	for (int i = 0; i < lVAO; i++)
 	{
+		if (Textures[i] == 0)
+		{
+			glDisable(GL_TEXTURE_2D);
+		}
+		else {
+			glBindTexture(GL_TEXTURE_2D, Textures[i]);
+			glEnable(GL_TEXTURE_2D);
+		}
 		glBindVertexArray(VAO[i]);
 		glDrawArrays(Primitives[i], 0, lCoords[i] / 3);
 		glBindVertexArray(0);

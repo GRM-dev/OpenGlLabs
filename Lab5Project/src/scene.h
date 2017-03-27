@@ -55,6 +55,8 @@ private:
 
 	glObject *Cube;
 	glObject *Axes;
+	glTexture* CryingFace;
+	glTexture* AngryFace;
 
 	void PreparePrograms(); // przygotowuje programy przetwarzania
 	void PrepareObjects(); // przygotowuje obiekty do wyswietlenia
@@ -74,6 +76,8 @@ private:
 	// komunikaty diagnostyczne
 	char _msg[1024];
 
+	glTexture* HappyFace;
+	glTexture* SadFace;
 };
 
 #endif

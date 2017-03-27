@@ -107,58 +107,62 @@ void Scene::PrepareObjects()
 	Axes->EndObject();
 
 	Cube = new glObject();
+	HappyFace = new glTexture("src\\textures\\happy.bmp");
+	SadFace = new glTexture("src\\textures\\sad.bmp");
+	CryingFace = new glTexture("src\\textures\\crying.bmp");
+	AngryFace = new glTexture("src\\textures\\angry.bmp");
 
 	Cube->SetColor(0.9f, 0.9f, 0.9f);
 
 	// sciany prostopadle do OX
 	Cube->SetNormal(1.0, 0.0, 0.0);
-	Cube->BeginObject(GL_TRIANGLE_STRIP);
-	Cube->AddVertex(0.5, 0.5, 0.5);
-	Cube->AddVertex(0.5, -0.5, 0.5);
-	Cube->AddVertex(0.5, 0.5, -0.5);
-	Cube->AddVertex(0.5, -0.5, -0.5);
+	Cube->BeginObject(GL_TRIANGLE_STRIP, HappyFace->Bind());
+	Cube->AddVertex(0.5, 0.5, 0.5, 1.0, 1.0);
+	Cube->AddVertex(0.5, -0.5, 0.5, 0.0, 1.0);
+	Cube->AddVertex(0.5, 0.5, -0.5, 1.0, 0.0);
+	Cube->AddVertex(0.5, -0.5, -0.5, 0.0, 0.0);
 	Cube->EndObject();
 
 	Cube->SetNormal(-1.0, 0.0, 0.0);
-	Cube->BeginObject(GL_TRIANGLE_STRIP);
-	Cube->AddVertex(-0.5, 0.5, 0.5);
-	Cube->AddVertex(-0.5, -0.5, 0.5);
-	Cube->AddVertex(-0.5, 0.5, -0.5);
-	Cube->AddVertex(-0.5, -0.5, -0.5);
+	Cube->BeginObject(GL_TRIANGLE_STRIP, SadFace->Bind());
+	Cube->AddVertex(-0.5, 0.5, 0.5, 1.0, 1.0);
+	Cube->AddVertex(-0.5, -0.5, 0.5, 0.0, 1.0);
+	Cube->AddVertex(-0.5, 0.5, -0.5, 1.0, 0.0);
+	Cube->AddVertex(-0.5, -0.5, -0.5, 0.0, 0.0);
 	Cube->EndObject();
 
 	// sciany prostopadle do OY
 	Cube->SetNormal(0.0, 1.0, 0.0);
-	Cube->BeginObject(GL_TRIANGLE_STRIP);
-	Cube->AddVertex(-0.5, 0.5, -0.5);
-	Cube->AddVertex(-0.5, 0.5, 0.5);
-	Cube->AddVertex(0.5, 0.5, -0.5);
-	Cube->AddVertex(0.5, 0.5, 0.5);
+	Cube->BeginObject(GL_TRIANGLE_STRIP, HappyFace->Bind());
+	Cube->AddVertex(-0.5, 0.5, -0.5, 0.0, 0.0);
+	Cube->AddVertex(-0.5, 0.5, 0.5, 0.0, 1.0);
+	Cube->AddVertex(0.5, 0.5, -0.5, 1.0, 0.0);
+	Cube->AddVertex(0.5, 0.5, 0.5, 1.0, 1.0);
 	Cube->EndObject();
 
 	Cube->SetNormal(0.0, -1.0, 0.0);
-	Cube->BeginObject(GL_TRIANGLE_STRIP);
-	Cube->AddVertex(-0.5, -0.5, -0.5);
-	Cube->AddVertex(-0.5, -0.5, 0.5);
-	Cube->AddVertex(0.5, -0.5, -0.5);
-	Cube->AddVertex(0.5, -0.5, 0.5);
+	Cube->BeginObject(GL_TRIANGLE_STRIP, SadFace->Bind());
+	Cube->AddVertex(-0.5, -0.5, -0.5, 0.0, 0.0);
+	Cube->AddVertex(-0.5, -0.5, 0.5, 0.0, 1.0);
+	Cube->AddVertex(0.5, -0.5, -0.5, 1.0, 0.0);
+	Cube->AddVertex(0.5, -0.5, 0.5, 1.0, 1.0);
 	Cube->EndObject();
 
 	// sciany prostopadle do OZ
 	Cube->SetNormal(0.0, 0.0, 1.0);
-	Cube->BeginObject(GL_TRIANGLE_STRIP);
-	Cube->AddVertex(-0.5, 0.5, 0.5);
-	Cube->AddVertex(-0.5, -0.5, 0.5);
-	Cube->AddVertex(0.5, 0.5, 0.5);
-	Cube->AddVertex(0.5, -0.5, 0.5);
+	Cube->BeginObject(GL_TRIANGLE_STRIP, AngryFace->Bind());
+	Cube->AddVertex(-0.5, 0.5, 0.5, 0.0, 1.0);
+	Cube->AddVertex(-0.5, -0.5, 0.5, 0.0, 0.0);
+	Cube->AddVertex(0.5, 0.5, 0.5, 1.0, 1.0);
+	Cube->AddVertex(0.5, -0.5, 0.5, 1.0, 0.0);
 	Cube->EndObject();
 
 	Cube->SetNormal(0.0, 0.0, -1.0);
-	Cube->BeginObject(GL_TRIANGLE_STRIP);
-	Cube->AddVertex(-0.5, 0.5, -0.5);
-	Cube->AddVertex(-0.5, -0.5, -0.5);
-	Cube->AddVertex(0.5, 0.5, -0.5);
-	Cube->AddVertex(0.5, -0.5, -0.5);
+	Cube->BeginObject(GL_TRIANGLE_STRIP, CryingFace->Bind());
+	Cube->AddVertex(-0.5, 0.5, -0.5, 0.0, 1.0);
+	Cube->AddVertex(-0.5, -0.5, -0.5, 0.0, 0.0);
+	Cube->AddVertex(0.5, 0.5, -0.5, 1.0, 1.0);
+	Cube->AddVertex(0.5, -0.5, -0.5, 1.0, 0.0);
 	Cube->EndObject();
 
 }
@@ -335,7 +339,8 @@ void Scene::Draw()
 	glUniformMatrix4fv(_NormalMatrix, 1, GL_FALSE,
 		glm::value_ptr(glm::transpose(glm::inverse(mTransform))));
 
-	Axes->Draw();
+	if (Axes)
+		Axes->Draw();
 
 	mTransform = glm::rotate(glm::mat4(1.0), rot_x, glm::vec3(1.0f, 0.0f, 0.0f));
 	mTransform = glm::rotate(mTransform, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -345,8 +350,8 @@ void Scene::Draw()
 
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 
-
-	Cube->Draw();
+	if (Cube)
+		Cube->Draw();
 
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------
