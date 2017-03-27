@@ -20,8 +20,10 @@ glTexture::glTexture(char *FileName)
 	// przygotuj sampler tekstury
 	glGenSamplers(1, &SamplerId);
 	// ustaw parametry filtrowania
-	glSamplerParameteri(SamplerId, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glSamplerParameteri(SamplerId, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glSamplerParameteri(SamplerId, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glSamplerParameteri(SamplerId, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glSamplerParameteri(SamplerId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glSamplerParameteri(SamplerId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	if (TextureId)
 		sprintf(_msg, "Zaladowano %s jako ID=%d", FileName, TextureId);
 	else
