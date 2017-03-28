@@ -85,9 +85,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Core\AppCore.cs" />
-    <Compile Include="Core\Misc\GlKeyListener.cs" />
     <Compile Include="Core\KeyboardHandler.cs" />
     <Compile Include="Core\Misc\GlKeyEventArgs.cs" />
+    <Compile Include="Core\Misc\KeyTypeEvent.cs" />
     <Compile Include="Core\ObjectData\GlObject.cs" />
     <Compile Include="Core\Objects\Ball.cs" />
     <Compile Include="Core\ObjectData\Position.cs" />

@@ -13,8 +13,16 @@ namespace OpenGlProject.Core
             Instance = this;
             KeyHandler = new KeyboardHandler();
             Logic = new CoreLogic(Window.WindowContext);
-            Window.KeyUp += KeyHandler.KeyUp;
-            Window.KeyDown += KeyHandler.KeyDown;
+            Window.KeyUp += (sender, args) =>
+            {
+                KeyHandler.OnKeyPressed(this, KeyTypeEvent.UP, args.Key);
+                args.Handled = true;
+            };
+            Window.KeyDown += (sender, args) =>
+            {
+                KeyHandler.OnKeyPressed(this, KeyTypeEvent.DOWN, args.Key);
+                args.Handled = true;
+            };
         }
 
         public void Start()

@@ -38,7 +38,7 @@ namespace OpenGlProject.Core
                 if (delta > TICK_TIME)
                 {
                     var args = new StopwatchEventArgs(_cycleCounter, _stopwatch.ElapsedMilliseconds, _currentTick, d);
-                    KeyboardHandler.Instance.InvokeGlobalEvents();
+                    KeyboardHandler.Instance.InvokeGlobalEvents(d);
                     foreach (var o in GlObject.Objects)
                     {
                         o.InvokeEvents(args);
