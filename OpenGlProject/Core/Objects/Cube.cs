@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenGlProject.Core.Object;
+using OpenGlProject.Core.ObjectData;
 using OpenGlProject.Graphic.Renderers;
 
 namespace OpenGlProject.Core.Objects

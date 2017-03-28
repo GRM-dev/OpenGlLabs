@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenGlProject.Core;
-using OpenGlProject.Core.Object;
+using OpenGlProject.Core.ObjectData;
 using OpenGlProject.Core.Objects;
 using SharpGL;
 

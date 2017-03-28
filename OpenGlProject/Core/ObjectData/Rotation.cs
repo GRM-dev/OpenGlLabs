@@ -1,4 +1,4 @@
-namespace OpenGlProject.Core.Object
+namespace OpenGlProject.Core.ObjectData
 {
     public class Rotation
     {

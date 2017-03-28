@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenGlProject.Core;
-using OpenGlProject.Core.Object;
+using OpenGlProject.Core.ObjectData;
 using OpenGlProject.Core.Objects;
 using SharpGL;
 

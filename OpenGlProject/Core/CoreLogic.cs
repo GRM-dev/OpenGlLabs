@@ -3,50 +3,54 @@ using System.Diagnostics;
 using System.Threading;
 using System.Timers;
 using Microsoft.Win32;
-using OpenGlProject.Core.Object;
+using OpenGlProject.Core.ObjectData;
 using OpenGlProject.Graphic.ViewModel;
 
 namespace OpenGlProject.Core
 {
-    public delegate void TickEventHandler(CoreLogic logic, StopwatchEventArgs args);
+    public delegate void TickEventHandler(object sender, StopwatchEventArgs args);
 
     public class CoreLogic
     {
-        public static readonly int TPS = 20;
+        public static readonly int TPS = 80;
         public readonly TimeSpan TICK_TIME = TimeSpan.FromMilliseconds(1000 / TPS);
         private readonly Thread _thread;
         private bool _stop;
         private Stopwatch _stopwatch;
-        private long _lastTickTime;
         private int _currentTick;
         private long _lastTpsCount;
         private long _cycleCounter;
         private TimeSpan _lastTickInvokeTime;
 
-        public CoreLogic(MainAppContext mainAppContext)
+        public CoreLogic(MainWindowContext mainWindowContext)
         {
             _thread = new Thread(Run);
-            AppContext = mainAppContext;
+            WindowContext = mainWindowContext;
         }
 
         private void Run()
         {
             while (!_stop)
             {
-                if (_stopwatch.Elapsed - _lastTickInvokeTime > TICK_TIME)
+                var elapsedTimeFromLastTick = _stopwatch.Elapsed;
+                var delta = elapsedTimeFromLastTick - _lastTickInvokeTime;
+                var d = delta.Milliseconds / TICK_TIME.Milliseconds;
+                if (delta > TICK_TIME)
                 {
+                    var args = new StopwatchEventArgs(_cycleCounter, _stopwatch.ElapsedMilliseconds, _currentTick, d);
                     KeyboardHandler.Instance.InvokeGlobalEvents();
                     foreach (var o in GlObject.Objects)
                     {
-                        o.InvokeEvents();
+                        o.InvokeEvents(args);
                     }
                     _currentTick++;
-                    _lastTickInvokeTime = _stopwatch.Elapsed;
-                    EachTick?.Invoke(this, new StopwatchEventArgs(_cycleCounter, _stopwatch.ElapsedMilliseconds, _currentTick));
+                    _lastTickInvokeTime = elapsedTimeFromLastTick;
+                    EachTick?.Invoke(this, args);
                 }
-                if (_stopwatch.Elapsed > TimeSpan.FromMilliseconds(1000))
+                if (elapsedTimeFromLastTick > TimeSpan.FromMilliseconds(1000))
                 {
-                    EachCycle?.Invoke(this, new StopwatchEventArgs(_cycleCounter, _stopwatch.ElapsedMilliseconds, _currentTick));
+                    var stopwatchEventArgs = new StopwatchEventArgs(_cycleCounter, _stopwatch.ElapsedMilliseconds, _currentTick, d);
+                    EachCycle?.Invoke(this, stopwatchEventArgs);
                     _lastTpsCount = _currentTick;
                     _lastTickInvokeTime = TimeSpan.Zero;
                     _currentTick = 0;
@@ -62,9 +66,8 @@ namespace OpenGlProject.Core
             {
                 _stopwatch = new Stopwatch();
                 _stopwatch.Start();
-                GetDelta();
                 _thread.Start();
-                EachCycle += (logic, args) => AppContext.Tps = LastTpsCount;
+                EachCycle += (logic, args) => WindowContext.Tps = LastTpsCount;
             }
         }
 
@@ -78,14 +81,6 @@ namespace OpenGlProject.Core
             }
         }
 
-        public long GetDelta()
-        {
-            var currentTime = GetCurrentCycleTime();
-            var delta = currentTime - _lastTickTime;
-            _lastTickTime = currentTime;
-            return delta;
-        }
-
         public long GetCurrentCycleTime()
         {
             return _stopwatch.ElapsedTicks;
@@ -96,6 +91,6 @@ namespace OpenGlProject.Core
 
         public int CurrentTick => _currentTick;
         public long LastTpsCount => _lastTpsCount;
-        public MainAppContext AppContext { get; }
+        public MainWindowContext WindowContext { get; }
     }
 }

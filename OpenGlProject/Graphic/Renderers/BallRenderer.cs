@@ -1,5 +1,5 @@
 ﻿using OpenGlProject.Core;
-using OpenGlProject.Core.Object;
+using OpenGlProject.Core.ObjectData;
 using OpenGlProject.Core.Objects;
 
 namespace OpenGlProject.Graphic.Renderers

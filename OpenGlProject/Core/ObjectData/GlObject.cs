@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
 using OpenGlProject.Core.Misc;
 using OpenGlProject.Graphic.Renderers;
 
-namespace OpenGlProject.Core.Object
+namespace OpenGlProject.Core.ObjectData
 {
-    public delegate void KeyDownEventHandler(object sender, GlKeyEventArgs e);
-    public delegate void KeyUpEventHandler(object sender, GlKeyEventArgs e);
+    public delegate void KeyEventHandler(GlObject sender, GlKeyEventArgs e);
 
     public abstract class GlObject
     {
@@ -47,21 +45,22 @@ namespace OpenGlProject.Core.Object
             KeyUp?.Invoke(this, e);
         }
 
-        public void InvokeEvents()
+        public void InvokeEvents(StopwatchEventArgs args)
         {
-            if (KeyDown == null)
+            OnTick?.Invoke(this, args);
+            if (KeyDown != null)
             {
-                return;
-            }
-            var downKeys = KeyboardHandler.Instance.DownKeys.Keys;
-            foreach (var k in downKeys)
-            {
-                KeyDown.Invoke(this, new GlKeyEventArgs(k));
+                var downKeys = KeyboardHandler.Instance.DownKeys.Keys;
+                foreach (var k in downKeys)
+                {
+                    KeyDown.Invoke(this, new GlKeyEventArgs(k, args.Delta));
+                }
             }
         }
 
-        public event KeyDownEventHandler KeyDown;
-        public event KeyUpEventHandler KeyUp;
+        public event KeyEventHandler KeyDown;
+        public event KeyEventHandler KeyUp;
+        public event TickEventHandler OnTick;
 
         public static List<GlObject> Objects => (from d in _objects.Values from o in d select o.Value).ToList();
         public Rotation Rotation => _rotation;

@@ -26,11 +26,11 @@ namespace OpenGlProject.Core
                 {
                     if (args.Key == Key.D)
                     {
-                        cube.Rotation.Rx += 1f;
+                        cube.Rotation.Rx += 1f * args.Delta;
                     }
                     if (args.Key == Key.A)
                     {
-                        cube.Rotation.Ry += 1f;
+                        cube.Rotation.Ry += 1f * args.Delta;
                     }
                     if (args.Key == Key.V)
                     {
@@ -58,6 +58,7 @@ namespace OpenGlProject.Core
         {
             GlKeyListener l;
             KeyListeners.TryRemove(key, out l);
+            Console.WriteLine("Removed listener for [" + l.Key + "] " + l.Type);
         }
 
         public void KeyUp(object sender, KeyEventArgs e)
@@ -69,7 +70,9 @@ namespace OpenGlProject.Core
             }
             if (DownKeys.ContainsKey(e.Key))
             {
-                DownKeys.Remove(e.Key);
+                DateTime t;
+                DownKeys.TryRemove(e.Key, out t);
+                Console.WriteLine("Key " + e.Key + " pressed for " + (DateTime.Now - t).TotalMilliseconds + "ms");
             }
         }
 
@@ -78,7 +81,7 @@ namespace OpenGlProject.Core
             if (!DownKeys.ContainsKey(e.Key))
             {
                 Console.WriteLine("Down " + e.Key);
-                DownKeys.Add(e.Key, DateTime.Now);
+                DownKeys.TryAdd(e.Key, DateTime.Now);
                 if (KeyListeners.ContainsKey(e.Key) && !KeyListeners[e.Key].Repeatable)
                 {
                     KeyListeners[e.Key].InvokeDownKey(this, e);
@@ -99,6 +102,6 @@ namespace OpenGlProject.Core
         }
 
         public static KeyboardHandler Instance { get; private set; }
-        public Dictionary<Key, DateTime> DownKeys { get; } = new Dictionary<Key, DateTime>();
+        public ConcurrentDictionary<Key, DateTime> DownKeys { get; } = new ConcurrentDictionary<Key, DateTime>();
     }
 }

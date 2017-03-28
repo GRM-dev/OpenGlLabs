@@ -8,7 +8,7 @@
     xmlns:wpf="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
     xmlns:viewModel="clr-namespace:OpenGlProject.Graphic.ViewModel"
     Title="Open Gl Project"
-    d:DataContext="{d:DesignInstance Type=viewModel:MainAppContext,
+    d:DataContext="{d:DesignInstance Type=viewModel:MainWindowContext,
                                      IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
     <DockPanel>

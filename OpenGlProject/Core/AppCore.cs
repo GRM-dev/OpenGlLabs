@@ -12,7 +12,7 @@ namespace OpenGlProject.Core
             _window = window;
             Instance = this;
             KeyHandler = new KeyboardHandler();
-            Logic = new CoreLogic(Window.AppContext);
+            Logic = new CoreLogic(Window.WindowContext);
             Window.KeyUp += KeyHandler.KeyUp;
             Window.KeyDown += KeyHandler.KeyDown;
         }

@@ -60,6 +60,24 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -70,10 +88,11 @@
     <Compile Include="Core\Misc\GlKeyListener.cs" />
     <Compile Include="Core\KeyboardHandler.cs" />
     <Compile Include="Core\Misc\GlKeyEventArgs.cs" />
-    <Compile Include="Core\Object\GlObject.cs" />
+    <Compile Include="Core\ObjectData\GlObject.cs" />
     <Compile Include="Core\Objects\Ball.cs" />
-    <Compile Include="Core\Object\Position.cs" />
-    <Compile Include="Core\Object\Rotation.cs" />
+    <Compile Include="Core\ObjectData\Position.cs" />
+    <Compile Include="Core\ObjectData\Rotation.cs" />
+    <Compile Include="Core\Objects\Text.cs" />
     <Compile Include="Core\StopwatchEventArgs.cs" />
     <Compile Include="Graphic\Renderers\BallRenderer.cs" />
     <Compile Include="Core\Objects\Cube.cs" />
@@ -88,7 +107,8 @@
     </Compile>
     <Compile Include="Core\CoreLogic.cs" />
     <Compile Include="Graphic\Renderers\BasicRenderer.cs" />
-    <Compile Include="Graphic\ViewModel\MainAppContext.cs" />
+    <Compile Include="Graphic\Renderers\TextRenderer.cs" />
+    <Compile Include="Graphic\ViewModel\MainWindowContext.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

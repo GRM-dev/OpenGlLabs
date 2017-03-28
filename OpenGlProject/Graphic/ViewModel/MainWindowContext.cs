@@ -4,12 +4,12 @@ using OpenGlProject.Properties;
 
 namespace OpenGlProject.Graphic.ViewModel
 {
-    public sealed class MainAppContext : INotifyPropertyChanged
+    public sealed class MainWindowContext : INotifyPropertyChanged
     {
         private string _debug;
         private long _tps;
 
-        public MainAppContext()
+        public MainWindowContext()
         {
             PropertyChanged += OnPropertyChanged;
         }

@@ -30,9 +30,9 @@ namespace OpenGlProject
     {
         public MainWindow()
         {
-            AppContext = new MainAppContext();
-            AppContext.PropertyChanged += AppContext_OnPropertyChanged;
-            DataContext = AppContext;
+            WindowContext = new MainWindowContext();
+            WindowContext.PropertyChanged += AppContext_OnPropertyChanged;
+            DataContext = WindowContext;
             InitializeComponent();
             Closing += (sender, args) => { OnAppClose(); };
             Core = new AppCore(this);
@@ -44,7 +44,7 @@ namespace OpenGlProject
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                     {
-                        TbDebug.Text = AppContext.Debug;
+                        TbDebug.Text = WindowContext.Debug;
                     }
                 ));
             }
@@ -91,6 +91,6 @@ namespace OpenGlProject
         public OpenGL Gl { get; private set; }
         public bool OpenGlInitialized { get; private set; }
         public AppCore Core { get; }
-        public MainAppContext AppContext { get; }
+        public MainWindowContext WindowContext { get; }
     }
 }
