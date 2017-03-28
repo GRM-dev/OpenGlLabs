@@ -14,18 +14,7 @@ namespace OpenGlProject.Graphic.Renderers
         {
         }
 
-        public override void RenderAll()
-        {
-            foreach (var cube in Cubes)
-            {
-                if (cube.Visible)
-                {
-                    Draw(cube);
-                }
-            }
-        }
-
-        protected virtual void Draw(GlObject o)
+        protected override void Draw(GlObject o)
         {
             var cube = o as Cube;
             if (cube == null)
@@ -78,6 +67,11 @@ namespace OpenGlProject.Graphic.Renderers
             Gl.Vertex(1.0f, -1.0f, -1.0f);
 
             Gl.End();
+        }
+
+        public override IEnumerable<GlObject> ObjectsToRender()
+        {
+            return Cubes;
         }
 
         private IEnumerable<Cube> Cubes => _objects.ConvertAll(o => o as Cube);

@@ -29,7 +29,7 @@ namespace OpenGlProject.Core.ObjectData
                 _objects.Add(GetType(), new Dictionary<int, GlObject>());
             }
             _objects[GetType()].Add(_nextId++, this);
-            AppCore.Instance.Window.KeyUp += (sender, args) =>
+            KeyboardHandler.Instance.KeyUp += (sender, args) =>
             {
                 OnKeyUp(new GlKeyEventArgs(args.Key));
             };

@@ -42,7 +42,20 @@ namespace OpenGlProject.Graphic.Renderers
             Objects.Remove(obj);
         }
 
-        public abstract void RenderAll();
+        public void RenderAll()
+        {
+            var list = ObjectsToRender();
+            foreach (var obj in list)
+            {
+                if (obj.Visible)
+                {
+                    Draw(obj);
+                }
+            }
+        }
+
+        protected abstract void Draw(GlObject o);
+        public abstract IEnumerable<GlObject> ObjectsToRender();
 
         protected OpenGL Gl { get; }
         public List<GlObject> Objects => _objects;

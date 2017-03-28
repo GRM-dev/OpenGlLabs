@@ -32,7 +32,7 @@ namespace OpenGlProject.Core
                     {
                         cube.Rotation.Ry += 1f * args.Delta;
                     }
-                    if (args.Key == Key.V)
+                    if (args.Key == Key.V && !args.Repeatable)
                     {
                         cube.Visible = !cube.Visible;
                     }
