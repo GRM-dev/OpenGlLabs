@@ -369,15 +369,7 @@ void Scene::Draw()
 	{
 		Axes->Draw();
 	}
-	if (SkyBox)
-	{
-		SkyBox->Draw();
-	}
-	if (Moon)
-	{
-		//Moon->Draw();
-	}
-
+	
 	glm::mat4 mTransform = glm::mat4(1.0);
 	mTransform = glm::rotate(glm::mat4(1.0), rot_x, glm::vec3(1.0f, 0.0f, 0.0f));
 	mTransform = glm::rotate(mTransform, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -392,6 +384,14 @@ void Scene::Draw()
 	if (Cube)
 	{
 		Cube->Draw();
+	}
+	if (SkyBox)
+	{
+		//SkyBox->Draw();
+	}
+	if (Moon)
+	{
+		Moon->Draw();
 	}
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------
