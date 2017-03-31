@@ -86,13 +86,11 @@ void glObject::CleanUp()
 // rozpoczyna tworzenie tablicy VAO dla danego prymitywu
 void glObject::BeginObject(GLenum P, GLuint TextureId)
 {
-
 	lVAO++;
 	// przypisz rodzaj prymitywu do narysowania VAO
 	Primitives[lVAO - 1] = P;
 	// przypisz Id tekstury do narysowania VAO
 	Textures[lVAO - 1] = TextureId;
-
 
 	// wyzeruj licznik wspolrzednych
 	lCoords[lVAO - 1] = 0;

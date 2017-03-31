@@ -18,6 +18,7 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "sphere.h"
 
 //----------------------------------- DEFINES -------------------------------------------------
 #define ESCAPE 27
@@ -61,6 +62,7 @@ private:
 	glTexture *Face;
 
 	glSkyBox *SkyBox;
+	glSphere* Moon;
 
 	void PreparePrograms(); // przygotowuje programy przetwarzania
 	void PrepareObjects(); // przygotowuje obiekty do wyswietlenia

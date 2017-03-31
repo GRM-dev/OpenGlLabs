@@ -167,6 +167,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\skybox.cpp" />
+    <ClCompile Include="src\sphere.cpp" />
     <ClCompile Include="src\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +176,7 @@
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\scene.h" />
     <ClInclude Include="src\skybox.h" />
+    <ClInclude Include="src\sphere.h" />
     <ClInclude Include="src\texture.h" />
   </ItemGroup>
   <ItemGroup>

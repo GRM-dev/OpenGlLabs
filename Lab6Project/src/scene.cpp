@@ -10,6 +10,7 @@
 //--------------------------------------------------------------------------------------------
 
 #include "scene.h"
+#include "sphere.h"
 
 //--------------------------------------------------------------------------------------------
 // zglasza wyjatek z komunikatem do debuggowania
@@ -104,8 +105,8 @@ void Scene::PrepareObjects()
 {
 
 	Axes = new glObject();
-
 	SkyBox = new glSkyBox(25, 50, "src\\textures\\sky.bmp");
+	Moon = new glSphere(25, "src\\textures\\moon.bmp");
 
 	Axes->BeginObject(GL_LINES);
 	Axes->SetColor(1.0, 0.0, 0.0); // os X w kolorze czerwonym
@@ -340,7 +341,7 @@ void Scene::Draw()
 	int _Projection = glGetUniformLocation(program, "projectionMatrix");
 	glUniformMatrix4fv(_Projection, 1, GL_FALSE, glm::value_ptr(mProjection));
 
-	glm::mat4 mModelView = glm::lookAt(glm::vec3(5.0, 0.0, 5.0),
+	glm::mat4 mModelView = glm::lookAt(glm::vec3(Cam_r, 0.0, Cam_angle),
 		glm::vec3(0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -371,6 +372,10 @@ void Scene::Draw()
 	if (SkyBox)
 	{
 		SkyBox->Draw();
+	}
+	if (Moon)
+	{
+		//Moon->Draw();
 	}
 
 	glm::mat4 mTransform = glm::mat4(1.0);
