@@ -55,6 +55,7 @@ private:
 	float Cam_r; // promien kamery
 
 	float LightAmbient;
+	float Alpha;
 
 	glObject *Cube;
 	glObject *Axes;

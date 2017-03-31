@@ -29,7 +29,7 @@ Scene::Scene(int new_width, int new_height)
 	LightAmbient = 0.8;
 	Cam_angle = 0.0;
 	Cam_r = 5.0;
-
+	Alpha = 0.5;
 }
 //--------------------------------------------------------------------------------------------
 // Domyslny destruktor
@@ -315,8 +315,8 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 	case 112: {LightAmbient += 0.1f; break; } // F1
 	case 113: {LightAmbient -= 0.1f; break; } //F2
 
-	case 114: { break; } //F3
-	case 115: { break; } //F4
+	case 114: {Alpha -= 0.1f; break; } //F3
+	case 115: {Alpha += 0.1f; break; } //F4
 
 	case 116: { break; } //F5
 	case 117: { break; } //F6
@@ -360,6 +360,9 @@ void Scene::Draw()
 	int _LightAmbient = glGetUniformLocation(program, "LightAmbient");
 	glUniform1f(_LightAmbient, LightAmbient);
 
+	int _Alpha = glGetUniformLocation(program, "Alpha");
+	glUniform1f(_Alpha, Alpha);
+
 	int _NormalMatrix = glGetUniformLocation(program, "normalMatrix");
 
 	glUniformMatrix4fv(_NormalMatrix, 1, GL_FALSE,
@@ -369,7 +372,7 @@ void Scene::Draw()
 	{
 		Axes->Draw();
 	}
-	
+
 	glm::mat4 mTransform = glm::mat4(1.0);
 	mTransform = glm::rotate(glm::mat4(1.0), rot_x, glm::vec3(1.0f, 0.0f, 0.0f));
 	mTransform = glm::rotate(mTransform, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -391,7 +394,11 @@ void Scene::Draw()
 	}
 	if (Moon)
 	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		Moon->Draw();
+		glDisable(GL_BLEND);
 	}
+
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------
