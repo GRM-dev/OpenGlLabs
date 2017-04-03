@@ -30,6 +30,7 @@ Scene::Scene(int new_width, int new_height)
 	Cam_angle = 0.0;
 	Cam_r = 5.0;
 	Alpha = 0.5;
+	FogDensity = 0.05;
 }
 //--------------------------------------------------------------------------------------------
 // Domyslny destruktor
@@ -318,15 +319,14 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 	case 114: {Alpha -= 0.1f; break; } //F3
 	case 115: {Alpha += 0.1f; break; } //F4
 
-	case 116: { break; } //F5
-	case 117: { break; } //F6
+	case 116: {FogDensity -= 0.05f; break; } //F5
+	case 117: {FogDensity += 0.05f; break; } //F6
 
 	case 87: {Cam_r -= 0.5f; break; } //W
 	case 83: {Cam_r += 0.5f; break; } //S
 	case 65: {Cam_angle -= 5.0f; break; } //A
 	case 68: {Cam_angle += 5.0f; break; } //D
 	}
-
 }
 //--------------------------------------------------------------------------------------------
 // rysuje scene OpenGL
@@ -360,8 +360,11 @@ void Scene::Draw()
 	int _LightAmbient = glGetUniformLocation(program, "LightAmbient");
 	glUniform1f(_LightAmbient, LightAmbient);
 
-	int _Alpha = glGetUniformLocation(program, "Alpha");
+	int _Alpha = glGetUniformLocation(program, "ColorAlpha");
 	glUniform1f(_Alpha, Alpha);
+
+	int _FogDensity = glGetUniformLocation(program, "FogDensity");
+	glUniform1f(_FogDensity, FogDensity);
 
 	int _NormalMatrix = glGetUniformLocation(program, "normalMatrix");
 

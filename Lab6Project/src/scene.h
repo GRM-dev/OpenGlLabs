@@ -56,6 +56,7 @@ private:
 
 	float LightAmbient;
 	float Alpha;
+	float FogDensity;
 
 	glObject *Cube;
 	glObject *Axes;

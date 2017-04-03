@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using OpenGlProject.Core.Misc;
 using OpenGlProject.Core.Objects;
+using Application = System.Windows.Application;
 
 namespace OpenGlProject.Core
 {
@@ -18,6 +19,7 @@ namespace OpenGlProject.Core
             {
                 if (l.Key == Key.Escape)
                 {
+                    
                     Application.Current.Shutdown();
                 }
             };
