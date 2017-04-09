@@ -10,7 +10,7 @@ extern HWND hListBox;
 void PrintLog(char *message)
 {
 	if (IS_WIN32)
-		if (hListBox) SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)message);
+		if (hListBox) SendMessage(hListBox, LB_ADDSTRING, 0, reinterpret_cast<LPARAM>(message));
 		else
 			printf("Log: %s\n");
 }

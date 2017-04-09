@@ -4,7 +4,7 @@
 // domyslny konstruktor
 glSphere::glSphere(float R, char *TextureFile)
 {
-	tex = NULL;
+	tex = nullptr;
 	tex = new glTexture(TextureFile);
 
 	// przygotuj geometrie obiektu

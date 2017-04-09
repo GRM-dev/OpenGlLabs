@@ -21,7 +21,7 @@ Scene::Scene(int new_width, int new_height)
 	height = new_height;
 	rot_x = 0.0;
 	rot_y = 0.0;
-	Axes = NULL;
+	Axes = nullptr;
 	LightAmbient = 0.8;
 	Cam_angle = 0.0;
 	Cam_r = 5.0;
@@ -43,10 +43,10 @@ void Scene::PreparePrograms()
 	program = glCreateProgram();
 	if (!glIsProgram(program)) { err = 1; ThrowException("Nie udalo sie utworzyc programu"); }
 
-	vertex_shader = LoadShader(GL_VERTEX_SHADER, "vs.glsl");
+	vertex_shader = LoadShader(GL_VERTEX_SHADER, "../Shaders/vs_7.glsl");
 	glAttachShader(program, vertex_shader);
 
-	fragment_shader = LoadShader(GL_FRAGMENT_SHADER, "fs.glsl");
+	fragment_shader = LoadShader(GL_FRAGMENT_SHADER, "../Shaders/fs_7.glsl");
 	glAttachShader(program, fragment_shader);
 
 	// linkowanie programu
@@ -60,7 +60,7 @@ void Scene::PreparePrograms()
 		GLint logLength;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetProgramInfoLog(program, logLength, NULL, log);
+		glGetProgramInfoLog(program, logLength, nullptr, log);
 		PrintLog(log);
 		delete[] log;
 		err = 1;
@@ -80,7 +80,7 @@ void Scene::PreparePrograms()
 		GLint logLength;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetProgramInfoLog(program, logLength, NULL, log);
+		glGetProgramInfoLog(program, logLength, nullptr, log);
 		PrintLog(log);
 		delete[] log;
 		err = 1;
@@ -95,7 +95,7 @@ void Scene::PreparePrograms()
 void Scene::PrepareObjects()
 {
 	Axes = new glObject();
-	Moon = new glSphere(1, "textures\\moon.bmp");
+	Moon = new glSphere(1, "src\\textures\\moon.bmp");
 
 	Axes->BeginObject(GL_LINES);
 	Axes->SetColor(1.0, 0.0, 0.0); // os X w kolorze czerwonym
@@ -121,19 +121,19 @@ void Scene::Resize(int new_width, int new_height)
 	// rozszerz obszar renderowania do obszaru o wymiarach 'width' x 'height'
 	glViewport(0, 100, width, height);
 
-	mProjection = glm::perspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	mProjection = glm::perspective(45.0f, static_cast<GLfloat>(width) / static_cast<GLfloat>(height), 0.1f, 100.0f);
 }
 //--------------------------------------------------------------------------------------------
 // laduje program shadera z zewnetrznego pliku
 GLuint Scene::LoadShader(GLenum type, const char *file_name)
 {
 	// zmienna plikowa
-	FILE *fil = NULL;
+	FILE *fil = nullptr;
 	// sproboj otworzyc plik
 	fil = fopen(file_name, "rb");
 	// sprawdz, czy plik sie otworzyl
 	sprintf(_msg, "Nie mozna otworzyc %s", file_name);
-	if (fil == NULL)  ThrowException(_msg);
+	if (fil == nullptr)  ThrowException(_msg);
 
 	// okresl rozmiar pliku
 	fseek(fil, 0, SEEK_END);
@@ -156,7 +156,7 @@ GLuint Scene::LoadShader(GLenum type, const char *file_name)
 	GLuint shader = glCreateShader(type);
 
 	// przypisanie zrodla do shadera
-	glShaderSource(shader, 1, const_cast<const GLchar**>(&srcBuf), NULL);
+	glShaderSource(shader, 1, const_cast<const GLchar**>(&srcBuf), nullptr);
 
 	// sprzatanie
 	delete[] srcBuf;
@@ -173,7 +173,7 @@ GLuint Scene::LoadShader(GLenum type, const char *file_name)
 		GLint logLength;
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
 		char *log = new char[logLength];
-		glGetShaderInfoLog(shader, logLength, NULL, log);
+		glGetShaderInfoLog(shader, logLength, nullptr, log);
 		sprintf(_msg, "Blad kompilacji pliku shadera %s", file_name);
 		PrintLog(_msg);
 		PrintLog(log);
@@ -203,15 +203,15 @@ void Scene::Init()
 
 	// pobierz informacje o wersji openGL
 	sprintf(_msg, "OpenGL vendor: ");
-	strcat(_msg, (const char*)glGetString(GL_VENDOR));
+	strcat(_msg, reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
 	PrintLog(_msg);
 
 	sprintf(_msg, "OpenGL renderer: ");
-	strcat(_msg, (const char*)glGetString(GL_RENDERER));
+	strcat(_msg, reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
 	PrintLog(_msg);
 
 	sprintf(_msg, "OpenGL version: ");
-	strcat(_msg, (const char*)glGetString(GL_VERSION));
+	strcat(_msg, reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	PrintLog(_msg);
 
 	//  ustaw kolor tla sceny (RGB Z=1.0)
@@ -274,17 +274,15 @@ void Scene::SaveAsBmp(char *filename)
 	while (_width * 3 % 4) _width--;  // adjust bmp width to meet 4B row padding rule
 	int img_size = _width*_height * 3; // image size (each pixel is coded by 3Bytes)
 
-	int storage_4B; // four byte storage used for saving integer bytes into bmp file
 	FILE *fil; // prepare file handle
 	fopen_s(&fil, filename, "wb"); // open the file in binary mode
 	rewind(fil);
-	//*********************** START OF THE HEADER **********************************
-	// BM signature
-	storage_4B = 0x00004d42; fwrite((char *)&storage_4B, 1, 2, fil);
+	// four byte storage used for saving integer bytes into bmp file
+	int storage_4B = 0x00004d42; fwrite(reinterpret_cast<char *>(&storage_4B), 1, 2, fil);
 	// file size
-	storage_4B = 54 + img_size; fwrite((char *)&storage_4B, 1, 4, fil);
+	storage_4B = 54 + img_size; fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
 	// four empty bytes
-	storage_4B = 0;  fwrite((char *)&storage_4B, 1, 4, fil);
+	storage_4B = 0;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
 	// pixeltable address
 
 
@@ -343,8 +341,10 @@ void Scene::Draw()
 	//------------------------------------------------------------------------------------------------------
 	// Rysowanie w trybie perspektywicznym
 	//------------------------------------------------------------------------------------------------------
-
-	Axes->Draw();
+	if (Axes)
+	{
+		Axes->Draw();
+	}
 
 	glm::mat4 mTransform = glm::mat4(1.0);
 	mTransform = glm::rotate(glm::mat4(1.0), rot_x, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -354,6 +354,9 @@ void Scene::Draw()
 
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 
-	Moon->Draw();
+	if (Moon)
+	{
+		Moon->Draw();
+	}
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------

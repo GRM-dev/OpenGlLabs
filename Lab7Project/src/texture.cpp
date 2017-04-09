@@ -4,7 +4,7 @@
 // Domyslny konstruktor
 glTexture::glTexture(char *FileName)
 {
-	char *ImgData = NULL;
+	char *ImgData = nullptr;
 	int ImgWidth;
 	int ImgHeight;
 	LoadBMP(FileName, ImgWidth, ImgHeight, &ImgData);
@@ -41,21 +41,18 @@ void glTexture::LoadBMP(char *filename, int &_width, int &_height, char **pixels
 {
 	char buf[100];  // 100B temporary buffer
 
-	// some essential header fields
-	// to be compared against the assumed bmp format
-	int file_actual_size;
 	int file_size;
 	int bmp_compression;
 
 	// file handle
-	FILE *fil = NULL;
+	FILE *fil = nullptr;
 	fopen_s(&fil, filename, "rb");
 
 	// check if file is opened
-	if (fil == NULL) ThrowException("Brak pliku BMP");
+	if (fil == nullptr) ThrowException("Brak pliku BMP");
 
 	fseek(fil, 0, SEEK_END);
-	file_actual_size = ftell(fil); // obtain real filesize
+	int file_actual_size = ftell(fil); // obtain real filesize
 	rewind(fil); // make sure the file pointer is set to the beginning
 
 	//*********** READ THE HEADER ***************
@@ -98,7 +95,7 @@ void glTexture::LoadBMP(char *filename, int &_width, int &_height, char **pixels
 	if (_width * 3 % 4) padding = 4 - (_width * 3) % 4;
 
 	// allocate memory for pixeltable
-	*pixels = (char *)calloc((_width * 3 + padding)*_height, sizeof(char));
+	*pixels = static_cast<char *>(calloc((_width * 3 + padding) * _height, sizeof(char)));
 
 	// read file content into pixeltable
 	for (int h = 0; h < _height; h++)

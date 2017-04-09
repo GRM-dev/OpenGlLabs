@@ -27,7 +27,7 @@ int Normalize(float *N)
 	const int y = 1;
 	const int z = 2;
 	// oblicz dlugosc wektora
-	float L = (float)sqrt(N[x] * N[x] + N[y] * N[y] + N[z] * N[z]);
+	float L = static_cast<float>(sqrt(N[x] * N[x] + N[y] * N[y] + N[z] * N[z]));
 	if (L < 0.01) L = 0.01;
 	// wyznacz wspolrzedne normalnej
 	N[x] /= L;
@@ -39,10 +39,10 @@ int Normalize(float *N)
 // domyslny konstruktor
 glObject::glObject()
 {
-	Coords = (float *)malloc(sizeof(float));
-	Cols = (float *)malloc(sizeof(float));
-	Normals = (float *)malloc(sizeof(float));
-	TexCoords = (float *)malloc(sizeof(float));
+	Coords = static_cast<float *>(malloc(sizeof(float)));
+	Cols = static_cast<float *>(malloc(sizeof(float)));
+	Normals = static_cast<float *>(malloc(sizeof(float)));
+	TexCoords = static_cast<float *>(malloc(sizeof(float)));
 	nx = 1.0;
 	ny = 0.0;
 	nz = 0.0;
@@ -96,9 +96,9 @@ void glObject::BeginObject(GLenum P, GLuint TextureId)
 
 	// wyzeruj licznik wspolrzednych
 	lCoords[lVAO - 1] = 0;
-	Coords = (float *)malloc(sizeof(float));
-	Cols = (float *)malloc(sizeof(float));
-	Normals = (float *)malloc(sizeof(float));
+	Coords = static_cast<float *>(malloc(sizeof(float)));
+	Cols = static_cast<float *>(malloc(sizeof(float)));
+	Normals = static_cast<float *>(malloc(sizeof(float)));
 
 	if (lVAO > MAX_VAO) ThrowException("Przekroczono maksymalna liczbe VAO w glObject");
 
@@ -124,26 +124,26 @@ void glObject::BeginObject(GLenum P, GLuint TextureId)
 void glObject::AddVertex(float x, float y, float z, float u, float v)
 {
 	lCoords[lVAO - 1] += 3;
-	Coords = (float *)realloc(Coords, lCoords[lVAO - 1] * sizeof(float));
-	if (Coords == NULL) ThrowException("glObject:: Blad realokacji pamieci");
+	Coords = static_cast<float *>(realloc(Coords, lCoords[lVAO - 1] * sizeof(float)));
+	if (Coords == nullptr) ThrowException("glObject:: Blad realokacji pamieci");
 	Coords[lCoords[lVAO - 1] - 3] = x;
 	Coords[lCoords[lVAO - 1] - 2] = y;
 	Coords[lCoords[lVAO - 1] - 1] = z;
 
-	Cols = (float *)realloc(Cols, lCoords[lVAO - 1] * sizeof(float));
-	if (Cols == NULL) ThrowException("glObject:: Blad realokacji pamieci");
+	Cols = static_cast<float *>(realloc(Cols, lCoords[lVAO - 1] * sizeof(float)));
+	if (Cols == nullptr) ThrowException("glObject:: Blad realokacji pamieci");
 	Cols[lCoords[lVAO - 1] - 3] = col_r;
 	Cols[lCoords[lVAO - 1] - 2] = col_g;
 	Cols[lCoords[lVAO - 1] - 1] = col_b;
 
-	Normals = (float *)realloc(Normals, lCoords[lVAO - 1] * sizeof(float));
-	if (Normals == NULL) ThrowException("glObject:: Blad realokacji pamieci");
+	Normals = static_cast<float *>(realloc(Normals, lCoords[lVAO - 1] * sizeof(float)));
+	if (Normals == nullptr) ThrowException("glObject:: Blad realokacji pamieci");
 	Normals[lCoords[lVAO - 1] - 3] = nx;
 	Normals[lCoords[lVAO - 1] - 2] = ny;
 	Normals[lCoords[lVAO - 1] - 1] = nz;
 
-	TexCoords = (float *)realloc(TexCoords, lCoords[lVAO - 1] * sizeof(float));
-	if (TexCoords == NULL) ThrowException("glObject:: Blad realokacji pamieci");
+	TexCoords = static_cast<float *>(realloc(TexCoords, lCoords[lVAO - 1] * sizeof(float)));
+	if (TexCoords == nullptr) ThrowException("glObject:: Blad realokacji pamieci");
 	TexCoords[lCoords[lVAO - 1] - 3] = u;
 	TexCoords[lCoords[lVAO - 1] - 2] = v;
 	TexCoords[lCoords[lVAO - 1] - 1] = 0.0;
@@ -161,7 +161,7 @@ void glObject::EndObject()
 	// wybierz atrybut indeksie 0 (wskazany w shaderze)
 	glEnableVertexAttribArray(0);
 	// powiaz dane z bufora ze wskazanym atrybutem
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	// podlacz drugi bufor VBOs
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[4 * lVAO - 3]);
@@ -170,7 +170,7 @@ void glObject::EndObject()
 	// wybierz atrybut indeksie 1 (wskazany w shaderze)
 	glEnableVertexAttribArray(1);
 	// powiaz dane z bufora ze wskazanym atrybutem
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	// podlacz trzeci bufor VBOs
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[4 * lVAO - 2]);
@@ -179,7 +179,7 @@ void glObject::EndObject()
 	// wybierz atrybut indeksie 2 (wskazany w shaderze)
 	glEnableVertexAttribArray(2);
 	// powiaz dane z bufora ze wskazanym atrybutem
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	// podlacz czwarty bufor VBOs
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[4 * lVAO - 1]);
@@ -188,7 +188,7 @@ void glObject::EndObject()
 	// wybierz atrybut indeksie 3 (wskazany w shaderze)
 	glEnableVertexAttribArray(3);
 	// powiaz dane z bufora ze wskazanym atrybutem
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	glBindVertexArray(0);
 }
