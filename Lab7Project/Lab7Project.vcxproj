@@ -72,36 +72,36 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ProjectDir)src\textures;$(SolutionDir)Dependencies\glew\$(Platform);$(ReferencePath)</ReferencePath>
     <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
     <IntDir>build\$(Configuration)\$(Platform)\</IntDir>
-    <SourcePath>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SourcePath)</SourcePath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ProjectDir)src\textures;$(SolutionDir)Dependencies\glew\$(Platform);$(ReferencePath)</ReferencePath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
     <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
     <IntDir>build\$(Configuration)\$(Platform)\</IntDir>
-    <SourcePath>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SourcePath)</SourcePath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
     <IntDir>build\$(Configuration)\$(Platform)\</IntDir>
     <IncludePath>$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\include;$(IncludePath)</IncludePath>
     <ReferencePath>$(ProjectDir)src\textures;$(SolutionDir)Dependencies\glew\$(Platform);$(ReferencePath)</ReferencePath>
-    <LibraryPath>$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);$(LibraryPath)</LibraryPath>
-    <SourcePath>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SourcePath)</SourcePath>
+    <LibraryPath>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
     <IntDir>build\$(Configuration)\$(Platform)\</IntDir>
     <IncludePath>$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\include;$(IncludePath)</IncludePath>
     <ReferencePath>$(ProjectDir)src\textures;$(SolutionDir)Dependencies\glew\$(Platform);$(ReferencePath)</ReferencePath>
-    <LibraryPath>$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);$(LibraryPath)</LibraryPath>
-    <SourcePath>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\freetype-2.4.0\include;$(SourcePath)</SourcePath>
+    <LibraryPath>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -111,7 +111,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>glew32.lib;freetype240MT_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Dependencies\glew\$(Platform)\*.dll" "$(OutDir)" /I /Y /F</Command>
@@ -125,7 +125,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>glew32.lib;freetype240MT_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Dependencies\glew\$(Platform)\*.dll" "$(OutDir)" /I /Y /F</Command>
@@ -142,7 +142,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32.lib;freetype240MT_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -160,7 +160,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freetype-2.4.0\objs\win32\vc2008;$(SolutionDir)Dependencies\glew\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32.lib;freetype240MT_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -198,6 +198,11 @@
   <ItemGroup>
     <None Include="..\Shaders\fs_7.glsl" />
     <None Include="..\Shaders\vs_7.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dependencies\freetype-2.4.0\builds\win32\vc2008\freetype.vcxproj">
+      <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
