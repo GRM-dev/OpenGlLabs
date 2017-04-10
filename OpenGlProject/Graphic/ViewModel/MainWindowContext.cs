@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using OpenGlProject.Properties;
 
@@ -8,6 +9,7 @@ namespace OpenGlProject.Graphic.ViewModel
     {
         private string _debug;
         private long _tps;
+        private int _renderingObjects;
 
         public MainWindowContext()
         {
@@ -16,7 +18,8 @@ namespace OpenGlProject.Graphic.ViewModel
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            Debug = "TPS: " + Tps;
+            Debug = "TPS: " + Tps+Environment.NewLine;
+            Debug += "Rend Objs Count: " + RenderingObjects;
         }
 
         public string Debug
@@ -32,6 +35,15 @@ namespace OpenGlProject.Graphic.ViewModel
             {
                 _tps = value;
                 OnPropertyChanged(nameof(Tps));
+            }
+        }
+
+        public int RenderingObjects {
+            get => _renderingObjects;
+            set
+            {
+                _renderingObjects = value;
+                OnPropertyChanged(nameof(RenderingObjects));
             }
         }
 

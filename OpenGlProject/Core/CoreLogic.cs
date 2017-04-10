@@ -12,7 +12,7 @@ namespace OpenGlProject.Core
 
     public class CoreLogic
     {
-        public static readonly int TPS = 80;
+        public const int TPS = 80;
         public readonly TimeSpan TICK_TIME = TimeSpan.FromMilliseconds(1000 / TPS);
         private readonly Thread _thread;
         private bool _stop;
@@ -67,7 +67,12 @@ namespace OpenGlProject.Core
                 _stopwatch = new Stopwatch();
                 _stopwatch.Start();
                 _thread.Start();
-                EachCycle += (logic, args) => WindowContext.Tps = LastTpsCount;
+                EachCycle += (logic, args) =>
+                {
+                    WindowContext.Tps = LastTpsCount;
+                    WindowContext.RenderingObjects = GlObject.Objects.Count;
+
+                };
             }
         }
 

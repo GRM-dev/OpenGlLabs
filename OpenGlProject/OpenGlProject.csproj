@@ -108,6 +108,8 @@
     <Compile Include="Core\CoreLogic.cs" />
     <Compile Include="Graphic\Renderers\BasicRenderer.cs" />
     <Compile Include="Graphic\Renderers\TextRenderer.cs" />
+    <Compile Include="Graphic\Scene\GameCamera.cs" />
+    <Compile Include="Graphic\Scene\Light.cs" />
     <Compile Include="Graphic\ViewModel\MainWindowContext.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

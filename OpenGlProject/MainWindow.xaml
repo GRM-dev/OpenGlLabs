@@ -43,7 +43,7 @@
             DrawFPS="True"
             OpenGLDraw="OpenGLControl_OpenGLDraw"
             OpenGLInitialized="OpenGLControl_OpenGLInitialized"
-            OpenGLVersion="OpenGL4_4"
-            Resized="OpenGLControl_OnResized" />
+            Resized="OpenGLControl_OnResized"
+            RenderContextType="FBO"/>
     </DockPanel>
 </Window>
