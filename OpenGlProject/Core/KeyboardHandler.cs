@@ -19,8 +19,11 @@ namespace OpenGlProject.Core
             {
                 if (l.Key == Key.Escape)
                 {
-                    
-                    Application.Current.Shutdown();
+                    var dialogResult = MessageBox.Show("Are you sure you want to exit?", "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        Application.Current.Shutdown();
+                    }
                 }
             };
             KeyPressed += l =>

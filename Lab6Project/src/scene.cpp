@@ -106,7 +106,7 @@ void Scene::PrepareObjects()
 {
 
 	Axes = new glObject();
-	SkyBox = new glSkyBox(25, 50, "src\\textures\\sky.bmp");
+	SkyBox = new glSkyBox(60, 50, "src\\textures\\sky.bmp");
 	Moon = new glSphere(25, "src\\textures\\moon.bmp");
 
 	Axes->BeginObject(GL_LINES);
@@ -341,7 +341,12 @@ void Scene::Draw()
 	int _Projection = glGetUniformLocation(program, "projectionMatrix");
 	glUniformMatrix4fv(_Projection, 1, GL_FALSE, glm::value_ptr(mProjection));
 
-	glm::mat4 mModelView = glm::lookAt(glm::vec3(Cam_r, 0.0, Cam_angle),
+	/*glm::mat4 mModelView = glm::lookAt(glm::vec3(Cam_r, 0.0, Cam_angle),
+		glm::vec3(0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f));*/
+
+	glm::mat4 mModelView = glm::lookAt(
+		glm::vec3(Cam_r*cos(PI*Cam_angle / 180.0), 0.0f, Cam_r*sin(PI*Cam_angle / 180.0)),
 		glm::vec3(0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -377,30 +382,34 @@ void Scene::Draw()
 	}
 
 	glm::mat4 mTransform = glm::mat4(1.0);
-	mTransform = glm::rotate(glm::mat4(1.0), rot_x, glm::vec3(1.0f, 0.0f, 0.0f));
-	mTransform = glm::rotate(mTransform, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
+	mTransform = glm::rotate(mTransform, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+	mTransform = glm::rotate(mTransform, 0.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	glUniformMatrix4fv(_NormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(mTransform))));
-
 	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 
 	int _Sampler = glGetUniformLocation(program, "gSampler");
 	glUniform1i(_Sampler, 0);
 
-	if (Cube)
-	{
-		Cube->Draw();
-	}
-	if (SkyBox)
-	{
-		//SkyBox->Draw();
-	}
+	mTransform = glm::rotate(glm::mat4(1.0), rot_x, glm::vec3(1.0f, 0.0f, 0.0f));
+	mTransform = glm::rotate(mTransform, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
+
 	if (Moon)
 	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		Moon->Draw();
-		glDisable(GL_BLEND);
+	}
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+	if (Cube)
+	{
+		glDepthMask(GL_FALSE);
+		Cube->Draw();
+		glDepthMask(GL_TRUE);
+	}
+	glDisable(GL_BLEND);
+	if (SkyBox)
+	{
+		SkyBox->Draw();
 	}
 
 }

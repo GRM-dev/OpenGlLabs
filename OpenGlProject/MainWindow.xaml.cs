@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,9 @@ namespace OpenGlProject
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly string strVertexShader = "../Shaders/fs_6.glsl";
+        private readonly string strFragmentShader = "../Shaders/vs_6.glsl";
+
         public MainWindow()
         {
             WindowContext = new MainWindowContext();
@@ -61,9 +65,32 @@ namespace OpenGlProject
             Gl.Enable(OpenGL.GL_DEPTH_TEST);
             if (!OpenGlInitialized)
             {
+                var shaderList = new List<uint>
+                {
+                    CreateShader(OpenGL.GL_VERTEX_SHADER, strVertexShader), CreateShader(OpenGL.GL_FRAGMENT_SHADER, strFragmentShader)
+                };
+                var program = Gl.CreateProgram();
+
+                foreach (uint shader in shaderList)
+                    Gl.AttachShader(program, shader);
+
+                Gl.LinkProgram(program);
+
+                foreach (uint shader in shaderList)
+                    Gl.DetachShader(program, shader);
+
                 Core.Start();
             }
             OpenGlInitialized = true;
+        }
+
+        private uint CreateShader(uint eShaderType, string strShaderFile)
+        {
+            var shader = Gl.CreateShader(eShaderType);
+            var strFileData = File.ReadAllText(strShaderFile);
+            Gl.ShaderSource(shader, strFileData);
+            Gl.CompileShader(shader);
+            return shader;
         }
 
         private void OpenGLControl_OpenGLDraw(object sender, OpenGLEventArgs args)
