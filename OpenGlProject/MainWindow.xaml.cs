@@ -74,6 +74,7 @@ namespace OpenGlProject
                 Gl.Enable(OpenGL.GL_DEPTH_TEST);
                 Gl.ClearDepth(1.0);
                 Light.InitLights(Gl);
+
                 var shaderList = new List<Shader>
                 {
                     CreateShader(OpenGL.GL_VERTEX_SHADER, strVertexShader),
@@ -83,19 +84,16 @@ namespace OpenGlProject
                 };
 
                 Program.CreateInContext(Gl);
-
                 foreach (var shader in shaderList)
                 {
                     Program.AttachShader(shader);
                 }
                 Program.Link();
-                GCamera=new GameCamera();
+                GCamera = new GameCamera();
                 Core.Start();
+                GCamera.AssignCameraKeys();
             }
             OpenGlInitialized = true;
-            var c = new Cube(2);
-            c.Rotation.Rx += 20f;
-            c.Rotation.Ry += 30f;
         }
 
         private Shader CreateShader(uint eShaderType, string strShaderFile)
@@ -144,16 +142,45 @@ namespace OpenGlProject
 
         private void OpenGLControl_OpenGLDraw(object sender, OpenGLEventArgs args)
         {
-            Gl.MatrixMode(MatrixMode.Modelview);
-            Gl.ClearColor(0.05f, 0.1f, 0.5f, 0f);
+            GCamera.Project(Gl);
+
+            //Gl.ClearColor(0.05f, 0.1f, 0.5f, 0f);
             Gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
-            GCamera.Cam.TransformProjectionMatrix(Gl);
+
             Gl.Translate(0.0f, 0.0f, -6.0f);
 
             Program.Push(Gl, null);
             Gl.Rotate(3.0f, 0.0f, 1.0f, 0.0f);
 
             Core.Draw();
+
+            #region gAxis
+            Gl.Color(0.3, 0.3, 0.3);
+            Gl.Begin(OpenGL.GL_LINES);
+            for (var p = -100.0; p <= 100.0; p = p + 5.0)
+            {
+                Gl.Vertex(-100.0f, 0.0f, p);
+                Gl.Vertex(100.0f, 0.0f, p);
+                Gl.Vertex(p, 0.0f, -100.0);
+                Gl.Vertex(p, 0.0f, 100.0);
+            }
+            Gl.End();
+#endregion
+
+            #region sAxis
+            Gl.Begin(OpenGL.GL_LINES);
+            Gl.Color(1.0, 0.0, 0.0); // os X w kolorze czerwonym
+            Gl.Vertex(0.0, 0.0, 0.0);
+            Gl.Vertex(10.0, 0.0, 0.0);
+            Gl.Color(0.0, 1.0, 0.0); // os Y w kolorze zielonym
+            Gl.Vertex(0.0, 0.0, 0.0);
+            Gl.Vertex(0.0, 10.0, 0.0);
+            Gl.Color(0.0, 0.0, 1.0); // os Z w kolorze niebieskim
+            Gl.Vertex(0.0, 0.0, 0.0);
+            Gl.Vertex(0.0, 0.0, 10.0);
+            Gl.End();
+            #endregion
+
             Program.Pop(Gl, null);
             Gl.Flush();
         }

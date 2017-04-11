@@ -32,11 +32,11 @@ namespace OpenGlProject.Core
                 var cube = new Cube(2);
                 cube.KeyDown += (sender, args) =>
                 {
-                    if (args.Key == Key.D)
+                    if (args.Key == Key.J)
                     {
                         cube.Rotation.Rx += 1f * args.Delta;
                     }
-                    if (args.Key == Key.A)
+                    if (args.Key == Key.L)
                     {
                         cube.Rotation.Ry += 1f * args.Delta;
                     }
