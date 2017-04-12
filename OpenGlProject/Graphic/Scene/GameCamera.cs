@@ -16,9 +16,9 @@ namespace OpenGlProject.Graphic.Scene
 
         public GameCamera()
         {
-            _viewPoint = new Vertex(0.0f, 0.0f, 0.0f);
+            _viewPoint = new Vertex(0.0f, 10.0f, 0.0f);
             _upVertex = new Vertex(0.0f, 0.0f, 1f);
-            var pos = new Vertex(0f, -20f, 0f);
+            var pos = new Vertex(0f, -10f, 0f);
             Position = pos;
         }
 
@@ -71,8 +71,22 @@ namespace OpenGlProject.Graphic.Scene
         public override void TransformProjectionMatrix(OpenGL gl)
         {
             gl.Perspective(fieldOfView, AspectRatio, near, far);
-            var p =  _viewPoint;
+            var p =  Position+_viewPoint;
             gl.LookAt(Position.X, Position.Y, Position.Z, p.X, p.Y, p.Z, _upVertex.X, _upVertex.Y, _upVertex.Z);
+        }
+
+        public void OnResized(OpenGL gl)
+        {
+            // Load and clear the projection matrix.
+            gl.MatrixMode(OpenGL.GL_PROJECTION);
+            gl.LoadIdentity();
+
+            // Perform a perspective transformation
+            gl.Perspective(45.0f, gl.RenderContextProvider.Width /
+                                  (float)gl.RenderContextProvider.Height,
+                0.1f, 100.0f);
+            // Load the modelview.
+            gl.MatrixMode(OpenGL.GL_MODELVIEW);
         }
     }
 }

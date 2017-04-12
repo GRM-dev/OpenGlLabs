@@ -16,17 +16,16 @@ namespace OpenGlProject.Graphic.Renderers
 
         protected override void Draw(GlObject o)
         {
-            var cube = o as Cube;
-            if (cube == null)
+            var c = o as Cube;
+            if (c == null)
             {
                 throw new InvalidCastException("GlObject is null or not a Cube!");
             }
-            Gl.LoadIdentity();
 
-            Gl.Translate(1.5f, 0.0f, -7.0f);
-            Gl.Rotate(cube.Rotation.Rx, 1.0f, 0.0f, 0.0f);
-            Gl.Rotate(cube.Rotation.Ry, 0.0f, 1.0f, 0.0f);
-            Gl.Rotate(cube.Rotation.Rz, 0.0f, 0.0f, 1.0f);
+            Gl.Translate(c.Position.X, c.Position.Y, c.Position.Z);
+            Gl.Rotate(c.Rotation.Rx, 1.0f, 0.0f, 0.0f);
+            Gl.Rotate(c.Rotation.Ry, 0.0f, 1.0f, 0.0f);
+            Gl.Rotate(c.Rotation.Rz, 0.0f, 0.0f, 1.0f);
 
             Gl.Begin(OpenGL.GL_QUADS);
 

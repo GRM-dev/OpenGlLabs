@@ -13,7 +13,7 @@ namespace OpenGlProject.Graphic.Renderers
 {
     public abstract class BasicRenderer
     {
-        private static Dictionary<Type, BasicRenderer> _renderers = new Dictionary<Type, BasicRenderer>
+        private static readonly Dictionary<Type, BasicRenderer> _renderers = new Dictionary<Type, BasicRenderer>
         {
             {typeof(Cube),new CubeRenderer() }
         };

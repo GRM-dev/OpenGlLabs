@@ -34,6 +34,7 @@ namespace OpenGlProject.Core
         {
             foreach (var r in BasicRenderer.Renderers)
             {
+                Window.Gl.LoadIdentity();
                 r.RenderAll();
             }
         }

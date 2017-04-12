@@ -144,17 +144,15 @@ namespace OpenGlProject
         {
             GCamera.Project(Gl);
 
-            //Gl.ClearColor(0.05f, 0.1f, 0.5f, 0f);
+            Gl.ClearColor(0.05f, 0.1f, 0.5f, 0f);
             Gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
-            Gl.Translate(0.0f, 0.0f, -6.0f);
-
             Program.Push(Gl, null);
-            Gl.Rotate(3.0f, 0.0f, 1.0f, 0.0f);
 
             Core.Draw();
 
             #region gAxis
+            Gl.LoadIdentity();
             Gl.Color(0.3, 0.3, 0.3);
             Gl.Begin(OpenGL.GL_LINES);
             for (var p = -100.0; p <= 100.0; p = p + 5.0)
@@ -165,9 +163,10 @@ namespace OpenGlProject
                 Gl.Vertex(p, 0.0f, 100.0);
             }
             Gl.End();
-#endregion
+            #endregion
 
             #region sAxis
+            Gl.LoadIdentity();
             Gl.Begin(OpenGL.GL_LINES);
             Gl.Color(1.0, 0.0, 0.0); // os X w kolorze czerwonym
             Gl.Vertex(0.0, 0.0, 0.0);
@@ -187,16 +186,7 @@ namespace OpenGlProject
 
         private void OpenGLControl_OnResized(object sender, OpenGLEventArgs args)
         {
-            // Load and clear the projection matrix.
-            Gl.MatrixMode(OpenGL.GL_PROJECTION);
-            Gl.LoadIdentity();
-
-            // Perform a perspective transformation
-            Gl.Perspective(45.0f, (float)Gl.RenderContextProvider.Width /
-                                  (float)Gl.RenderContextProvider.Height,
-                0.1f, 100.0f);
-            // Load the modelview.
-            Gl.MatrixMode(OpenGL.GL_MODELVIEW);
+            GCamera.OnResized(args.OpenGL);
         }
 
         public OpenGL Gl { get; private set; }
