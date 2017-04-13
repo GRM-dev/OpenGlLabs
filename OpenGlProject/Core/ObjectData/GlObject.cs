@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenGlProject.Core.Misc;
 using OpenGlProject.Graphic.Renderers;
+using OpenGlProject.Graphic.Scene;
+using SharpGL.VertexBuffers;
 
 namespace OpenGlProject.Core.ObjectData
 {
@@ -12,10 +14,11 @@ namespace OpenGlProject.Core.ObjectData
     {
         private static readonly Dictionary<Type, Dictionary<int, GlObject>> _objects = new Dictionary<Type, Dictionary<int, GlObject>>();
         private static int _nextId;
-        private BasicRenderer _renderer;
-        protected bool _visible;
+        private readonly BasicRenderer _renderer;
         private readonly Position _position;
         private readonly Rotation _rotation;
+        
+        protected bool _visible;
 
         protected GlObject()
         {
@@ -24,15 +27,15 @@ namespace OpenGlProject.Core.ObjectData
             _position = new Position();
             _rotation = new Rotation();
             _visible = true;
+            KeyboardHandler.Instance.KeyUp += l =>
+            {
+                OnKeyUp(new GlKeyEventArgs(l.Key));
+            };
             if (!_objects.ContainsKey(GetType()))
             {
                 _objects.Add(GetType(), new Dictionary<int, GlObject>());
             }
             _objects[GetType()].Add(_nextId++, this);
-            KeyboardHandler.Instance.KeyUp += l =>
-            {
-                OnKeyUp(new GlKeyEventArgs(l.Key));
-            };
         }
 
         protected virtual void OnKeyDown(GlKeyEventArgs e)

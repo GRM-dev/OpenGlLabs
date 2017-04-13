@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 using OpenGlProject.Core;
 using OpenGlProject.Core.ObjectData;
 using OpenGlProject.Core.Objects;
+using OpenGlProject.Graphic.Scene;
 using SharpGL;
+using SharpGL.VertexBuffers;
 
 namespace OpenGlProject.Graphic.Renderers
 {
     public abstract class BasicRenderer
     {
+        private VertexBufferArray _vBo;
         private static readonly Dictionary<Type, BasicRenderer> _renderers = new Dictionary<Type, BasicRenderer>
         {
             {typeof(Cube),new CubeRenderer() }
@@ -24,6 +27,8 @@ namespace OpenGlProject.Graphic.Renderers
         {
             Gl = AppCore.Instance.Window.Gl;
             _objects = new List<GlObject>();
+            _vBo = GlObjectFactory.CreateVBO(Gl);
+
         }
 
         public static BasicRenderer GetRenderer(GlObject o)

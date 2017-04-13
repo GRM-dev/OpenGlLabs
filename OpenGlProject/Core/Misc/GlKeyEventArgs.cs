@@ -5,7 +5,7 @@ namespace OpenGlProject.Core.Misc
 {
     public class GlKeyEventArgs : EventArgs
     {
-        public GlKeyEventArgs(Key key, float delta):this(key)
+        public GlKeyEventArgs(Key key, float delta) : this(key)
         {
             Delta = delta;
         }
