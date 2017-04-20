@@ -4,6 +4,7 @@ using System.Linq;
 using OpenGlProject.Core.Misc;
 using OpenGlProject.Graphic.Renderers;
 using OpenGlProject.Graphic.Scene;
+using SharpGL.SceneGraph.Transformations;
 using SharpGL.VertexBuffers;
 
 namespace OpenGlProject.Core.ObjectData
@@ -15,21 +16,19 @@ namespace OpenGlProject.Core.ObjectData
         private static readonly Dictionary<Type, Dictionary<int, GlObject>> _objects = new Dictionary<Type, Dictionary<int, GlObject>>();
         private static int _nextId;
         private readonly BasicRenderer _renderer;
-        private readonly Position _position;
-        private readonly Rotation _rotation;
-        
+        private readonly LinearTransformation _transformation;
         protected bool _visible;
+        protected bool _useVAO = false;
 
         protected GlObject()
         {
             _renderer = BasicRenderer.GetRenderer(this);
             _renderer.AddObject(this);
-            _position = new Position();
-            _rotation = new Rotation();
+            _transformation = new LinearTransformation();
             _visible = true;
-            KeyboardHandler.Instance.KeyUp += l =>
+            KeyboardHandler.Instance.KeyUp += args =>
             {
-                OnKeyUp(new GlKeyEventArgs(l.Key));
+                OnKeyUp(new GlKeyEventArgs(args.Key));
             };
             if (!_objects.ContainsKey(GetType()))
             {
@@ -66,13 +65,13 @@ namespace OpenGlProject.Core.ObjectData
         public event TickEventHandler OnTick;
 
         public static List<GlObject> Objects => (from d in _objects.Values from o in d select o.Value).ToList();
-        public Rotation Rotation => _rotation;
-        public Position Position => _position;
+        public LinearTransformation Transformation => _transformation;
         public BasicRenderer Renderer => _renderer;
         public bool Visible
         {
             get => _visible;
             set => _visible = value;
         }
+        public bool UseVaoEnabled => _useVAO;
     }
 }

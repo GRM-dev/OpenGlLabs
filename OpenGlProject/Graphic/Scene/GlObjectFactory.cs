@@ -16,9 +16,16 @@ namespace OpenGlProject.Graphic.Scene
         {
             var vbo = new VertexBufferArray();
             vbo.Create(gl);
-            vbo.Bind(gl);
             return vbo;
         }
 
+        public static VertexBuffer CreateVertexBuffer(OpenGL gl, uint attributeIndex, float[] vertices, int stride, bool isNormalised=false)
+        {
+            var vertexBuffer = new VertexBuffer();
+            vertexBuffer.Create(gl);
+            vertexBuffer.Bind(gl);
+            vertexBuffer.SetData(gl, attributeIndex, vertices, isNormalised, stride);
+            return vertexBuffer;
+        }
     }
 }

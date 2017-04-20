@@ -15,12 +15,13 @@ namespace OpenGlProject.Graphic.Renderers
 {
     public abstract class BasicRenderer
     {
-        private VertexBufferArray _vBo;
+        protected VertexBufferArray _vBo;
         private static readonly Dictionary<Type, BasicRenderer> _renderers = new Dictionary<Type, BasicRenderer>
         {
             {typeof(Cube),new CubeRenderer() }
         };
         protected readonly List<GlObject> _objects;
+        protected int _vaoCount=3;
 
 
         protected BasicRenderer()
@@ -54,9 +55,23 @@ namespace OpenGlProject.Graphic.Renderers
             {
                 if (obj.Visible)
                 {
-                    Draw(obj);
+                    if (obj.UseVaoEnabled)
+                    {
+                        DrawVAO(obj);
+                    }
+                    else
+                    {
+                        Draw(obj);
+                    }
                 }
             }
+        }
+
+        private void DrawVAO(GlObject obj)
+        {
+            _vBo.Bind(Gl);
+            Gl.DrawArrays(OpenGL.GL_TRIANGLES, 0, _vaoCount);
+            _vBo.Unbind(Gl);
         }
 
         protected abstract void Draw(GlObject o);

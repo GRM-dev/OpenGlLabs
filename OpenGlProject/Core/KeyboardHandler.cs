@@ -15,9 +15,9 @@ namespace OpenGlProject.Core
         public KeyboardHandler()
         {
             Instance = this;
-            KeyDown += l =>
+            KeyDown += args =>
             {
-                if (l.Key == Key.Escape)
+                if (args.Key == Key.Escape)
                 {
                     var dialogResult = MessageBox.Show("Are you sure you want to exit?", "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
                     if (dialogResult == DialogResult.Yes)
@@ -26,24 +26,24 @@ namespace OpenGlProject.Core
                     }
                 }
             };
-            KeyPressed += l =>
+            KeyDown += args =>
             {
-                if (l.Key != Key.C) { return; }
+                if (args.Key != Key.C) { return; }
                 var cube = new Cube(2);
-                cube.KeyDown += (sender, args) =>
+                cube.KeyDown += (sender, eventArgs) =>
                 {
-                    if (args.Key == Key.J)
+                    if (eventArgs.Key == Key.J)
                     {
-                        cube.Rotation.Rx += 1f * args.Delta;
+                        cube.Transformation.RotateX+= 1f * eventArgs.Delta;
                     }
-                    if (args.Key == Key.L)
+                    if (eventArgs.Key == Key.L)
                     {
-                        cube.Rotation.Ry += 1f * args.Delta;
+                        cube.Transformation.RotateY += 1f * eventArgs.Delta;
                     }
                 };
-                cube.KeyUp += (sender, args) =>
+                cube.KeyUp += (sender, eventArgs) =>
                 {
-                    if (args.Key == Key.V && !args.Repeatable)
+                    if (eventArgs.Key == Key.V && !eventArgs.Repeatable)
                     {
                         cube.Visible = !cube.Visible;
                     }
