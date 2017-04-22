@@ -9,9 +9,12 @@ using Application = System.Windows.Application;
 namespace OpenGlProject.Core
 {
     public delegate void OnGlobalKeyPressed(GlKeyEventArgs args);
+
+    /// <summary>
+    /// Handles all global keyboard events and invokes glObject ones
+    /// </summary>
     public class KeyboardHandler
     {
-
         public KeyboardHandler()
         {
             Instance = this;
@@ -34,7 +37,7 @@ namespace OpenGlProject.Core
                 {
                     if (eventArgs.Key == Key.J)
                     {
-                        cube.Transformation.RotateX+= 1f * eventArgs.Delta;
+                        cube.Transformation.RotateX += 1f * eventArgs.Delta;
                     }
                     if (eventArgs.Key == Key.L)
                     {
@@ -43,7 +46,7 @@ namespace OpenGlProject.Core
                 };
                 cube.KeyUp += (sender, eventArgs) =>
                 {
-                    if (eventArgs.Key == Key.V && !eventArgs.Repeatable)
+                    if (eventArgs.Key == Key.V)
                     {
                         cube.Visible = !cube.Visible;
                     }
@@ -51,7 +54,7 @@ namespace OpenGlProject.Core
             };
         }
 
-        public void OnKeyPressed(AppCore appCore, KeyTypeEvent keyTypeEvent, Key key)
+        public void OnKeyPressed(GameCore gameCore, KeyTypeEvent keyTypeEvent, Key key)
         {
             switch (keyTypeEvent)
             {
@@ -88,11 +91,15 @@ namespace OpenGlProject.Core
             }
         }
 
+        #region Events
         public event OnGlobalKeyPressed KeyDown;
         public event OnGlobalKeyPressed KeyPressed;
         public event OnGlobalKeyPressed KeyUp;
+        #endregion
 
+        #region Properties
         public static KeyboardHandler Instance { get; private set; }
         public ConcurrentDictionary<Key, DateTime> DownKeys { get; } = new ConcurrentDictionary<Key, DateTime>();
+        #endregion
     }
 }

@@ -6,13 +6,18 @@ using SharpGL.SceneGraph.Cameras;
 
 namespace OpenGlProject.Graphic.Scene
 {
+    /// <summary>
+    /// Handles Camera transformations
+    /// </summary>
     public class GameCamera : PerspectiveCamera
     {
+        #region Fields
         private double fieldOfView = 60.0;
         private double near = 0.5;
         private double far = 40.0;
         private Vertex _viewPoint;
         private Vertex _upVertex;
+        #endregion
 
         public GameCamera()
         {
@@ -22,6 +27,9 @@ namespace OpenGlProject.Graphic.Scene
             Position = pos;
         }
 
+        /// <summary>
+        /// Assigns base, global Event Handlers
+        /// </summary>
         public void AssignCameraKeys()
         {
             var kh = KeyboardHandler.Instance;
@@ -33,35 +41,13 @@ namespace OpenGlProject.Graphic.Scene
                 var dz = 1f;
                 switch (args.Key)
                 {
-                    case Key.A:
-                        camPosition.X -= dx;
-                        _viewPoint.X -= dx;
-                        break;
-                    case Key.D:
-                        camPosition.X += dx;
-                        _viewPoint.X += dx;
-                        break;
-                    case Key.W:
+                    case Key.PageUp:
                         camPosition.Y += dy;
                         _viewPoint.Y += dy;
                         break;
-                    case Key.S:
+                    case Key.PageDown:
                         camPosition.Y -= dy;
                         _viewPoint.Y -= dy;
-                        break;
-                    case Key.Z:
-                        camPosition.Z += dz;
-                        _viewPoint.Z += dz;
-                        break;
-                    case Key.X:
-                        camPosition.Z -= dz;
-                        _viewPoint.Z -= dz;
-                        break;
-                    case Key.E:
-                        _viewPoint.X += dx;
-                        break;
-                    case Key.Q:
-                        _viewPoint.X -= dx;
                         break;
                 }
                 Position = camPosition;
@@ -71,10 +57,13 @@ namespace OpenGlProject.Graphic.Scene
         public override void TransformProjectionMatrix(OpenGL gl)
         {
             gl.Perspective(fieldOfView, AspectRatio, near, far);
-            var p =  Position+_viewPoint;
+            var p = Position + _viewPoint;
             gl.LookAt(Position.X, Position.Y, Position.Z, p.X, p.Y, p.Z, _upVertex.X, _upVertex.Y, _upVertex.Z);
         }
-
+        /// <summary>
+        /// When window is resized resize opengl window and perspective also
+        /// </summary>
+        /// <param name="gl"></param>
         public void OnResized(OpenGL gl)
         {
             // Load and clear the projection matrix.

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenGlProject.Core;
 using OpenGlProject.Core.ObjectData;
 using OpenGlProject.Core.Objects;
 using OpenGlProject.Graphic.Scene;
 using SharpGL;
-using SharpGL.VertexBuffers;
 
 namespace OpenGlProject.Graphic.Renderers
 {

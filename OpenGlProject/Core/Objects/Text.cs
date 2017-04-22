@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenGlProject.Core.ObjectData;
+﻿using OpenGlProject.Core.ObjectData;
 
 namespace OpenGlProject.Core.Objects
 {
+    /// <summary>
+    /// Displays Text on screen
+    /// </summary>
     public class Text:GlObject
     {
 

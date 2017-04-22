@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpGL;
+﻿using SharpGL;
 
 namespace OpenGlProject.Graphic.Scene
 {
     public static class Light
     {
+        /// <summary>
+        /// Initializes Lights
+        /// </summary>
+        /// <param name="gl">OpenGl instance</param>
         public static void InitLights(OpenGL gl)
         {
             float[] global_ambient = { 0.5f, 0.5f, 0.5f, 1.0f };

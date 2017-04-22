@@ -1,36 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using OpenGlProject.Core;
 using OpenGlProject.Graphic.Scene;
 using OpenGlProject.Graphic.ViewModel;
 using SharpGL;
-using SharpGL.Enumerations;
 using SharpGL.SceneGraph;
-using SharpGL.SceneGraph.Cameras;
-using SharpGL.SceneGraph.Primitives;
 using SharpGL.SceneGraph.Shaders;
-using Cube = OpenGlProject.Core.Objects.Cube;
 
 namespace OpenGlProject
 {
     /// <summary>
+    /// Contains OpenGL Window and handles its events.
+    /// Graphic Main Loop
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
@@ -44,10 +29,15 @@ namespace OpenGlProject
             WindowContext.PropertyChanged += AppContext_OnPropertyChanged;
             DataContext = WindowContext;
             InitializeComponent();
-            Closing += (sender, args) => { OnAppClose(); };
-            Core = new AppCore(this);
+            Closing += (sender, args) => { Core.Stop(); };
+            Core = new GameCore(this);
         }
 
+        /// <summary>
+        /// Called when some property in WPF Context changed
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="args"></param>
         private void AppContext_OnPropertyChanged(object o, PropertyChangedEventArgs args)
         {
             var list = new List<string> { "Tps", "RenderingObjects" };
@@ -61,11 +51,12 @@ namespace OpenGlProject
             }
         }
 
-        private void OnAppClose()
-        {
-            Core.Stop();
-        }
-
+        #region OpenGl Window
+        /// <summary>
+        /// Called on OpenGL Window Creation
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void OpenGLControl_OpenGLInitialized(object sender, OpenGLEventArgs args)
         {
             Gl = args.OpenGL;
@@ -96,6 +87,12 @@ namespace OpenGlProject
             OpenGlInitialized = true;
         }
 
+        /// <summary>
+        /// Creates Shader object from file
+        /// </summary>
+        /// <param name="eShaderType">Shader Type: Vertex or Fragment</param>
+        /// <param name="strShaderFile">Shader File</param>
+        /// <returns></returns>
         private Shader CreateShader(uint eShaderType, string strShaderFile)
         {
             string strFileData = null;
@@ -140,6 +137,12 @@ namespace OpenGlProject
             return shader;
         }
 
+        /// <summary>
+        /// OpenGL Graphic Main Loop.
+        /// Called each frame
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void OpenGLControl_OpenGLDraw(object sender, OpenGLEventArgs args)
         {
             GCamera.Project(Gl);
@@ -188,12 +191,15 @@ namespace OpenGlProject
         {
             GCamera.OnResized(args.OpenGL);
         }
+        #endregion
 
+        #region Properties
         public OpenGL Gl { get; private set; }
         public ShaderProgram Program { get; } = new ShaderProgram();
         public GameCamera GCamera { get; private set; }
         public bool OpenGlInitialized { get; private set; }
-        public AppCore Core { get; }
+        public GameCore Core { get; }
         public MainWindowContext WindowContext { get; }
+        #endregion
     }
 }

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenGlProject.Core;
 using OpenGlProject.Core.ObjectData;
 using OpenGlProject.Core.Objects;
@@ -21,12 +17,12 @@ namespace OpenGlProject.Graphic.Renderers
             {typeof(Cube),new CubeRenderer() }
         };
         protected readonly List<GlObject> _objects;
-        protected int _vaoCount=3;
+        protected int _vaoCount = 3;
 
 
         protected BasicRenderer()
         {
-            Gl = AppCore.Instance.Window.Gl;
+            Gl = GameCore.Instance.Window.Gl;
             _objects = new List<GlObject>();
             _vBo = GlObjectFactory.CreateVBO(Gl);
 
@@ -48,6 +44,9 @@ namespace OpenGlProject.Graphic.Renderers
             Objects.Remove(obj);
         }
 
+        /// <summary>
+        /// Renders all visible objects
+        /// </summary>
         public void RenderAll()
         {
             var list = ObjectsToRender();
@@ -55,6 +54,7 @@ namespace OpenGlProject.Graphic.Renderers
             {
                 if (obj.Visible)
                 {
+                    Gl.LoadIdentity();
                     if (obj.UseVaoEnabled)
                     {
                         DrawVAO(obj);
@@ -77,8 +77,10 @@ namespace OpenGlProject.Graphic.Renderers
         protected abstract void Draw(GlObject o);
         public abstract IEnumerable<GlObject> ObjectsToRender();
 
+        #region Properties
         protected OpenGL Gl { get; }
         public List<GlObject> Objects => _objects;
         public static IEnumerable<BasicRenderer> Renderers => _renderers.Values;
+        #endregion
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using System.Timers;
-using Microsoft.Win32;
 using OpenGlProject.Core.ObjectData;
 using OpenGlProject.Graphic.ViewModel;
 
@@ -10,6 +8,9 @@ namespace OpenGlProject.Core
 {
     public delegate void TickEventHandler(object sender, StopwatchEventArgs args);
 
+    /// <summary>
+    /// Game Logic Loop Class
+    /// </summary>
     public class CoreLogic
     {
         public const int TPS = 80;
@@ -60,6 +61,7 @@ namespace OpenGlProject.Core
             }
         }
 
+        #region Start & Stop
         public void Start()
         {
             if (!_thread.IsAlive)
@@ -85,17 +87,22 @@ namespace OpenGlProject.Core
                 _thread.Abort();
             }
         }
+        #endregion
 
         public long GetCurrentCycleTime()
         {
             return _stopwatch.ElapsedTicks;
         }
 
+        #region Events
         public event TickEventHandler EachTick;
         public event TickEventHandler EachCycle;
+        #endregion
 
+        #region Properties
         public int CurrentTick => _currentTick;
         public long LastTpsCount => _lastTpsCount;
         public MainWindowContext WindowContext { get; }
+        #endregion
     }
 }

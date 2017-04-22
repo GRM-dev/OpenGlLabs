@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using OpenGlProject.Core;
 using OpenGlProject.Core.ObjectData;
-using OpenGlProject.Core.Objects;
 
 namespace OpenGlProject.Graphic.Renderers
 {

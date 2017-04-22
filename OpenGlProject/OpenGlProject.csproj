@@ -84,7 +84,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Core\AppCore.cs" />
+    <Compile Include="Core\Entities\Player.cs" />
+    <Compile Include="Core\GameCore.cs" />
+    <Compile Include="Core\Entities\Entity.cs" />
     <Compile Include="Core\KeyboardHandler.cs" />
     <Compile Include="Core\Misc\GlKeyEventArgs.cs" />
     <Compile Include="Core\Misc\KeyTypeEvent.cs" />

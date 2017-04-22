@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenGlProject.Core.Misc;
 using OpenGlProject.Graphic.Renderers;
-using OpenGlProject.Graphic.Scene;
 using SharpGL.SceneGraph.Transformations;
-using SharpGL.VertexBuffers;
 
 namespace OpenGlProject.Core.ObjectData
 {
@@ -13,19 +11,20 @@ namespace OpenGlProject.Core.ObjectData
 
     public abstract class GlObject
     {
+        #region Fields
         private static readonly Dictionary<Type, Dictionary<int, GlObject>> _objects = new Dictionary<Type, Dictionary<int, GlObject>>();
         private static int _nextId;
         private readonly BasicRenderer _renderer;
         private readonly LinearTransformation _transformation;
-        protected bool _visible;
+        protected bool _visible = true;
         protected bool _useVAO = false;
+        #endregion
 
         protected GlObject()
         {
             _renderer = BasicRenderer.GetRenderer(this);
             _renderer.AddObject(this);
             _transformation = new LinearTransformation();
-            _visible = true;
             KeyboardHandler.Instance.KeyUp += args =>
             {
                 OnKeyUp(new GlKeyEventArgs(args.Key));
