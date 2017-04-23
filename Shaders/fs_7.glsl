@@ -16,7 +16,8 @@ vec4 vTexColor;
 
 void main()
 {
-	  vTexColor = texture2D(gSampler, texCoord);	
-	  float LightDiffuse = max(0.0, dot(normalize(vNormal), -LightDirection));	  
-	  outputColor = kolorek*vTexColor*vec4(LightColor*(LightAmbient+LightDiffuse),1.0);	
+	  vTexColor = texture2D(gSampler, texCoord);
+	  float LightDiffuse = max(0.0, dot(normalize(vNormal), -LightDirection));
+	  //outputColor = kolorek*vTexColor*vec4(LightColor*(LightAmbient+LightDiffuse),1.0);
+	  outputColor = kolorek*(1.0,1.0,1.0,vTexColor.r);
 }

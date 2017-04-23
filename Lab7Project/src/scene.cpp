@@ -360,9 +360,33 @@ void Scene::Draw()
 		Moon->Draw();
 	}
 
-	if(Prn)
+	mTransform = glm::scale(mTransform, glm::vec3(0.5 / float(Prn->CharWidth), 0.5 / float(Prn->CharHeight), 1.0));
+	glUniformMatrix4fv(_NormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(mTransform))));
+	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
+	if (Prn)
 	{
-		Prn->Draw('A');
+		float vT = 12.0f;
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);
+		Prn->Draw('L');
+		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
+		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
+		Prn->Draw('u');
+		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
+		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
+		Prn->Draw('k');
+		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
+		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
+		Prn->Draw('a');
+		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
+		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
+		Prn->Draw('s');
+		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
+		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
+		Prn->Draw('z');
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
 	}
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------
