@@ -62,6 +62,7 @@ private:
 	glObject *Cube;
 	glObject *Axes;
 
+	glPrinter* Prn;
 
 	glSphere *Moon;
 

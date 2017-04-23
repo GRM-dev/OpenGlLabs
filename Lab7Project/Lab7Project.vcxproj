@@ -188,14 +188,6 @@
     <ClInclude Include="src\texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\textures\angry.bmp" />
-    <Image Include="src\textures\crying.bmp" />
-    <Image Include="src\textures\happy.bmp">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </Image>
-    <Image Include="src\textures\sad.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\Shaders\fs_7.glsl" />
     <None Include="..\Shaders\vs_7.glsl" />
   </ItemGroup>
@@ -203,6 +195,16 @@
     <ProjectReference Include="..\Dependencies\freetype-2.4.0\builds\win32\vc2008\freetype.vcxproj">
       <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\textures\moon.bmp">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="src\tahoma.ttf">
+      <DeploymentContent>true</DeploymentContent>
+    </Font>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -88,6 +88,7 @@
     <Compile Include="Core\GameCore.cs" />
     <Compile Include="Core\Entities\Entity.cs" />
     <Compile Include="Core\KeyboardHandler.cs" />
+    <Compile Include="Core\Map.cs" />
     <Compile Include="Core\Misc\GlKeyEventArgs.cs" />
     <Compile Include="Core\Misc\KeyTypeEvent.cs" />
     <Compile Include="Core\ObjectData\GlObject.cs" />

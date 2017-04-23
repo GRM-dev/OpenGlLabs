@@ -96,6 +96,7 @@ void Scene::PrepareObjects()
 {
 	Axes = new glObject();
 	Moon = new glSphere(1, "src\\textures\\moon.bmp");
+	Prn = new glPrinter("src\\tahoma.ttf", 24);
 
 	Axes->BeginObject(GL_LINES);
 	Axes->SetColor(1.0, 0.0, 0.0); // os X w kolorze czerwonym
@@ -357,6 +358,11 @@ void Scene::Draw()
 	if (Moon)
 	{
 		Moon->Draw();
+	}
+
+	if(Prn)
+	{
+		Prn->Draw('A');
 	}
 }
 //------------------------------- KONIEC PLIKU -----------------------------------------------
