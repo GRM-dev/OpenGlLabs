@@ -261,7 +261,7 @@ void Scene::KeyPressed(unsigned char key, int x, int y)
 	case 68: {Cam_angle += 5.0f; break; } //D
 
 	case 32: {
-		//spacja
+		SaveAsBmp("t1.bmp"); //spacja
 		break;
 	}
 	}
@@ -278,20 +278,33 @@ void Scene::SaveAsBmp(char *filename)
 	FILE *fil; // prepare file handle
 	fopen_s(&fil, filename, "wb"); // open the file in binary mode
 	rewind(fil);
-	// four byte storage used for saving integer bytes into bmp file
+	// Header \/
 	int storage_4B = 0x00004d42; fwrite(reinterpret_cast<char *>(&storage_4B), 1, 2, fil);
-	// file size
 	storage_4B = 54 + img_size; fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
-	// four empty bytes
 	storage_4B = 0;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
-	// pixeltable address
-
+	storage_4B = 0x00000036;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
+	storage_4B = 0x00000028;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
+	storage_4B = _width;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
+	storage_4B = _height;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
+	storage_4B = 0x00180001;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
+	storage_4B = 0;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
+	storage_4B = img_size;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
+	storage_4B = 0x00000b13;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
+	storage_4B = 0x00000b13;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
+	storage_4B = 0;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
+	storage_4B = 0;  fwrite(reinterpret_cast<char *>(&storage_4B), 1, 4, fil);
 
 	//*********************** END OF THE HEADER **********************************
 
-	//TODO: Place your code here
-
-
+	unsigned char *pixels; // room for pixeltable
+	pixels = static_cast<unsigned char *>(malloc(img_size * sizeof(unsigned char)));
+	// read pixels from colorbuffer
+	glReadPixels(0, 0, _width, _height, GL_BGR_EXT, GL_UNSIGNED_BYTE, pixels);
+	// store pixels in the file
+	fwrite(pixels, 1, img_size, fil);
+	fflush(fil);	// clear file cache
+	fclose(fil);	// close the file
+	free(pixels);	// release memory
 }
 //--------------------------------------------------------------------------------------------
 // rysuje scene OpenGL
@@ -309,9 +322,12 @@ void Scene::Draw()
 	int _LightAmbient = glGetUniformLocation(program, "LightAmbient");
 	int _NormalMatrix = glGetUniformLocation(program, "normalMatrix");
 	int _Sampler = glGetUniformLocation(program, "gSampler");
+	int _ShadingMode = glGetUniformLocation(program, "ShadingMode");
 
 	// ustaw sampler tekstury
 	glUniform1i(_Sampler, 0);
+
+	glUniform1i(_ShadingMode, 1);
 
 	// ustaw macierz projekcji na perspektywiczna
 	glUniformMatrix4fv(_Projection, 1, GL_FALSE, glm::value_ptr(mProjection));
@@ -360,11 +376,23 @@ void Scene::Draw()
 		Moon->Draw();
 	}
 
-	mTransform = glm::scale(mTransform, glm::vec3(0.5 / float(Prn->CharWidth), 0.5 / float(Prn->CharHeight), 1.0));
-	glUniformMatrix4fv(_NormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(mTransform))));
-	glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 	if (Prn)
 	{
+		glUniform1i(_ShadingMode, 2);
+		/*mTransform = glm::scale(mTransform, glm::vec3(0.5 / float(Prn->CharWidth), 0.5 / float(Prn->CharHeight), 1.0));
+		mTransform = glm::rotate(mTransform, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(_NormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(mTransform))));
+		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));*/
+		//-------------------------------------------------
+		// Rysowanie w trybie ortogonalnym
+		//-------------------------------------------------
+		glm::mat4 mOrto = glm::ortho(0.0f, float(width), 0.0f, float(height));
+		mModelView = glm::mat4(1.0); mTransform = glm::mat4(1.0);
+		// ustaw macierz projekcji na ortogonalna
+		glUniformMatrix4fv(_Projection, 1, GL_FALSE, glm::value_ptr(mOrto));
+		// ustaw przeksztalcenia macierzowe
+		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
+
 		float vT = 12.0f;
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
