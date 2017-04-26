@@ -397,18 +397,18 @@ void Scene::Draw()
 		// ustaw przeksztalcenia macierzowe
 		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 
-
-
-		float vT = 12.0f;
-		std::string s = std::to_string(Cam_angle);
+		float vT = 15.0f;
+		std::string s = std::to_string(rot_y);
 		char const *pchar = s.c_str();
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_DEPTH_TEST);
-		mTransform = glm::translate(mTransform, glm::vec3(50, 0.0f, 0.0f));
+		//glDisable(GL_DEPTH_TEST);
+		mTransform = glm::translate(mTransform, glm::vec3(400, 300.0f, 0.0f));
+		mTransform = glm::translate(mTransform, glm::vec3(120 * sin(PI*rot_y / 180), 0.0f, 0.0f));
+		mTransform = glm::translate(mTransform, glm::vec3(0.0f, 0.0f, sin(PI*rot_y / 180)));
 		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 		Prn->Draw('M');
-		mTransform = glm::translate(mTransform, glm::vec3(vT + 10, 0.0f, 0.0f));
+		mTransform = glm::translate(mTransform, glm::vec3(vT + 5, 0.0f, 0.0f));
 		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 		Prn->Draw('o');
 		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
@@ -419,8 +419,8 @@ void Scene::Draw()
 		Prn->Draw('n');
 		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
 		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
-		Prn->Draw(' ');
-		while (*pchar != '.'&&*pchar)
+		//Prn->Draw(' ');
+		while (*pchar != '.' && *pchar)
 		{
 			mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
 			glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
