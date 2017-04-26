@@ -84,6 +84,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\Config\Configuration.cs" />
+    <Compile Include="Core\Config\ConfType.cs" />
     <Compile Include="Core\Entities\Player.cs" />
     <Compile Include="Core\GameCore.cs" />
     <Compile Include="Core\Entities\Entity.cs" />
@@ -114,6 +116,7 @@
     <Compile Include="Graphic\Scene\GameCamera.cs" />
     <Compile Include="Graphic\Scene\GlObjectFactory.cs" />
     <Compile Include="Graphic\Scene\Light.cs" />
+    <Compile Include="Graphic\Scene\Scene.cs" />
     <Compile Include="Graphic\ViewModel\MainWindowContext.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

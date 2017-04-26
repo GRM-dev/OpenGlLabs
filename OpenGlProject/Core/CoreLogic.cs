@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using OpenGlProject.Core.Config;
 using OpenGlProject.Core.ObjectData;
 using OpenGlProject.Graphic.ViewModel;
 
@@ -13,7 +14,7 @@ namespace OpenGlProject.Core
     /// </summary>
     public class CoreLogic
     {
-        public const int TPS = 80;
+        public static readonly int TPS = Configuration.Get<int>(ConfType.TPS);
         public readonly TimeSpan TICK_TIME = TimeSpan.FromMilliseconds(1000 / TPS);
         private readonly Thread _thread;
         private bool _stop;

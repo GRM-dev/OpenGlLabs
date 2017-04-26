@@ -22,7 +22,7 @@ namespace OpenGlProject.Graphic.Renderers
 
         protected BasicRenderer()
         {
-            Gl = GameCore.Instance.Window.Gl;
+            Gl = GameCore.Instance.Window.Scene.Gl;
             _objects = new List<GlObject>();
             _vBo = GlObjectFactory.CreateVBO(Gl);
 

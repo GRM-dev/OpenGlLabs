@@ -17,7 +17,7 @@ namespace OpenGlProject.Core.ObjectData
         private readonly BasicRenderer _renderer;
         private readonly LinearTransformation _transformation;
         protected bool _visible = true;
-        protected bool _useVAO = false;
+        protected bool _useVAO = true;
         #endregion
 
         protected GlObject()

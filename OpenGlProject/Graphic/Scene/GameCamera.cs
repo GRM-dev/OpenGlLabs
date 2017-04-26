@@ -65,7 +65,7 @@ namespace OpenGlProject.Graphic.Scene
         /// </summary>
         /// <param name="gl"></param>
         public void OnResized(OpenGL gl)
-        {
+        {//me has permission to grant 3 key fragments to players with best positive behavior in this game.
             // Load and clear the projection matrix.
             gl.MatrixMode(OpenGL.GL_PROJECTION);
             gl.LoadIdentity();
