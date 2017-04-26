@@ -379,6 +379,9 @@ void Scene::Draw()
 	if (Prn)
 	{
 		glUniform1i(_ShadingMode, 2);
+		//-------------------------------------------------
+		// Rysowanie w trybie perspektywistycznym
+		//-------------------------------------------------
 		/*mTransform = glm::scale(mTransform, glm::vec3(0.5 / float(Prn->CharWidth), 0.5 / float(Prn->CharHeight), 1.0));
 		mTransform = glm::rotate(mTransform, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(_NormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(mTransform))));
@@ -387,32 +390,44 @@ void Scene::Draw()
 		// Rysowanie w trybie ortogonalnym
 		//-------------------------------------------------
 		glm::mat4 mOrto = glm::ortho(0.0f, float(width), 0.0f, float(height));
-		mModelView = glm::mat4(1.0); mTransform = glm::mat4(1.0);
+		mModelView = glm::mat4(1.0);
+		mTransform = glm::mat4(1.0);
 		// ustaw macierz projekcji na ortogonalna
 		glUniformMatrix4fv(_Projection, 1, GL_FALSE, glm::value_ptr(mOrto));
 		// ustaw przeksztalcenia macierzowe
 		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
 
+
+
 		float vT = 12.0f;
+		std::string s = std::to_string(Cam_angle);
+		char const *pchar = s.c_str();
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
-		Prn->Draw('L');
+		mTransform = glm::translate(mTransform, glm::vec3(50, 0.0f, 0.0f));
+		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
+		Prn->Draw('M');
+		mTransform = glm::translate(mTransform, glm::vec3(vT + 10, 0.0f, 0.0f));
+		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
+		Prn->Draw('o');
 		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
 		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
-		Prn->Draw('u');
+		Prn->Draw('o');
 		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
 		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
-		Prn->Draw('k');
+		Prn->Draw('n');
 		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
 		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
-		Prn->Draw('a');
-		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
-		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
-		Prn->Draw('s');
-		mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
-		glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
-		Prn->Draw('z');
+		Prn->Draw(' ');
+		while (*pchar != '.'&&*pchar)
+		{
+			mTransform = glm::translate(mTransform, glm::vec3(vT, 0.0f, 0.0f));
+			glUniformMatrix4fv(_ModelView, 1, GL_FALSE, glm::value_ptr(mModelView*mTransform));
+			Prn->Draw(*pchar);
+			*pchar++;
+		}
+
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
 	}

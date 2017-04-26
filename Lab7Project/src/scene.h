@@ -16,6 +16,7 @@
 #include "printer.h"
 #include "sphere.h"
 #include "texture.h"
+#include "string"
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
