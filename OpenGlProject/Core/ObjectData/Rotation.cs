@@ -1,4 +1,4 @@
-namespace OpenGlProject.Core.ObjectData
+namespace SenryakuShuriken.Core.ObjectData
 {
     public class Rotation
     {

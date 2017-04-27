@@ -2,11 +2,11 @@
 using System.Collections.Concurrent;
 using System.Windows.Forms;
 using System.Windows.Input;
-using OpenGlProject.Core.Misc;
-using OpenGlProject.Core.Objects;
+using SenryakuShuriken.Core.Misc;
+using SenryakuShuriken.Core.Objects;
 using Application = System.Windows.Application;
 
-namespace OpenGlProject.Core
+namespace SenryakuShuriken.Core
 {
     public delegate void OnGlobalKeyPressed(GlKeyEventArgs args);
 

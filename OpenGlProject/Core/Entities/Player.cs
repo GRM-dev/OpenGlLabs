@@ -1,4 +1,4 @@
-﻿namespace OpenGlProject.Core.Entities
+﻿namespace SenryakuShuriken.Core.Entities
 {
     public class Player : Entity
     {

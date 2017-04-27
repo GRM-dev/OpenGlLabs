@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenGlProject.Core;
+using SenryakuShuriken.Core;
 using SharpGL;
 using SharpGL.SceneGraph.Shaders;
 
-namespace OpenGlProject.Graphic.Scene
+namespace SenryakuShuriken.Graphic.Scene
 {
     /// <summary>
     /// All OpenGl objects container for displaying

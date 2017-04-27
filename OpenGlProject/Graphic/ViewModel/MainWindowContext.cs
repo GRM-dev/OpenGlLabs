@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using OpenGlProject.Properties;
+using SenryakuShuriken.Properties;
 
-namespace OpenGlProject.Graphic.ViewModel
+namespace SenryakuShuriken.Graphic.ViewModel
 {
     public sealed class MainWindowContext : INotifyPropertyChanged
     {

@@ -1,7 +1,7 @@
-﻿using OpenGlProject.Core.Misc;
-using OpenGlProject.Graphic.Renderers;
+﻿using SenryakuShuriken.Core.Misc;
+using SenryakuShuriken.Graphic.Renderers;
 
-namespace OpenGlProject.Core
+namespace SenryakuShuriken.Core
 {
     /// <summary>
     /// Main class of our Game.

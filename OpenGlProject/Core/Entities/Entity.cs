@@ -1,6 +1,6 @@
-﻿using OpenGlProject.Core.ObjectData;
+﻿using SenryakuShuriken.Core.ObjectData;
 
-namespace OpenGlProject.Core.Entities
+namespace SenryakuShuriken.Core.Entities
 {
     /// <summary>
     /// Basic game entity (interactable object)

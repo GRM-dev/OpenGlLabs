@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenGlProject.Core;
-using OpenGlProject.Core.ObjectData;
-using OpenGlProject.Core.Objects;
-using OpenGlProject.Graphic.Scene;
+using SenryakuShuriken.Core;
+using SenryakuShuriken.Core.ObjectData;
+using SenryakuShuriken.Core.Objects;
+using SenryakuShuriken.Graphic.Scene;
 using SharpGL;
 using SharpGL.VertexBuffers;
 
-namespace OpenGlProject.Graphic.Renderers
+namespace SenryakuShuriken.Graphic.Renderers
 {
     public abstract class BasicRenderer
     {

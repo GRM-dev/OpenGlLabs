@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace OpenGlProject.Core.Config
+namespace SenryakuShuriken.Core.Config
 {
     public static class Configuration
     {

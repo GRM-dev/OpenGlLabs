@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using OpenGlProject.Core.ObjectData;
-using OpenGlProject.Core.Objects;
+using SenryakuShuriken.Core.ObjectData;
+using SenryakuShuriken.Core.Objects;
 
-namespace OpenGlProject.Graphic.Renderers
+namespace SenryakuShuriken.Graphic.Renderers
 {
     public class TextRenderer : BasicRenderer
     {

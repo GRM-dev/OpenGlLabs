@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace OpenGlProject.Core.Misc
+namespace SenryakuShuriken.Core.Misc
 {
     public class GlKeyEventArgs : EventArgs
     {

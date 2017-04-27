@@ -1,4 +1,4 @@
-﻿namespace OpenGlProject.Core.Misc
+﻿namespace SenryakuShuriken.Core.Misc
 {
     public enum KeyTypeEvent
     {

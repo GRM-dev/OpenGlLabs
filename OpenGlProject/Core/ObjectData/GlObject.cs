@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenGlProject.Core.Misc;
-using OpenGlProject.Graphic.Renderers;
+using SenryakuShuriken.Core.Misc;
+using SenryakuShuriken.Graphic.Renderers;
 using SharpGL.SceneGraph.Transformations;
 
-namespace OpenGlProject.Core.ObjectData
+namespace SenryakuShuriken.Core.ObjectData
 {
     public delegate void KeyEventHandler(GlObject sender, GlKeyEventArgs e);
 

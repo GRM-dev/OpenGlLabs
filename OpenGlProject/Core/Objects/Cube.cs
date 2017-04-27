@@ -1,6 +1,6 @@
-﻿using OpenGlProject.Core.ObjectData;
+﻿using SenryakuShuriken.Core.ObjectData;
 
-namespace OpenGlProject.Core.Objects
+namespace SenryakuShuriken.Core.Objects
 {
     public class Cube : GlObject
     {

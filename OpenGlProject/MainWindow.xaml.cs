@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Windows;
 using System.Windows.Threading;
-using OpenGlProject.Core;
-using OpenGlProject.Graphic.Scene;
-using OpenGlProject.Graphic.ViewModel;
-using SharpGL;
+using SenryakuShuriken.Core;
+using SenryakuShuriken.Graphic.ViewModel;
 using SharpGL.SceneGraph;
-using SharpGL.SceneGraph.Shaders;
-using Scene = OpenGlProject.Graphic.Scene.Scene;
+using Scene = SenryakuShuriken.Graphic.Scene.Scene;
 
-namespace OpenGlProject
+namespace SenryakuShuriken
 {
     /// <summary>
     /// Contains OpenGL Window and handles its events.

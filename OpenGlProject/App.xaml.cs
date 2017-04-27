@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace OpenGlProject
+namespace SenryakuShuriken
 {
     /// <summary>
     /// Interaction logic for App.xaml

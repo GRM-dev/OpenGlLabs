@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using OpenGlProject.Core.ObjectData;
+using SenryakuShuriken.Core.ObjectData;
 
-namespace OpenGlProject.Graphic.Renderers
+namespace SenryakuShuriken.Graphic.Renderers
 {
     internal class BallRenderer : BasicRenderer
     {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using OpenGlProject.Core.Config;
-using OpenGlProject.Core.ObjectData;
-using OpenGlProject.Graphic.ViewModel;
+using SenryakuShuriken.Core.Config;
+using SenryakuShuriken.Core.ObjectData;
+using SenryakuShuriken.Graphic.ViewModel;
 
-namespace OpenGlProject.Core
+namespace SenryakuShuriken.Core
 {
     public delegate void TickEventHandler(object sender, StopwatchEventArgs args);
 

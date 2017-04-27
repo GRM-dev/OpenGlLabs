@@ -1,6 +1,6 @@
 ﻿using SharpGL;
 
-namespace OpenGlProject.Graphic.Scene
+namespace SenryakuShuriken.Graphic.Scene
 {
     public static class Light
     {

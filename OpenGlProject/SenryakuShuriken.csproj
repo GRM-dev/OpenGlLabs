@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{205EC7C5-A7B2-43C2-B03A-9F1F6139D073}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>OpenGlProject</RootNamespace>
-    <AssemblyName>OpenGlProject</AssemblyName>
+    <RootNamespace>SenryakuShuriken</RootNamespace>
+    <AssemblyName>SenryakuShuriken</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -32,6 +32,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Icons\tray.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpGL, Version=2.4.0.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
@@ -89,8 +92,12 @@
     <Compile Include="Core\Entities\Player.cs" />
     <Compile Include="Core\GameCore.cs" />
     <Compile Include="Core\Entities\Entity.cs" />
+    <Compile Include="Core\Handlers\ManifestResourceLoader.cs" />
     <Compile Include="Core\KeyboardHandler.cs" />
-    <Compile Include="Core\Map.cs" />
+    <Compile Include="Core\MapGen\Map.cs" />
+    <Compile Include="Core\MapGen\MapField.cs" />
+    <Compile Include="Core\MapGen\MapFieldType.cs" />
+    <Compile Include="Core\MapGen\Orientation.cs" />
     <Compile Include="Core\Misc\GlKeyEventArgs.cs" />
     <Compile Include="Core\Misc\KeyTypeEvent.cs" />
     <Compile Include="Core\ObjectData\GlObject.cs" />
@@ -152,7 +159,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Core\Handlers\" />
+    <Folder Include="Resources\Maps\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Icons\tray.ico">

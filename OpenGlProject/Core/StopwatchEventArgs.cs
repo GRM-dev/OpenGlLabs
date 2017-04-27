@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenGlProject.Core
+namespace SenryakuShuriken.Core
 {
     public class StopwatchEventArgs : EventArgs
     {

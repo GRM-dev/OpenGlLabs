@@ -1,10 +1,10 @@
 ﻿using System.Windows.Input;
-using OpenGlProject.Core;
+using SenryakuShuriken.Core;
 using SharpGL;
 using SharpGL.SceneGraph;
 using SharpGL.SceneGraph.Cameras;
 
-namespace OpenGlProject.Graphic.Scene
+namespace SenryakuShuriken.Graphic.Scene
 {
     /// <summary>
     /// Handles Camera transformations
