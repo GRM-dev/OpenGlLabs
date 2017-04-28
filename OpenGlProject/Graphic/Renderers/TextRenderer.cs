@@ -11,11 +11,11 @@ namespace SenryakuShuriken.Graphic.Renderers
         }
 
 
-        protected override void Draw(GlObject o)
+        protected override void DrawImmediate(GlObject o)
         {
         }
 
-        public override IEnumerable<GlObject> ObjectsToRender()
+        protected override IEnumerable<GlObject> ObjectsToRender()
         {
             return Texts;
         }

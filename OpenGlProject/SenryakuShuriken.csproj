@@ -37,6 +37,9 @@
     <ApplicationIcon>Resources\Icons\tray.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GlmNet, Version=0.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GlmNet.0.5.1.0\lib\net40\GlmNet.dll</HintPath>
+    </Reference>
     <Reference Include="SharpGL, Version=2.4.0.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpGL.2.4.0.0\lib\net40\SharpGL.dll</HintPath>
     </Reference>
@@ -154,6 +157,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Shaders\PerPixel.frag" />
+    <None Include="Shaders\PerPixel.vert" />
+    <None Include="Shaders\Toon.frag" />
+    <None Include="Shaders\Toon.vert" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

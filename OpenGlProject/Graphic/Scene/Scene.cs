@@ -12,8 +12,8 @@ namespace SenryakuShuriken.Graphic.Scene
     /// </summary>
     public class Scene
     {
-        private readonly string strVertexShader = "../../../Shaders/fs_4.glsl";
-        private readonly string strFragmentShader = "../../../Shaders/vs_4.glsl";
+        private readonly string strVertexShader = "../../../Shaders/PerPixel.vert";
+        private readonly string strFragmentShader = "../../../Shaders/PerPixel.frag";
 
         private readonly GameCore _core;
 

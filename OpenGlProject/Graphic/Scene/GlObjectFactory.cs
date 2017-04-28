@@ -1,4 +1,8 @@
-﻿using SharpGL;
+﻿using System.Collections.Generic;
+using System.Linq;
+using GlmNet;
+using SharpGL;
+using SharpGL.SceneGraph;
 using SharpGL.VertexBuffers;
 
 namespace SenryakuShuriken.Graphic.Scene
@@ -35,6 +39,15 @@ namespace SenryakuShuriken.Graphic.Scene
             return vertexBuffer;
         }
 
+        public static VertexBuffer CreateVertexBuffer(OpenGL gl, uint attributeIndex, List<vec3> vertices)
+        {
+            var vertexBuffer = new VertexBuffer();
+            vertexBuffer.Create(gl);
+            vertexBuffer.Bind(gl);
+            vertexBuffer.SetData(gl, attributeIndex, vertices.SelectMany(v => v.to_array()).ToArray(), false, 3);
+            return vertexBuffer;
+        }
+
         /// <summary>
         /// Creates IndexBuffer (IB)
         /// </summary>
@@ -48,6 +61,12 @@ namespace SenryakuShuriken.Graphic.Scene
             indexBuffer.Bind(gl);
             indexBuffer.SetData(gl, indices);
             return indexBuffer;
+        }
+
+        public static IndexBuffer CreateIndexBuffer(OpenGL gl, List<Index> indices)
+        {
+            var arr = indices.Select(i =>  (ushort)i.Vertex).ToArray();
+            return CreateIndexBuffer(gl, arr);
         }
     }
 }

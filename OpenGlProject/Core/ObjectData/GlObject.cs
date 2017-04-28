@@ -17,7 +17,7 @@ namespace SenryakuShuriken.Core.ObjectData
         private readonly BasicRenderer _renderer;
         private readonly LinearTransformation _transformation;
         protected bool _visible = true;
-        protected bool _useVAO = true;
+        protected bool _useRetainedMode = true;
         #endregion
 
         protected GlObject()
@@ -71,6 +71,6 @@ namespace SenryakuShuriken.Core.ObjectData
             get => _visible;
             set => _visible = value;
         }
-        public bool UseVaoEnabled => _useVAO;
+        public bool UseRetainedRenderMode => _useRetainedMode;
     }
 }

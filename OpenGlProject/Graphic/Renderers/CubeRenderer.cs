@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using GlmNet;
 using SenryakuShuriken.Core.ObjectData;
 using SenryakuShuriken.Graphic.Scene;
 using SharpGL;
 using SharpGL.SceneGraph;
+using SharpGL.SceneGraph.Assets;
 using SharpGL.SceneGraph.Primitives;
 using Cube = SenryakuShuriken.Core.Objects.Cube;
 
@@ -14,70 +17,77 @@ namespace SenryakuShuriken.Graphic.Renderers
 
         protected internal CubeRenderer() : base()
         {
-            var p=new Polygon();
+            DrawNormals = true;
+            var m = new Material();
+            var l = Light.GetLight();
+            m.CalculateLighting(l, 1.0f);
+            m.Diffuse=Color.Chartreuse;
+            m.Bind(Gl);
+            Material = m;
 
-            p.UVs.Add(new UV(0, 0));
-            p.UVs.Add(new UV(0, 1));
-            p.UVs.Add(new UV(1, 1));
-            p.UVs.Add(new UV(1, 0));
+            UVs.Add(new UV(0, 0));
+            UVs.Add(new UV(0, 1));
+            UVs.Add(new UV(1, 1));
+            UVs.Add(new UV(1, 0));
 
             //	Add the vertices.
-            p.Vertices.Add(new Vertex(-1, -1, -1));
-            p.Vertices.Add(new Vertex(1, -1, -1));
-            p.Vertices.Add(new Vertex(1, -1, 1));
-            p.Vertices.Add(new Vertex(-1, -1, 1));
-            p.Vertices.Add(new Vertex(-1, 1, -1));
-            p.Vertices.Add(new Vertex(1, 1, -1));
-            p.Vertices.Add(new Vertex(1, 1, 1));
-            p.Vertices.Add(new Vertex(-1, 1, 1));
+            Vertices.Add(new vec3(-1, -1, -1));
+            Vertices.Add(new vec3(1, -1, -1));
+            Vertices.Add(new vec3(1, -1, 1));
+            Vertices.Add(new vec3(-1, -1, 1));
+            Vertices.Add(new vec3(-1, 1, -1));
+            Vertices.Add(new vec3(1, 1, -1));
+            Vertices.Add(new vec3(1, 1, 1));
+            Vertices.Add(new vec3(-1, 1, 1));
+            GlObjectFactory.CreateVertexBuffer(Gl, 0U, Vertices);
 
             //	Add the faces.
-            Face face = new Face(); //	bottom
+            var face = new Face(); //	bottom
             face.Indices.Add(new Index(1, 0));
             face.Indices.Add(new Index(2, 1));
             face.Indices.Add(new Index(3, 2));
             face.Indices.Add(new Index(0, 3));
-            p.Faces.Add(face);
+            Faces.Add(face);
 
             face = new Face();      //	top
             face.Indices.Add(new Index(7, 0));
             face.Indices.Add(new Index(6, 1));
             face.Indices.Add(new Index(5, 2));
             face.Indices.Add(new Index(4, 3));
-            p.Faces.Add(face);
+            Faces.Add(face);
 
             face = new Face();      //	right
             face.Indices.Add(new Index(5, 0));
             face.Indices.Add(new Index(6, 1));
             face.Indices.Add(new Index(2, 2));
             face.Indices.Add(new Index(1, 3));
-            p.Faces.Add(face);
+            Faces.Add(face);
 
             face = new Face();      //	left
             face.Indices.Add(new Index(7, 0));
             face.Indices.Add(new Index(4, 1));
             face.Indices.Add(new Index(0, 2));
             face.Indices.Add(new Index(3, 3));
-            p.Faces.Add(face);
+            Faces.Add(face);
 
             face = new Face();      // front
             face.Indices.Add(new Index(4, 0));
             face.Indices.Add(new Index(5, 1));
             face.Indices.Add(new Index(1, 2));
             face.Indices.Add(new Index(0, 3));
-            p.Faces.Add(face);
+            Faces.Add(face);
 
             face = new Face();      //	back
             face.Indices.Add(new Index(6, 0));
             face.Indices.Add(new Index(7, 1));
             face.Indices.Add(new Index(3, 2));
             face.Indices.Add(new Index(2, 3));
-            p.Faces.Add(face);
-            
-            _vaoCount = 6;
+            Faces.Add(face);
+            GlObjectFactory.CreateIndexBuffer(Gl, face.Indices);
+            _vBo.Unbind(Gl);
         }
 
-        protected override void Draw(GlObject o)
+        protected override void DrawImmediate(GlObject o)
         {
             var c = o as Cube;
             if (c == null)
@@ -128,7 +138,7 @@ namespace SenryakuShuriken.Graphic.Renderers
             Gl.End();
         }
 
-        public override IEnumerable<GlObject> ObjectsToRender()
+        protected override IEnumerable<GlObject> ObjectsToRender()
         {
             return Cubes;
         }

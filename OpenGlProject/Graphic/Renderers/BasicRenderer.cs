@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using GlmNet;
 using SenryakuShuriken.Core;
 using SenryakuShuriken.Core.ObjectData;
-using SenryakuShuriken.Core.Objects;
 using SenryakuShuriken.Graphic.Scene;
 using SharpGL;
+using SharpGL.SceneGraph.Core;
+using SharpGL.SceneGraph.Primitives;
 using SharpGL.VertexBuffers;
+using Cube = SenryakuShuriken.Core.Objects.Cube;
 
 namespace SenryakuShuriken.Graphic.Renderers
 {
-    public abstract class BasicRenderer
+    public abstract class BasicRenderer : Polygon
     {
+        /// <summary>The vertices that make up the polygon.</summary>
+        private List<vec3> vertices = new List<vec3>();
         protected VertexBufferArray _vBo;
         private static readonly Dictionary<Type, BasicRenderer> _renderers = new Dictionary<Type, BasicRenderer>
         {
             {typeof(Cube),new CubeRenderer() }
         };
         protected readonly List<GlObject> _objects;
-        protected int _vaoCount = 3;
 
 
         protected BasicRenderer()
@@ -44,6 +49,7 @@ namespace SenryakuShuriken.Graphic.Renderers
             Objects.Remove(obj);
         }
 
+        #region Render
         /// <summary>
         /// Renders all visible objects
         /// </summary>
@@ -55,30 +61,55 @@ namespace SenryakuShuriken.Graphic.Renderers
                 if (obj.Visible)
                 {
                     Gl.LoadIdentity();
-                    if (obj.UseVaoEnabled)
+                    if (obj.UseRetainedRenderMode)
                     {
-                        DrawVAO(obj);
+                        DrawRetained(obj);
                     }
                     else
                     {
-                        Draw(obj);
+                        DrawImmediate(obj);
                     }
                 }
             }
         }
 
-        private void DrawVAO(GlObject obj)
+        private void DrawRetained(GlObject obj)
         {
+            Transformation = obj.Transformation;
             _vBo.Bind(Gl);
-            Gl.DrawArrays(OpenGL.GL_TRIANGLES, 0, _vaoCount);
+            PushObjectSpace(Gl);
+            Material?.Push(Gl);
+            Render(Gl, RenderMode.Render);
+            Material?.Pop(Gl);
+            PopObjectSpace(Gl);
             _vBo.Unbind(Gl);
         }
 
-        protected abstract void Draw(GlObject o);
-        public abstract IEnumerable<GlObject> ObjectsToRender();
+        public override void Render(OpenGL gl, RenderMode renderMode)
+        {
+            Gl.DrawElements(OpenGL.GL_TRIANGLES, IndicesLength, OpenGL.GL_UNSIGNED_SHORT, IntPtr.Zero);
+        }
+
+        private int IndicesLength => Faces.Sum(face => face.Count);
+
+        protected abstract void DrawImmediate(GlObject obj);
+        #endregion
+
+        protected abstract IEnumerable<GlObject> ObjectsToRender();
 
         #region Properties
         protected OpenGL Gl { get; }
+        public List<vec3> Vertices
+        {
+            get
+            {
+                return this.vertices;
+            }
+            set
+            {
+                this.vertices = value;
+            }
+        }
         public List<GlObject> Objects => _objects;
         public static IEnumerable<BasicRenderer> Renderers => _renderers.Values;
         #endregion
