@@ -1,0 +1,228 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+         classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+    }
+}
+
+import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.internal.os.OperatingSystem
+apply from: "http://dl.bintray.com/content/shemnon/javafx-gradle/8.1.1/javafx.plugin"
+
+apply plugin: 'java'
+apply plugin: 'pmd'
+apply plugin: 'eclipse'
+apply plugin: 'gradle-one-jar'
+apply plugin: 'signing'
+
+group = "eu.grmdev"
+description = "LWJGL Game with ninja"
+version = '1.0'
+def mainClassName = "eu.grmdev.senryaku.Main"
+def appId = "SenryakuShuriken"
+archivesBaseName = appId
+project.ext.lwjglVersion = "3.1.1"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+configurations {
+	provided
+	compile.extendsFrom provided
+}
+
+switch ( OperatingSystem.current() ) {
+	case OperatingSystem.WINDOWS:
+		project.ext.lwjglNatives = "natives-windows"
+		break
+	case OperatingSystem.LINUX:
+		project.ext.lwjglNatives = "natives-linux"
+	break
+	case OperatingSystem.MAC_OS:
+		project.ext.lwjglNatives = "natives-macos"
+		break
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': appId,
+                   'Implementation-Version': version
+    }
+}
+
+task execJar(type: OneJar) {
+	mainClass = mainClassName
+	archiveName = archivesBaseName+"-V"+version+".jar"
+}
+
+task javadocJar(type: Jar) {
+	classifier = 'javadoc'
+	from javadoc
+}
+
+task sourcesJar(type: Jar) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+artifacts {
+	archives javadocJar, sourcesJar
+}
+
+repositories {
+	mavenCentral()
+	mavenLocal()
+	jcenter()
+}
+
+dependencies {
+	compile group: 'com.google.guava', 						name: 'guava', 						version: '21.0'
+	compile group: 'org.apache.commons', 					name: 'commons-lang3', 				version: '3.5'
+	compile group: 'org.apache.logging.log4j', 				name: 'log4j-core', 				version: '2.8.2'
+	compile group: 'org.apache.logging.log4j', 				name: 'log4j', 						version: '2.8.2'
+	compile group: 'com.guigarage', 						name: 'flatter', 					version: '0.7'
+	compile "org.lwjgl:lwjgl:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-assimp:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-bgfx:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-egl:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-jawt:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-lmdb:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-nanovg:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-nfd:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-nuklear:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-openal:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-opencl:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-opengl:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-opengles:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-ovr:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-par:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-sse:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-stb:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-vulkan:${lwjglVersion}"
+	compile "org.lwjgl:lwjgl-xxhash:${lwjglVersion}"
+	runtime "org.lwjgl:lwjgl:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-assimp:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-bgfx:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-glfw:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-lmdb:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-nanovg:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-nfd:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-nuklear:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-openal:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-opengl:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-opengles:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-ovr:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-par:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-sse:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-stb:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}:${lwjglNatives}"
+	runtime "org.lwjgl:lwjgl-xxhash:${lwjglVersion}:${lwjglNatives}"
+
+	compileOnly('org.projectlombok:lombok')
+	providedCompile "org.projectlombok:lombok:1.16.16"
+
+	testCompile 'junit:junit:4.12'
+	testCompile 'org.assertj:assertj-core:3.6.2'
+}
+
+task loadProperties {
+	def home = System.properties['user.home']
+	def fileProp = home + "/keystore/senryaku.gradle.properties";
+	def fileKey = home + "/keystore/senryaku_keystore.jks"
+	Properties props = new Properties()
+	
+	if (!file(fileProp).exists()) {
+		if(!file(home + "/keystore").exists()) {
+			file(home + "/keystore").mkdir()
+		}
+		if(file(fileProp).createNewFile()) {
+			println "File " + fileProp + " Created"
+			if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+				println "*** WINDOWS "
+				println "You should write properties on your own (rPass, storePass & senryaku_key_url)"
+			} else if (Os.isFamily(Os.FAMILY_UNIX)) {
+				println "*** LINUX "
+				props.setProperty("rPass", "$System.env.HB_SIGN_REL_PSWD")
+				props.setProperty("storePass", "$System.env.HB_SIGN_STORE_PSWD")
+				props.setProperty("senryaku_key_url", "$System.env.HB_KEYSTORE")
+				props.store(new FileOutputStream(fileProp), null)
+			}
+		} else {
+			println "Error creating file!"
+		}
+	}
+	
+	props.load(new FileInputStream(fileProp))
+	project.ext.rPass = props.getProperty('rPass')
+	project.ext.storePass = props.getProperty('storePass')
+	project.ext.key_file_url = props.getProperty('senryaku_key_url')
+	
+	def f = new File(fileKey)
+	if (!f.exists()) {
+		println key_file_url
+		new URL(key_file_url).withInputStream{ i -> f.withOutputStream{ it << i }}
+	}
+}
+
+build.dependsOn loadProperties
+
+String getProjectProperty(String propertyName) {
+	project.hasProperty(propertyName) ? project.property(propertyName) : null
+}
+
+javafx {
+	javaRuntime = System.properties['JAVA_HOME']
+	appID appId
+	appName appId
+	mainClass = mainClassName
+	
+	jvmArgs = ['-XX:+AggressiveOpts', '-XX:CompileThreshold=1']
+	systemProperties = ['prism.disableRegionCaching':'true']
+	arguments = ['-l', '--fast']
+
+	// Generate key: keytool -genkey -alias release -keyalg RSA -keystore keystore.jks -keysize 2048
+	releaseKey {
+		alias = 'release'
+		keyPass = getProjectProperty('rPass')
+		keyStore = file("${System.properties['user.home']}/keystore/senryaku_keystore.jks")
+		storePass = getProjectProperty('storePass')
+	}
+	
+	signingMode 'release'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java", "src/main/resources"]
+        }
+    }
+}
+
+task pmd {
+	doLast {
+		println 'Running PMD static code analysis'
+		ant {
+			taskdef(name:'pmd', classname:'net.sourceforge.pmd.ant.PMDTask', classpath: configurations.pmdConf.asPath)
+			pmd(shortFilenames:'true', failonruleviolation:'true', rulesetfiles:'conf/pmd-rules.xml') {
+				formatter(type:'csv', tofile:'myreport.csv', toConsole:'true')
+				fileset(dir: "src/main/java") {
+					include(name: '**/*.java')
+				}
+				fileset(dir: "src/test/java") {
+					include(name: '**/*.java')
+				}        
+			}
+		}
+	}
+}
