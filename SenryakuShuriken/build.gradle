@@ -23,7 +23,9 @@ version = '1.0'
 def mainClassName = "eu.grmdev.senryaku.Main"
 def appId = "SenryakuShuriken"
 archivesBaseName = appId
+
 project.ext.lwjglVersion = "3.1.1"
+project.ext.jomlVersion = "1.9.3"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -83,6 +85,7 @@ dependencies {
 	compile group: 'org.apache.logging.log4j', 				name: 'log4j-core', 				version: '2.8.2'
 	compile group: 'org.apache.logging.log4j', 				name: 'log4j', 						version: '2.8.2'
 	compile group: 'com.guigarage', 						name: 'flatter', 					version: '0.7'
+	compile "org.joml:joml:${jomlVersion}"
 	compile "org.lwjgl:lwjgl:${lwjglVersion}"
 	compile "org.lwjgl:lwjgl-assimp:${lwjglVersion}"
 	compile "org.lwjgl:lwjgl-bgfx:${lwjglVersion}"
