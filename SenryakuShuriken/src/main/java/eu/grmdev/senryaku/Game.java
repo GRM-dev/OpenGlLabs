@@ -1,11 +1,11 @@
 package eu.grmdev.senryaku;
 
 import eu.grmdev.senryaku.core.LogicThread;
-import eu.grmdev.senryaku.graphic.Window;
+import eu.grmdev.senryaku.graphic.GameWindow;
 
 public class Game {
 	private static Game instance;
-	private Window graphic;
+	private GameWindow graphic;
 	private LogicThread logicThread;
 	
 	/**
@@ -13,7 +13,7 @@ public class Game {
 	 */
 	public void start() {
 		instance = this;
-		graphic = new Window();
+		graphic = new GameWindow();
 		logicThread = new LogicThread(graphic);
 		graphic.start();
 		logicThread.start();

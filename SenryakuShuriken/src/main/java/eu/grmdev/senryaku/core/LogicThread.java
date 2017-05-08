@@ -1,11 +1,11 @@
 package eu.grmdev.senryaku.core;
 
-import eu.grmdev.senryaku.graphic.Window;
+import eu.grmdev.senryaku.graphic.GameWindow;
 
 public class LogicThread extends Thread {
-	private Window graphic;
+	private GameWindow graphic;
 	
-	public LogicThread(Window graphic) {
+	public LogicThread(GameWindow graphic) {
 		this.graphic = graphic;
 		setName("Logic Thread");
 	}
