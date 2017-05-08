@@ -31,8 +31,9 @@ public class LogicThread extends Thread {
 	
 	private void loop() {
 		while (!graphic.shouldClose()) {
+			
 			try {
-				Thread.sleep(50);
+				Thread.sleep(5);
 			}
 			catch (InterruptedException e) {
 				e.printStackTrace();

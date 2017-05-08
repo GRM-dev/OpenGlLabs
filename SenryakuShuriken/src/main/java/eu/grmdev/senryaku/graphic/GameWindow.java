@@ -20,12 +20,20 @@ import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
 import eu.grmdev.senryaku.Main;
+import eu.grmdev.senryaku.core.handlers.KeyboardHandler;
+import eu.grmdev.senryaku.core.handlers.MouseHandler;
+import lombok.Getter;
 
 public class GameWindow extends Thread {
 	// The window handle
 	private long window;
+	// init() done
+	@Getter
 	private boolean ready;
+	// should close game
 	private boolean close;
+	private KeyboardHandler keyCallback;
+	private MouseHandler mouseCallback;
 	
 	public GameWindow() {
 		setName("Render Thread");
@@ -64,13 +72,12 @@ public class GameWindow extends Thread {
 		window = glfwCreateWindow(800, 800, "Senryaku Shuriken", NULL, NULL);
 		if (window == NULL) { throw new RuntimeException("Failed to create the GLFW window"); }
 		
-		setIcon();
+		setWindowIcon();
 		
-		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
-				glfwSetWindowShouldClose(window, true);
-			}
-		});
+		keyCallback = new KeyboardHandler();
+		glfwSetKeyCallback(window, keyCallback);
+		mouseCallback = new MouseHandler();
+		glfwSetCursorPosCallback(window, mouseCallback);
 		
 		centerWindow();
 		
@@ -79,14 +86,14 @@ public class GameWindow extends Thread {
 		// Enable v-sync
 		glfwSwapInterval(1);
 		
-		// Mark as ready
-		ready = true;
 		// Make the window visible
 		glfwShowWindow(window);
+		// Mark as ready
+		ready = true;
 		GL.createCapabilities();
 	}
 	
-	private void setIcon() {
+	private void setWindowIcon() {
 		try {
 			File f = new File(getClass().getResource("/images/icon.png").toURI());
 			if (!f.exists()) throw new IOException();
@@ -129,11 +136,10 @@ public class GameWindow extends Thread {
 	
 	private void loop() {
 		while (!shouldClose()) {
-			glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glfwSwapBuffers(window); // swap the color buffers
-			// Poll for window events. The key callback above will only be
-			// invoked during this call.
+			
+			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
 	}
@@ -156,7 +162,4 @@ public class GameWindow extends Thread {
 		glfwSetErrorCallback(null).free();
 	}
 	
-	public boolean isReady() {
-		return ready;
-	}
 }

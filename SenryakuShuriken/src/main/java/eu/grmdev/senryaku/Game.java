@@ -2,8 +2,10 @@ package eu.grmdev.senryaku;
 
 import eu.grmdev.senryaku.core.LogicThread;
 import eu.grmdev.senryaku.graphic.GameWindow;
+import lombok.Getter;
 
 public class Game {
+	@Getter
 	private static Game instance;
 	private GameWindow graphic;
 	private LogicThread logicThread;
@@ -24,9 +26,5 @@ public class Game {
 	 */
 	public void stop() {
 		
-	}
-	
-	public static Game getInstance() {
-		return instance;
 	}
 }
