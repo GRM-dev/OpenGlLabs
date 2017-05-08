@@ -1,15 +1,11 @@
 package eu.grmdev.senryaku;
 
-import eu.grmdev.senryaku.graphic.Window;
-
 public class Main {
-
-	private static Window graphic;
-
+	private static Game game;
+	
 	public static void main(String[] args) {
-		graphic = new Window();
-		graphic.run();
-
+		game = new Game();
+		game.start();
 	}
-
+	
 }
