@@ -1,6 +1,9 @@
 package eu.grmdev.senryaku.core.handlers;
 
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.*;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import org.lwjgl.glfw.GLFWKeyCallback;
 
@@ -9,7 +12,8 @@ import eu.grmdev.senryaku.core.events.KeyEvent;
 
 public class KeyboardHandler extends GLFWKeyCallback {
 	
-	public static boolean[] keys = new boolean[65536];
+	private static boolean[] keys = new boolean[65536];
+	private static List<Integer> pressedKeys = new LinkedList<>();
 	
 	/**
 	 * {@inheritDoc}
@@ -17,10 +21,17 @@ public class KeyboardHandler extends GLFWKeyCallback {
 	@Override
 	public void invoke(long window, int key, int scancode, int action, int mods) {
 		boolean isDown = action != GLFW_RELEASE;
+		boolean wasDown = isKeyDown(key);
 		keys[key] = isDown;
+		
 		if (isDown) {
-			KeyEvent event = new KeyEvent(key, action);
-			Game.getInstance().getEventHandler().dispatchKeyEvent(event);
+			if (!wasDown) {
+				KeyEvent event = new KeyEvent(key, action);
+				Game.getInstance().getEventHandler().dispatchKeyEvent(event);
+			}
+		}
+		else {
+			pressedKeys.remove(new Integer(key));
 		}
 	}
 	
@@ -32,5 +43,14 @@ public class KeyboardHandler extends GLFWKeyCallback {
 	 */
 	public static boolean isKeyDown(int keycode) {
 		return keys[keycode];
+	}
+	
+	public void dispatchAllActiveKeyEvents() {
+		if (!pressedKeys.isEmpty()) {
+			for (int key : pressedKeys) {
+				KeyEvent event = new KeyEvent(key, GLFW_PRESS, true);
+				Game.getInstance().getEventHandler().dispatchKeyEvent(event);
+			}
+		}
 	}
 }

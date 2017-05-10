@@ -9,7 +9,9 @@ import lombok.Getter;
 public class Game {
 	@Getter
 	private static Game instance;
+	@Getter
 	private GameWindow graphic;
+	@Getter
 	private LogicThread logicThread;
 	@Getter
 	private EventHandler eventHandler;
@@ -18,7 +20,7 @@ public class Game {
 		instance = this;
 		eventHandler = new EventHandler();
 		graphic = new GameWindow();
-		logicThread = new LogicThread(graphic);
+		logicThread = new LogicThread(graphic, eventHandler);
 		KeyEventListenersData.init(eventHandler);
 	}
 	

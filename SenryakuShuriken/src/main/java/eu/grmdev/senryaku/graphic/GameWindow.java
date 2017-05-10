@@ -3,13 +3,13 @@ package eu.grmdev.senryaku.graphic;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.system.MemoryUtil.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.Version;
@@ -32,8 +32,12 @@ public class GameWindow extends Thread {
 	private boolean ready;
 	// should close game
 	private boolean close;
+	@Getter
 	private KeyboardHandler keyCallback;
+	@Getter
 	private MouseHandler mouseCallback;
+	protected int width;
+	protected int height;
 	
 	public GameWindow() {
 		setName("Render Thread");
@@ -57,6 +61,12 @@ public class GameWindow extends Thread {
 		}
 	}
 	
+	/**
+	 * Initializes glfw and lwjgl components
+	 * 
+	 * @throws Exception
+	 *            when there was a problem during window creation
+	 */
 	private void init() throws Exception {
 		// Setup an error callback. The default implementation
 		// will print the error message in System.err.
@@ -78,6 +88,16 @@ public class GameWindow extends Thread {
 		glfwSetKeyCallback(window, keyCallback);
 		mouseCallback = new MouseHandler();
 		glfwSetCursorPosCallback(window, mouseCallback);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallback() {
+			@Override
+			public void invoke(long window, int w, int h) {
+				if (w > 0 && h > 0) {
+					width = w;
+					height = h;
+				}
+			}
+		});
 		
 		centerWindow();
 		
@@ -91,8 +111,24 @@ public class GameWindow extends Thread {
 		// Mark as ready
 		ready = true;
 		GL.createCapabilities();
+		
+		try (MemoryStack stack = stackPush()) {
+			FloatBuffer buffer = memAllocFloat(3 * 2);
+			buffer.put(-0.5f).put(-0.5f);
+			buffer.put(+0.5f).put(-0.5f);
+			buffer.put(+0.0f).put(+0.5f);
+			buffer.flip();
+			int vbo = glGenBuffers();
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+		}
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2, GL_FLOAT, 0, 0L);
 	}
 	
+	/**
+	 * Sets the Windows Icon of game window
+	 */
 	private void setWindowIcon() {
 		try {
 			File f = new File(getClass().getResource("/images/icon.png").toURI());
@@ -119,6 +155,9 @@ public class GameWindow extends Thread {
 		}
 	}
 	
+	/**
+	 * Centers game windows on monitor
+	 */
 	private void centerWindow() {
 		// Get the thread stack and push a new frame
 		try (MemoryStack stack = stackPush()) {
@@ -138,12 +177,27 @@ public class GameWindow extends Thread {
 		while (!shouldClose()) {
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glViewport(0, 0, width, height);
+			glMatrixMode(GL_PROJECTION);
+			float aspect = (float) width / height;
+			glLoadIdentity();
+			glOrtho(-aspect, aspect, -1, 1, -1, 1);
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			
+			glDrawArrays(GL_TRIANGLES, 0, 3);
 			
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
 	}
 	
+	/**
+	 * Checks if game should stop.
+	 * To stop just invoke {@link #setClose()}
+	 * 
+	 * @return true if 'glfw close value' is true
+	 */
 	public boolean shouldClose() {
 		if (glfwWindowShouldClose(window)) {
 			close = true;
@@ -151,10 +205,16 @@ public class GameWindow extends Thread {
 		return close;
 	}
 	
+	/**
+	 * Stops and closes the game
+	 */
 	public void setClose() {
 		glfwSetWindowShouldClose(window, true);
 	}
 	
+	/**
+	 * Terminates the game window
+	 */
 	private void destroyWindow() {
 		ready = false;
 		// Free the window callbacks and destroy the window

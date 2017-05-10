@@ -1,12 +1,16 @@
 package eu.grmdev.senryaku.core;
 
+import eu.grmdev.senryaku.Game;
+import eu.grmdev.senryaku.core.handlers.EventHandler;
 import eu.grmdev.senryaku.graphic.GameWindow;
 
 public class LogicThread extends Thread {
 	private GameWindow graphic;
+	private EventHandler eventHandler;
 	
-	public LogicThread(GameWindow graphic) {
+	public LogicThread(GameWindow graphic, EventHandler eventHandler) {
 		this.graphic = graphic;
+		this.eventHandler = eventHandler;
 		setName("Logic Thread");
 	}
 	
@@ -31,13 +35,7 @@ public class LogicThread extends Thread {
 	
 	private void loop() {
 		while (!graphic.shouldClose()) {
-			
-			try {
-				Thread.sleep(5);
-			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			Game.getInstance().getGraphic().getKeyCallback().dispatchAllActiveKeyEvents();
 		}
 	}
 }
