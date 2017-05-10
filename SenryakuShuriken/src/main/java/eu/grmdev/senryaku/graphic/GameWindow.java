@@ -20,8 +20,7 @@ import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
 import eu.grmdev.senryaku.Main;
-import eu.grmdev.senryaku.core.handlers.KeyboardHandler;
-import eu.grmdev.senryaku.core.handlers.MouseHandler;
+import eu.grmdev.senryaku.core.handlers.*;
 import lombok.Getter;
 
 public class GameWindow extends Thread {
@@ -38,9 +37,11 @@ public class GameWindow extends Thread {
 	private MouseHandler mouseCallback;
 	protected int width;
 	protected int height;
+	private ShaderHandler shaderHandler;
 	
 	public GameWindow() {
 		setName("Render Thread");
+		shaderHandler = new ShaderHandler();
 	}
 	
 	@Override
@@ -77,6 +78,8 @@ public class GameWindow extends Thread {
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 		
 		// Create the window
 		window = glfwCreateWindow(800, 800, "Senryaku Shuriken", NULL, NULL);
@@ -108,9 +111,11 @@ public class GameWindow extends Thread {
 		
 		// Make the window visible
 		glfwShowWindow(window);
+		GL.createCapabilities();
+		shaderHandler.init();
+		shaderHandler.use(0);
 		// Mark as ready
 		ready = true;
-		GL.createCapabilities();
 		
 		try (MemoryStack stack = stackPush()) {
 			FloatBuffer buffer = memAllocFloat(3 * 2);
@@ -183,10 +188,13 @@ public class GameWindow extends Thread {
 			glLoadIdentity();
 			glOrtho(-aspect, aspect, -1, 1, -1, 1);
 			glMatrixMode(GL_MODELVIEW);
+			shaderHandler.use(1);
+			shaderHandler.update();// TODO: send some params
 			glLoadIdentity();
 			
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 			
+			shaderHandler.use(0);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
