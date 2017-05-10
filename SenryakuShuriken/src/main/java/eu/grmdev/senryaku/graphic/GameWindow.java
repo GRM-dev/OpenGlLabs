@@ -151,6 +151,10 @@ public class GameWindow extends Thread {
 		return close;
 	}
 	
+	public void setClose() {
+		glfwSetWindowShouldClose(window, true);
+	}
+	
 	private void destroyWindow() {
 		ready = false;
 		// Free the window callbacks and destroy the window

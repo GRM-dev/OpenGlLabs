@@ -50,7 +50,7 @@ public class FxGui extends Application {
 		}
 	}
 	
-	public void close() {
+	public void closeGui() {
 		try {
 			stop();
 		}

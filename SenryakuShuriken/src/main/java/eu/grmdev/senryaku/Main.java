@@ -27,7 +27,7 @@ public class Main {
 	}
 	
 	public static void closeApp() {
-		gui.close();
+		gui.closeGui();
 		if (running) {
 			running = false;
 			game.stop();
