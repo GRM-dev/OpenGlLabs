@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindFragDataLocation;
 
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
 import lombok.Getter;
 
@@ -41,8 +42,11 @@ public class ShaderProgram {
 	}
 	
 	public void update(Object... params) {
-		// TODO Auto-generated method stub
-		
+		if (params == null || params.length == 0) { return; }
+		if (params.length == 2 && (params[0] instanceof FloatBuffer)) {
+			glUniform3fv(vec3ArrayUniform, (FloatBuffer) params[0]);
+			glUniform1i(chosenUniform, (int) params[1]);
+		}
 	}
 	
 }

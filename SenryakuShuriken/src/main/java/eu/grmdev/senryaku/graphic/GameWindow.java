@@ -38,6 +38,14 @@ public class GameWindow extends Thread {
 	protected int width;
 	protected int height;
 	private ShaderHandler shaderHandler;
+	private FloatBuffer colors = BufferUtils.createFloatBuffer(3 * 4);
+	{
+		colors.put(1).put(0).put(0); // red
+		colors.put(0).put(1).put(0); // green
+		colors.put(0).put(0).put(1); // blue
+		colors.put(1).put(1).put(0); // yellow
+		colors.flip();
+	}
 	
 	public GameWindow() {
 		setName("Render Thread");
@@ -189,7 +197,7 @@ public class GameWindow extends Thread {
 			glOrtho(-aspect, aspect, -1, 1, -1, 1);
 			glMatrixMode(GL_MODELVIEW);
 			shaderHandler.use(1);
-			shaderHandler.update();// TODO: send some params
+			shaderHandler.update(colors, 2);// TODO: send some params
 			glLoadIdentity();
 			
 			glDrawArrays(GL_TRIANGLES, 0, 3);
