@@ -1,6 +1,9 @@
 package eu.grmdev.senryaku;
 
+import java.util.*;
+
 import eu.grmdev.senryaku.core.LogicThread;
+import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.handlers.EventHandler;
 import eu.grmdev.senryaku.data.KeyEventListenersData;
 import eu.grmdev.senryaku.graphic.GameWindow;
@@ -15,12 +18,16 @@ public class Game {
 	private LogicThread logicThread;
 	@Getter
 	private EventHandler eventHandler;
+	private Set<Entity> entities;
+	private Queue<Entity> toAddEntities = new PriorityQueue<>();
+	private Queue<Entity> toRemoveEntities = new PriorityQueue<>();
 	
 	public Game() {
 		instance = this;
+		entities = new LinkedHashSet<>();
 		eventHandler = new EventHandler();
-		graphic = new GameWindow();
-		logicThread = new LogicThread(graphic, eventHandler);
+		graphic = new GameWindow(this);
+		logicThread = new LogicThread(this, graphic, eventHandler);
 		KeyEventListenersData.init(eventHandler);
 	}
 	
@@ -37,5 +44,35 @@ public class Game {
 	 */
 	public void stop() {
 		graphic.setClose();
+	}
+	
+	public synchronized Iterator<Entity> getEntityIterator() {
+		parseEntities();
+		return entities.iterator();
+	}
+	
+	private void parseEntities() {
+		if (toAddEntities.size() > 0) {
+			Entity entity = toAddEntities.poll();
+			while (entity != null) {
+				entities.add(entity);
+				entity = toAddEntities.poll();
+			}
+		}
+		if (toRemoveEntities.size() > 0) {
+			Entity entity = toRemoveEntities.poll();
+			while (entity != null) {
+				entities.remove(entity);
+				entity = toRemoveEntities.poll();
+			}
+		}
+	}
+	
+	public synchronized void addEntity(Entity entity) {
+		toAddEntities.add(entity);
+	}
+	
+	public synchronized void removeEntity(Entity entity) {
+		toRemoveEntities.remove(entity);
 	}
 }

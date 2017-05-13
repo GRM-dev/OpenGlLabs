@@ -2,13 +2,16 @@ package eu.grmdev.senryaku.core;
 
 import eu.grmdev.senryaku.Game;
 import eu.grmdev.senryaku.core.handlers.EventHandler;
+import eu.grmdev.senryaku.data.EntitiesData;
 import eu.grmdev.senryaku.graphic.GameWindow;
 
 public class LogicThread extends Thread {
 	private GameWindow graphic;
 	private EventHandler eventHandler;
+	private Game game;
 	
-	public LogicThread(GameWindow graphic, EventHandler eventHandler) {
+	public LogicThread(Game game, GameWindow graphic, EventHandler eventHandler) {
+		this.game = game;
 		this.graphic = graphic;
 		this.eventHandler = eventHandler;
 		setName("Logic Thread");
@@ -23,6 +26,7 @@ public class LogicThread extends Thread {
 	}
 	
 	private void init() {
+		EntitiesData.load(game);
 		while (!graphic.isReady()) {
 			try {
 				Thread.sleep(50);

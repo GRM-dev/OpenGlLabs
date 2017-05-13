@@ -3,13 +3,14 @@ package eu.grmdev.senryaku.graphic;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.Iterator;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.Version;
@@ -19,7 +20,9 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
+import eu.grmdev.senryaku.Game;
 import eu.grmdev.senryaku.Main;
+import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.handlers.*;
 import lombok.Getter;
 
@@ -37,17 +40,13 @@ public class GameWindow extends Thread {
 	private MouseHandler mouseCallback;
 	protected int width;
 	protected int height;
+	private boolean sizeChanged = true;
+	@Getter
 	private ShaderHandler shaderHandler;
-	private FloatBuffer colors = BufferUtils.createFloatBuffer(3 * 4);
-	{
-		colors.put(1).put(0).put(0); // red
-		colors.put(0).put(1).put(0); // green
-		colors.put(0).put(0).put(1); // blue
-		colors.put(1).put(1).put(0); // yellow
-		colors.flip();
-	}
+	private Game game;
 	
-	public GameWindow() {
+	public GameWindow(Game game) {
+		this.game = game;
 		setName("Render Thread");
 		shaderHandler = new ShaderHandler();
 	}
@@ -104,6 +103,7 @@ public class GameWindow extends Thread {
 			@Override
 			public void invoke(long window, int w, int h) {
 				if (w > 0 && h > 0) {
+					sizeChanged = true;
 					width = w;
 					height = h;
 				}
@@ -125,18 +125,8 @@ public class GameWindow extends Thread {
 		// Mark as ready
 		ready = true;
 		
-		try (MemoryStack stack = stackPush()) {
-			FloatBuffer buffer = memAllocFloat(3 * 2);
-			buffer.put(-0.5f).put(-0.5f);
-			buffer.put(+0.5f).put(-0.5f);
-			buffer.put(+0.0f).put(+0.5f);
-			buffer.flip();
-			int vbo = glGenBuffers();
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
-		}
 		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(2, GL_FLOAT, 0, 0L);
+		
 	}
 	
 	/**
@@ -190,18 +180,24 @@ public class GameWindow extends Thread {
 		while (!shouldClose()) {
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glViewport(0, 0, width, height);
-			glMatrixMode(GL_PROJECTION);
-			float aspect = (float) width / height;
-			glLoadIdentity();
-			glOrtho(-aspect, aspect, -1, 1, -1, 1);
-			glMatrixMode(GL_MODELVIEW);
+			if (sizeChanged) {
+				glViewport(0, 0, width, height);
+				glMatrixMode(GL_PROJECTION);
+				float aspect = (float) width / height;
+				glLoadIdentity();
+				glOrtho(-aspect, aspect, -1, 1, -1, 1);
+				sizeChanged = false;
+				glMatrixMode(GL_MODELVIEW);
+			}
 			shaderHandler.use(1);
-			shaderHandler.update(colors, 2);// TODO: send some params
+			
 			glLoadIdentity();
 			
-			glDrawArrays(GL_TRIANGLES, 0, 3);
-			
+			Iterator<Entity> it = game.getEntityIterator();
+			while (it.hasNext()) {
+				Entity entity = it.next();
+				entity.render(this);
+			}
 			shaderHandler.use(0);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
@@ -241,5 +237,4 @@ public class GameWindow extends Thread {
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 	}
-	
 }
