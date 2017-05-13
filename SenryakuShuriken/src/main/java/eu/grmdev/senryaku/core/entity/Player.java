@@ -11,6 +11,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryStack;
 
 import eu.grmdev.senryaku.graphic.GameWindow;
+import eu.grmdev.senryaku.graphic.VertexArrayObject;
 
 public class Player extends Entity {
 	private FloatBuffer colors = BufferUtils.createFloatBuffer(3 * 4);
@@ -24,16 +25,18 @@ public class Player extends Entity {
 	
 	@Override
 	public void init() {
+		vao = new VertexArrayObject();
+		vao.bind();
 		try (MemoryStack stack = stackPush()) {
-			FloatBuffer buffer = memAllocFloat(3 * 2);
-			buffer.put(-0.5f).put(-0.5f);
-			buffer.put(+0.5f).put(-0.5f);
-			buffer.put(+0.0f).put(+0.5f);
-			buffer.flip();
-			int vbo = glGenBuffers();
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
-			glVertexPointer(2, GL_FLOAT, 0, 0L);
+			FloatBuffer vertices = memAllocFloat(3 * 3);
+			vertices.put(-0.5f).put(-0.5f).put(-0.5f);
+			vertices.put(+0.5f).put(-0.5f).put(-0.5f);
+			vertices.put(+0.0f).put(+0.5f).put(-0.5f);
+			vertices.flip();
+			
+			vbo = new VertexBufferObject();
+			vbo.bind(GL_ARRAY_BUFFER);
+			vbo.setData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
 		}
 		setInitialized(true);
 	}
@@ -41,7 +44,10 @@ public class Player extends Entity {
 	@Override
 	protected void draw(GameWindow window) {
 		window.getShaderHandler().update(colors, 2);
+		glVertexPointer(3, GL_FLOAT, 0, 0L);
+		glEnableClientState(GL_VERTEX_ARRAY);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 	
 }

@@ -3,6 +3,7 @@ package eu.grmdev.senryaku.graphic;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -124,9 +125,6 @@ public class GameWindow extends Thread {
 		shaderHandler.use(0);
 		// Mark as ready
 		ready = true;
-		
-		glEnableClientState(GL_VERTEX_ARRAY);
-		
 	}
 	
 	/**
@@ -178,16 +176,9 @@ public class GameWindow extends Thread {
 	
 	private void loop() {
 		while (!shouldClose()) {
-			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			clear();
 			if (sizeChanged) {
-				glViewport(0, 0, width, height);
-				glMatrixMode(GL_PROJECTION);
-				float aspect = (float) width / height;
-				glLoadIdentity();
-				glOrtho(-aspect, aspect, -1, 1, -1, 1);
-				sizeChanged = false;
-				glMatrixMode(GL_MODELVIEW);
+				onSizeChanged();
 			}
 			shaderHandler.use(1);
 			
@@ -196,12 +187,29 @@ public class GameWindow extends Thread {
 			Iterator<Entity> it = game.getEntityIterator();
 			while (it.hasNext()) {
 				Entity entity = it.next();
+				glLoadIdentity();
 				entity.render(this);
+				glBindVertexArray(0);
 			}
 			shaderHandler.use(0);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
+	}
+	
+	private void onSizeChanged() {
+		glViewport(0, 0, width, height);
+		glMatrixMode(GL_PROJECTION);
+		float aspect = (float) width / height;
+		glLoadIdentity();
+		glOrtho(-aspect, aspect, -1, 1, -1, 1);
+		sizeChanged = false;
+		glMatrixMode(GL_MODELVIEW);
+	}
+	
+	private void clear() {
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 	
 	/**
@@ -228,6 +236,12 @@ public class GameWindow extends Thread {
 	 * Terminates the game window
 	 */
 	private void destroyWindow() {
+		Iterator<Entity> it = game.getEntityIterator();
+		while (it.hasNext()) {
+			Entity entity = it.next();
+			entity.delete();
+			it.remove();
+		}
 		ready = false;
 		// Free the window callbacks and destroy the window
 		glfwFreeCallbacks(window);
