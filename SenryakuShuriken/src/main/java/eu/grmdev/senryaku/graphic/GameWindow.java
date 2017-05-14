@@ -48,6 +48,7 @@ public class GameWindow extends Thread {
 	private Camera cam;
 	protected int height;
 	protected int width;
+	protected boolean changed;
 	
 	public GameWindow(Game game) {
 		this.game = game;
@@ -108,6 +109,7 @@ public class GameWindow extends Thread {
 				if (w > 0 && h > 0) {
 					width = w;
 					height = h;
+					changed = true;
 				}
 			}
 		});
@@ -128,6 +130,7 @@ public class GameWindow extends Thread {
 		shaderHandler.use(0);
 		
 		lastTime = System.nanoTime();
+		changed = true;
 		
 		// Mark as ready
 		ready = true;
@@ -189,16 +192,20 @@ public class GameWindow extends Thread {
 			long thisTime = System.nanoTime();
 			float diff = (float) ((thisTime - lastTime) / 1E9);
 			lastTime = thisTime;
-			cam.update(diff, width, height);
+			if (changed) {
+				cam.update(diff, width, height);
+			}
+			else {
+				cam.update(diff);
+			}
 			
 			renderGrid();
+			cam.translateToCamCenter();
 			
 			// shaderHandler.use(1);
 			
 			Iterator<Entity> it = game.getEntityIterator();
 			while (it.hasNext()) {
-				// glLoadIdentity();
-				cam.translateToCamCenter();
 				cam.resetRenderPos();
 				Entity entity = it.next();
 				entity.render(this);

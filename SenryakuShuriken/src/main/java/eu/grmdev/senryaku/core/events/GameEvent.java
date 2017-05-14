@@ -15,8 +15,7 @@ public abstract class GameEvent {
 	@Getter
 	private boolean remove;
 	@Getter
-	@Setter
-	private boolean repeatable;
+	protected boolean repeatable;
 	private Function<GameEvent, Boolean> repeatingCondition;
 	@Getter
 	private double creationTime;

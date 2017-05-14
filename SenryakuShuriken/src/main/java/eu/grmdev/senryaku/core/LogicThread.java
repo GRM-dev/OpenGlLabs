@@ -9,6 +9,12 @@ public class LogicThread extends Thread {
 	private GameWindow graphic;
 	private EventHandler eventHandler;
 	private Game game;
+	private long lastTickTimeNano;
+	private float tps = 20;
+	private long tickTime = (long) (1000 / tps);
+	private long pastTickNanoDiff;
+	private int tickCounter;
+	private double lastFullTickNano;
 	
 	public LogicThread(Game game, GameWindow graphic, EventHandler eventHandler) {
 		this.game = game;
@@ -38,8 +44,36 @@ public class LogicThread extends Thread {
 	}
 	
 	private void loop() {
+		lastTickTimeNano = System.nanoTime();
+		lastFullTickNano = lastTickTimeNano;
 		while (!graphic.shouldClose()) {
 			Game.getInstance().getGraphic().getKeyCallback().dispatchAllActiveKeyEvents();
+			sync();
 		}
+	}
+	
+	private void sync() {
+		tickCounter++;
+		long thisTickTimeNano = System.nanoTime();
+		long diff = (long) (tickTime - (thisTickTimeNano - lastTickTimeNano) / 1E6);
+		if (diff > 0) {
+			try {
+				Thread.sleep(diff);
+				thisTickTimeNano = System.nanoTime();
+				pastTickNanoDiff = thisTickTimeNano - lastTickTimeNano;
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			pastTickNanoDiff = (long) (-diff / 1E3);
+		}
+		if (thisTickTimeNano / 1E9 - lastFullTickNano / 1E9 >= 0.98) {
+			System.out.println("TPS: " + tickCounter);
+			lastFullTickNano = thisTickTimeNano;
+			tickCounter = 0;
+		}
+		lastTickTimeNano = thisTickTimeNano;
 	}
 }

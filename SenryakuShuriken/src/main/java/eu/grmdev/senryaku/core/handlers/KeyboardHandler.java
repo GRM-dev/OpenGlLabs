@@ -23,15 +23,19 @@ public class KeyboardHandler extends GLFWKeyCallback {
 		boolean isDown = action != GLFW_RELEASE;
 		boolean wasDown = isKeyDown(key);
 		keys[key] = isDown;
-		
 		if (isDown) {
 			if (!wasDown) {
 				KeyEvent event = new KeyEvent(key, action);
 				Game.getInstance().getEventHandler().dispatchKeyEvent(event);
+				synchronized (pressedKeys) {
+					pressedKeys.add(key);
+				}
 			}
 		}
 		else {
-			pressedKeys.remove(new Integer(key));
+			synchronized (pressedKeys) {
+				pressedKeys.remove(new Integer(key));
+			}
 		}
 	}
 	
@@ -45,11 +49,13 @@ public class KeyboardHandler extends GLFWKeyCallback {
 		return keys[keycode];
 	}
 	
-	public void dispatchAllActiveKeyEvents() {
+	public synchronized void dispatchAllActiveKeyEvents() {
 		if (!pressedKeys.isEmpty()) {
-			for (int key : pressedKeys) {
-				KeyEvent event = new KeyEvent(key, GLFW_PRESS, true);
-				Game.getInstance().getEventHandler().dispatchKeyEvent(event);
+			synchronized (pressedKeys) {
+				for (int key : pressedKeys) {
+					KeyEvent event = new KeyEvent(key, GLFW_PRESS, true);
+					Game.getInstance().getEventHandler().dispatchKeyEvent(event);
+				}
 			}
 		}
 	}

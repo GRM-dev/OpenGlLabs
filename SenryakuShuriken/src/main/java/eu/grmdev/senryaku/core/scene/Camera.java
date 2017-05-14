@@ -23,6 +23,9 @@ public class Camera {
 	private ArcBallCamera cam;
 	private Matrix4f mat;
 	private FloatBuffer fb;
+	private float fovy;
+	private int width;
+	private int height;
 	
 	public Camera() {
 		mat = new Matrix4f();
@@ -30,24 +33,25 @@ public class Camera {
 		h.addKeyEventListener(event -> {
 			KeyEvent e = (KeyEvent) event;
 			int key = e.getKey();
+			float dv = 0.5f;
 			switch (key) {
 				case GLFW_KEY_UP :
-					point.z -= 1.0f;
+					point.z -= dv;
 					break;
 				case GLFW_KEY_DOWN :
-					point.z += 1.0f;
+					point.z += dv;
 					break;
 				case GLFW_KEY_LEFT :
-					point.x -= 1.0f;
+					point.x -= dv;
 					break;
 				case GLFW_KEY_RIGHT :
-					point.x += 1.0f;
+					point.x += dv;
 					break;
 				case GLFW_KEY_PAGE_UP :
-					point.w -= 1.0f;
+					point.w -= dv;
 					break;
 				case GLFW_KEY_PAGE_DOWN :
-					point.w += 1.0f;
+					point.w += dv;
 					break;
 				default :
 					break;
@@ -66,19 +70,22 @@ public class Camera {
 	}
 	
 	public void update(float diff, int width, int height) {
+		this.width = width;
+		this.height = height;
+		fovy = (float) Math.atan((32.5 * height / 1200) / 60.0);
+		update(diff);
+	}
+	
+	public void update(float diff) {
 		cam.zoom(point.w);
 		cam.update(diff);
 		glViewport(0, 0, width, height);
-		mat.setPerspective((float) Math.atan((32.5 * height / 1200) / 60.0), (float) width / height, 0.01f, 100.0f).get(fb);
+		mat.setPerspective(fovy, (float) width / height, 0.01f, 100.0f).get(fb);
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixf(fb);
 		cam.viewMatrix(mat.identity()).get(fb);
-		// float aspect = (float) width / height;
-		// glLoadIdentity();
-		// glOrtho(-aspect, aspect, -1, 1, -1, 1);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadMatrixf(fb);
-		// glLoadIdentity();
 	}
 	
 	public void translateToCamCenter() {

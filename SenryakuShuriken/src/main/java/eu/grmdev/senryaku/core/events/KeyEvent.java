@@ -7,12 +7,10 @@ public class KeyEvent extends GameEvent {
 	private int key;
 	@Getter
 	private int action;
-	@Getter
-	private boolean repeated;
 	
 	public KeyEvent(int key, int action, boolean repeated) {
 		this(key, action);
-		this.repeated = repeated;
+		this.repeatable = repeated;
 		
 	}
 	
