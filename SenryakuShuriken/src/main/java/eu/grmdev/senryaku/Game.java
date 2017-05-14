@@ -5,6 +5,7 @@ import java.util.*;
 import eu.grmdev.senryaku.core.LogicThread;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.handlers.EventHandler;
+import eu.grmdev.senryaku.core.tile.World;
 import eu.grmdev.senryaku.data.KeyEventListenersData;
 import eu.grmdev.senryaku.graphic.GameWindow;
 import lombok.Getter;
@@ -21,6 +22,8 @@ public class Game {
 	private Set<Entity> entities;
 	private Queue<Entity> toAddEntities = new PriorityQueue<>();
 	private Queue<Entity> toRemoveEntities = new PriorityQueue<>();
+	@Getter
+	private World world;
 	
 	public Game() {
 		instance = this;
@@ -29,6 +32,7 @@ public class Game {
 		graphic = new GameWindow(this);
 		logicThread = new LogicThread(this, graphic, eventHandler);
 		KeyEventListenersData.init(eventHandler);
+		world = new World();
 	}
 	
 	/**

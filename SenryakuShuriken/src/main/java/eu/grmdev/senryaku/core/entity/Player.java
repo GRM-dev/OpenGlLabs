@@ -13,7 +13,6 @@ import org.lwjgl.system.MemoryStack;
 
 import eu.grmdev.senryaku.core.events.KeyEvent;
 import eu.grmdev.senryaku.graphic.GameWindow;
-import eu.grmdev.senryaku.graphic.VertexArrayObject;
 
 public class Player extends Entity {
 	private FloatBuffer colors = BufferUtils.createFloatBuffer(3 * 4);
@@ -26,17 +25,19 @@ public class Player extends Entity {
 	}
 	
 	public Player() {
+		attachedToCamera = true;
 		addKeyListener(event -> {
 			KeyEvent ke = (KeyEvent) event;
 			if (ke.getKey() == GLFW_KEY_A) {
+				transformation.rotate(0.0f, -5.0f, 0.0f);
 			}
 		});
 	}
 	
 	@Override
 	public void init() {
-		vao = new VertexArrayObject();
-		vao.bind();
+		mesh.init();
+		mesh.bind();
 		try (MemoryStack stack = stackPush()) {
 			FloatBuffer vertices = memAllocFloat(3 * 3);
 			vertices.put(-0.5f).put(-0.5f).put(-0.5f);
@@ -44,9 +45,10 @@ public class Player extends Entity {
 			vertices.put(+0.0f).put(+0.5f).put(-0.5f);
 			vertices.flip();
 			
-			vbo = new VertexBufferObject();
-			vbo.bind(GL_ARRAY_BUFFER);
-			vbo.setData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+			VertexBufferObject vert_vbo = new VertexBufferObject();
+			vert_vbo.bind(GL_ARRAY_BUFFER);
+			vert_vbo.setData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+			mesh.setVert_vbo(vert_vbo);
 		}
 		setInitialized(true);
 	}

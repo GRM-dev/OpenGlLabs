@@ -4,6 +4,7 @@ import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -18,7 +19,6 @@ import org.lwjgl.Version;
 import org.lwjgl.glfw.*;
 import org.lwjgl.glfw.GLFWImage.Buffer;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
 import eu.grmdev.senryaku.Game;
@@ -63,7 +63,7 @@ public class GameWindow extends Thread {
 		try {
 			init();
 			System.out.println("Start Render Thread");
-			loop();
+			startLoop();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -132,6 +132,7 @@ public class GameWindow extends Thread {
 		lastTime = System.nanoTime();
 		changed = true;
 		
+		game.getWorld().init();
 		// Mark as ready
 		ready = true;
 	}
@@ -147,9 +148,9 @@ public class GameWindow extends Thread {
 			IntBuffer w = BufferUtils.createIntBuffer(1);
 			IntBuffer h = BufferUtils.createIntBuffer(1);
 			IntBuffer comp = BufferUtils.createIntBuffer(1);
-			ByteBuffer buf = STBImage.stbi_load(f.toString(), w, h, comp, 4);
 			
-			if (buf == null) { throw new IOException(STBImage.stbi_failure_reason()); }
+			ByteBuffer buf = stbi_load(f.toString(), w, h, comp, 4);
+			if (buf == null) { throw new IOException(stbi_failure_reason()); }
 			
 			int imgWidth = w.get();
 			int imgHeight = h.get();
@@ -157,7 +158,7 @@ public class GameWindow extends Thread {
 			try (Buffer icons = GLFWImage.malloc(1)) {
 				icons.position(0).width(imgWidth).height(imgHeight).pixels(buf);
 				glfwSetWindowIcon(window, icons);
-				STBImage.stbi_image_free(buf);
+				stbi_image_free(buf);
 			}
 		}
 		catch (Exception e) {
@@ -183,45 +184,55 @@ public class GameWindow extends Thread {
 		} // the stack frame is popped automatically
 	}
 	
-	private void loop() {
+	private void startLoop() {
 		glEnable(GL_DEPTH_TEST);
 		glLineWidth(1.4f);
 		while (!shouldClose()) {
 			clear();
 			
-			long thisTime = System.nanoTime();
-			float diff = (float) ((thisTime - lastTime) / 1E9);
-			lastTime = thisTime;
-			if (changed) {
-				cam.update(diff, width, height);
-			}
-			else {
-				cam.update(diff);
-			}
-			
-			renderGrid();
-			cam.translateToCamCenter();
-			
-			// shaderHandler.use(1);
-			
-			Iterator<Entity> it = game.getEntityIterator();
-			while (it.hasNext()) {
-				cam.resetRenderPos();
-				Entity entity = it.next();
-				entity.render(this);
-				glBindVertexArray(0);
-			}
-			
-			shaderHandler.use(0);
-			cam.resetRenderPos();
-			// renderCube();
+			loop();
 			
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
 	}
 	
-	void renderGrid() {
+	private void loop() {
+		float diff = getDiffTime();
+		if (changed) {
+			cam.update(diff, width, height);
+		}
+		else {
+			cam.update(diff);
+		}
+		renderGrid();
+		
+		cam.translateToCamCenter();
+		game.getWorld().render(this);
+		
+		// shaderHandler.use(1);
+		
+		Iterator<Entity> it = game.getEntityIterator();
+		while (it.hasNext()) {
+			cam.translateToWorldCenter();
+			Entity entity = it.next();
+			entity.render(this);
+			glBindVertexArray(0);
+		}
+		
+		shaderHandler.use(0);
+		cam.translateToCamCenter();
+		renderCube();
+	}
+	
+	private float getDiffTime() {
+		long thisTime = System.nanoTime();
+		float diff = (float) ((thisTime - lastTime) / 1E9);
+		lastTime = thisTime;
+		return diff;
+	}
+	
+	private void renderGrid() {
 		glBegin(GL_LINES);
 		glColor3f(0.2f, 0.2f, 0.2f);
 		for (int i = -50; i <= 50; i++) {
@@ -233,7 +244,7 @@ public class GameWindow extends Thread {
 		glEnd();
 	}
 	
-	void renderCube() {
+	private void renderCube() {
 		glBegin(GL_QUADS);
 		glColor3f(0.0f, 0.0f, 0.2f);
 		glVertex3f(0.5f, -0.5f, -0.5f);

@@ -3,7 +3,6 @@ package eu.grmdev.senryaku.core.entity;
 import eu.grmdev.senryaku.Game;
 import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
 import eu.grmdev.senryaku.graphic.GameWindow;
-import eu.grmdev.senryaku.graphic.VertexArrayObject;
 import lombok.AccessLevel;
 import lombok.Setter;
 
@@ -15,12 +14,13 @@ import lombok.Setter;
 public abstract class Entity {
 	@Setter(value = AccessLevel.PROTECTED)
 	private boolean initialized;
-	protected VertexArrayObject vao;
-	protected VertexBufferObject vbo;
 	protected Transformation transformation;
+	protected boolean attachedToCamera;
+	protected Mesh mesh;
 	
 	public Entity() {
 		transformation = new Transformation();
+		mesh = new Mesh();
 	}
 	
 	public abstract void init();
@@ -30,8 +30,9 @@ public abstract class Entity {
 			init();
 		}
 		transformation.transform();
-		vao.bind();
+		mesh.bind();
 		draw(window);
+		mesh.unbind();
 	}
 	
 	protected abstract void draw(GameWindow window);
@@ -41,11 +42,6 @@ public abstract class Entity {
 	}
 	
 	public void delete() {
-		if (vbo != null) {
-			vbo.remove();
-		}
-		if (vao != null) {
-			vao.remove();
-		}
+		mesh.delete();
 	}
 }
