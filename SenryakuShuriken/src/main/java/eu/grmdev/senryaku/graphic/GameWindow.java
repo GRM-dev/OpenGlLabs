@@ -25,10 +25,12 @@ import eu.grmdev.senryaku.Game;
 import eu.grmdev.senryaku.Main;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.handlers.*;
+import eu.grmdev.senryaku.core.scene.Camera;
 import lombok.Getter;
 
 public class GameWindow extends Thread {
 	// The window handle
+	@Getter
 	private long window;
 	// init() done
 	@Getter
@@ -39,17 +41,19 @@ public class GameWindow extends Thread {
 	private KeyboardHandler keyCallback;
 	@Getter
 	private MouseHandler mouseCallback;
-	protected int width;
-	protected int height;
-	private boolean sizeChanged = true;
 	@Getter
 	private ShaderHandler shaderHandler;
 	private Game game;
+	private long lastTime;
+	private Camera cam;
+	protected int height;
+	protected int width;
 	
 	public GameWindow(Game game) {
 		this.game = game;
 		setName("Render Thread");
 		shaderHandler = new ShaderHandler();
+		cam = new Camera();
 	}
 	
 	@Override
@@ -95,16 +99,13 @@ public class GameWindow extends Thread {
 		
 		setWindowIcon();
 		
-		keyCallback = new KeyboardHandler();
-		glfwSetKeyCallback(window, keyCallback);
-		mouseCallback = new MouseHandler();
-		glfwSetCursorPosCallback(window, mouseCallback);
+		glfwSetKeyCallback(window, keyCallback = new KeyboardHandler());
+		glfwSetCursorPosCallback(window, mouseCallback = new MouseHandler());
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallback() {
 			@Override
 			public void invoke(long window, int w, int h) {
 				if (w > 0 && h > 0) {
-					sizeChanged = true;
 					width = w;
 					height = h;
 				}
@@ -118,11 +119,16 @@ public class GameWindow extends Thread {
 		// Enable v-sync
 		glfwSwapInterval(1);
 		
+		cam.init(this);
+		
 		// Make the window visible
 		glfwShowWindow(window);
 		GL.createCapabilities();
 		shaderHandler.init();
 		shaderHandler.use(0);
+		
+		lastTime = System.nanoTime();
+		
 		// Mark as ready
 		ready = true;
 	}
@@ -175,40 +181,88 @@ public class GameWindow extends Thread {
 	}
 	
 	private void loop() {
+		glEnable(GL_DEPTH_TEST);
+		glLineWidth(1.4f);
 		while (!shouldClose()) {
 			clear();
-			if (sizeChanged) {
-				onSizeChanged();
-			}
-			shaderHandler.use(1);
 			
-			glLoadIdentity();
+			long thisTime = System.nanoTime();
+			float diff = (float) ((thisTime - lastTime) / 1E9);
+			lastTime = thisTime;
+			cam.update(diff, width, height);
+			
+			renderGrid();
+			
+			// shaderHandler.use(1);
 			
 			Iterator<Entity> it = game.getEntityIterator();
 			while (it.hasNext()) {
+				// glLoadIdentity();
+				cam.translateToCamCenter();
+				cam.resetRenderPos();
 				Entity entity = it.next();
-				glLoadIdentity();
 				entity.render(this);
 				glBindVertexArray(0);
 			}
+			
 			shaderHandler.use(0);
+			cam.resetRenderPos();
+			// renderCube();
+			
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
 	}
 	
-	private void onSizeChanged() {
-		glViewport(0, 0, width, height);
-		glMatrixMode(GL_PROJECTION);
-		float aspect = (float) width / height;
-		glLoadIdentity();
-		glOrtho(-aspect, aspect, -1, 1, -1, 1);
-		sizeChanged = false;
-		glMatrixMode(GL_MODELVIEW);
+	void renderGrid() {
+		glBegin(GL_LINES);
+		glColor3f(0.2f, 0.2f, 0.2f);
+		for (int i = -50; i <= 50; i++) {
+			glVertex3f(-50.0f, 0.0f, i);
+			glVertex3f(50.0f, 0.0f, i);
+			glVertex3f(i, 0.0f, -50.0f);
+			glVertex3f(i, 0.0f, 50.0f);
+		}
+		glEnd();
+	}
+	
+	void renderCube() {
+		glBegin(GL_QUADS);
+		glColor3f(0.0f, 0.0f, 0.2f);
+		glVertex3f(0.5f, -0.5f, -0.5f);
+		glVertex3f(0.5f, 0.5f, -0.5f);
+		glVertex3f(-0.5f, 0.5f, -0.5f);
+		glVertex3f(-0.5f, -0.5f, -0.5f);
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(0.5f, -0.5f, 0.5f);
+		glVertex3f(0.5f, 0.5f, 0.5f);
+		glVertex3f(-0.5f, 0.5f, 0.5f);
+		glVertex3f(-0.5f, -0.5f, 0.5f);
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(0.5f, -0.5f, -0.5f);
+		glVertex3f(0.5f, 0.5f, -0.5f);
+		glVertex3f(0.5f, 0.5f, 0.5f);
+		glVertex3f(0.5f, -0.5f, 0.5f);
+		glColor3f(0.2f, 0.0f, 0.0f);
+		glVertex3f(-0.5f, -0.5f, 0.5f);
+		glVertex3f(-0.5f, 0.5f, 0.5f);
+		glVertex3f(-0.5f, 0.5f, -0.5f);
+		glVertex3f(-0.5f, -0.5f, -0.5f);
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(0.5f, 0.5f, 0.5f);
+		glVertex3f(0.5f, 0.5f, -0.5f);
+		glVertex3f(-0.5f, 0.5f, -0.5f);
+		glVertex3f(-0.5f, 0.5f, 0.5f);
+		glColor3f(0.0f, 0.2f, 0.0f);
+		glVertex3f(0.5f, -0.5f, -0.5f);
+		glVertex3f(0.5f, -0.5f, 0.5f);
+		glVertex3f(-0.5f, -0.5f, 0.5f);
+		glVertex3f(-0.5f, -0.5f, -0.5f);
+		glEnd();
 	}
 	
 	private void clear() {
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(0.9f, 0.9f, 0.9f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 	

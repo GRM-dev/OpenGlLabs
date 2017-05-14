@@ -1,5 +1,7 @@
 package eu.grmdev.senryaku.core.entity;
 
+import eu.grmdev.senryaku.Game;
+import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
 import eu.grmdev.senryaku.graphic.GameWindow;
 import eu.grmdev.senryaku.graphic.VertexArrayObject;
 import lombok.AccessLevel;
@@ -15,6 +17,11 @@ public abstract class Entity {
 	private boolean initialized;
 	protected VertexArrayObject vao;
 	protected VertexBufferObject vbo;
+	protected Transformation transformation;
+	
+	public Entity() {
+		transformation = new Transformation();
+	}
 	
 	public abstract void init();
 	
@@ -22,11 +29,16 @@ public abstract class Entity {
 		if (!initialized) {
 			init();
 		}
+		transformation.transform();
 		vao.bind();
 		draw(window);
 	}
 	
 	protected abstract void draw(GameWindow window);
+	
+	protected void addKeyListener(GameEventListener listener) {
+		Game.getInstance().getEventHandler().addKeyEventListener(listener);
+	}
 	
 	public void delete() {
 		if (vbo != null) {

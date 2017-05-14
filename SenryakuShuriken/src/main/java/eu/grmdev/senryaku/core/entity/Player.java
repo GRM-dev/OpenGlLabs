@@ -1,5 +1,6 @@
 package eu.grmdev.senryaku.core.entity;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -10,6 +11,7 @@ import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryStack;
 
+import eu.grmdev.senryaku.core.events.KeyEvent;
 import eu.grmdev.senryaku.graphic.GameWindow;
 import eu.grmdev.senryaku.graphic.VertexArrayObject;
 
@@ -21,6 +23,14 @@ public class Player extends Entity {
 		colors.put(0).put(0).put(1); // blue
 		colors.put(1).put(1).put(0); // yellow
 		colors.flip();
+	}
+	
+	public Player() {
+		addKeyListener(event -> {
+			KeyEvent ke = (KeyEvent) event;
+			if (ke.getKey() == GLFW_KEY_A) {
+			}
+		});
 	}
 	
 	@Override
@@ -43,7 +53,7 @@ public class Player extends Entity {
 	
 	@Override
 	protected void draw(GameWindow window) {
-		window.getShaderHandler().update(colors, 2);
+		window.getShaderHandler().update(colors, 1);
 		glVertexPointer(3, GL_FLOAT, 0, 0L);
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glDrawArrays(GL_TRIANGLES, 0, 3);

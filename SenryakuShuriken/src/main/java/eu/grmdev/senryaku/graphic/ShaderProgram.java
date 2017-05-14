@@ -7,6 +7,9 @@ import static org.lwjgl.opengl.GL30.glBindFragDataLocation;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
+import org.joml.Matrix4f;
+import org.lwjgl.system.MemoryStack;
+
 import lombok.Getter;
 
 public class ShaderProgram {
@@ -39,6 +42,14 @@ public class ShaderProgram {
 	
 	public void use() {
 		glUseProgram(programId);
+	}
+	
+	public void setUniform(int location, Matrix4f value) {
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			FloatBuffer buffer = stack.mallocFloat(4 * 4);
+			value.get(buffer);
+			glUniformMatrix4fv(location, false, buffer);
+		}
 	}
 	
 	public void update(Object... params) {
