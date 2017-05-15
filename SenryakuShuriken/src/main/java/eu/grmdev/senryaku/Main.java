@@ -1,40 +1,53 @@
 package eu.grmdev.senryaku;
 
-import eu.grmdev.senryaku.jfx.FxGui;
+import eu.grmdev.senryaku.core.*;
+import eu.grmdev.senryaku.game.Game;
 
 public class Main {
-	private static FxGui gui;
-	private static Game game;
-	private static boolean running;
-	private static boolean DEBUG = true;
+	private static GameEngine gameEng;
 	
 	public static void main(String[] args) {
-		gui = new FxGui();
-		if (!DEBUG) {
-			gui.startup();
+		Config c = new Config();
+		try {
+			IGame gameLogic = new Game();
+			gameEng = new GameEngine("Senryaku Shuriken", c.width, c.height, c.vSync, c.opts, gameLogic);
+			gameEng.start();
 		}
-		game = new Game();
-		if (DEBUG) {
-			startGame();
-		}
-	}
-	
-	public static void startGame() {
-		if (!running) {
-			running = true;
-			game.start();
+		catch (Exception ex) {
+			ex.printStackTrace();
+			System.exit(-1);
 		}
 	}
 	
-	public static void closeApp() {
-		gui.closeGui();
-		if (running) {
-			running = false;
-			game.stop();
+	public static final class Config {
+		private boolean vSync = true;
+		private Window.WindowOptions opts;
+		private int width = 800;
+		private int height = 600;
+		public static final String IMAGE_FORMAT = "png";
+		public static final String FONT_NAME = "BOLD";
+		public static final int TARGET_UPS = 30;
+		public static final int TARGET_FPS = 75;
+		public static final int MAX_SPOT_LIGHTS = 5;
+		public static final int MAX_POINT_LIGHTS = 5;
+		public static final float Z_FAR = 1000.f;
+		public static final float Z_NEAR = 0.01f;
+		public static final float FOV = (float) Math.toRadians(60.0f);
+		public final static float CAMERA_POS_STEP = 0.40f;
+		public final static float MOUSE_SENSITIVITY = 0.2f;
+		public static final int NUM_SHADOW_CASCADES = 3;
+		public static final float[] SHADOW_CASCADE_SPLITS = new float[]{Z_FAR / 20.0f, Z_FAR / 10.0f, Z_FAR};
+		public static final int SHADOW_MAP_WIDTH = (int) Math.pow(65, 2);
+		public static final int SHADOW_MAP_HEIGHT = SHADOW_MAP_WIDTH;
+		
+		public Config() {
+			opts = new Window.WindowOptions();
+			opts.cullFace = false;
+			opts.showFps = true;
+			opts.compatibleProfile = true;
+			opts.antialiasing = true;
+			opts.frustumCulling = false;
+			opts.maximized = true;
 		}
-	}
-	
-	public static void setGameClosed() {
-		running = false;
 	}
 }
