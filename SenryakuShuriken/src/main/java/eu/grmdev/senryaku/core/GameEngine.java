@@ -1,6 +1,7 @@
 package eu.grmdev.senryaku.core;
 
 import eu.grmdev.senryaku.Main.Config;
+import eu.grmdev.senryaku.core.handlers.MouseInput;
 
 public class GameEngine implements Runnable {
 	private final Window window;
@@ -12,10 +13,10 @@ public class GameEngine implements Runnable {
 	private int fps;
 	private String title;
 	
-	public GameEngine(String windowTitle, int width, int height, boolean vSync, Window.WindowOptions opts, IGame gameLogic) throws Exception {
+	public GameEngine(String windowTitle, boolean vSync, Window.WindowOptions opts, IGame gameLogic) throws Exception {
 		this.title = windowTitle;
 		gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
-		window = new Window(windowTitle, width, height, vSync, opts);
+		window = new Window(windowTitle, vSync, opts);
 		mouseInput = new MouseInput();
 		this.gameLogic = gameLogic;
 		timer = new Timer();
@@ -35,7 +36,7 @@ public class GameEngine implements Runnable {
 			excp.printStackTrace();
 		}
 		finally {
-			cleanup();
+			destroy();
 		}
 	}
 	
@@ -67,14 +68,14 @@ public class GameEngine implements Runnable {
 			
 			render();
 			
-			if (!window.isvSync()) {
+			if (!window.isVSync()) {
 				sync();
 			}
 		}
 	}
 	
-	protected void cleanup() {
-		gameLogic.cleanup();
+	protected void destroy() {
+		gameLogic.destroy();
 	}
 	
 	private void sync() {

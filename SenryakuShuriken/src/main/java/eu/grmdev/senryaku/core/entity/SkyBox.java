@@ -1,11 +1,13 @@
-package eu.grmdev.senryaku.core.items;
+package eu.grmdev.senryaku.core.entity;
 
 import org.joml.Vector4f;
 
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.graphic.*;
+import eu.grmdev.senryaku.graphic.material.Material;
+import eu.grmdev.senryaku.graphic.material.Texture;
 
-public class SkyBox extends GameItem {
+public class SkyBox extends Entity {
 
     public SkyBox(String objModel, String textureFile) throws Exception {
         super();

@@ -10,7 +10,7 @@ import org.joml.Matrix4f;
 
 import eu.grmdev.senryaku.Main.Config;
 import eu.grmdev.senryaku.core.*;
-import eu.grmdev.senryaku.core.items.GameItem;
+import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class ShadowRenderer {
 	@Getter
 	private List<ShadowCascade> shadowCascades;
 	private ShadowBuffer shadowBuffer;
-	private final List<GameItem> filteredItems;
+	private final List<Entity> filteredItems;
 	
 	public ShadowRenderer() {
 		filteredItems = new ArrayList<>();
@@ -91,11 +91,11 @@ public class ShadowRenderer {
 	}
 	
 	private void renderNonInstancedMeshes(Scene scene, Transformation transformation) {
-		depthShaderProgram.setUniform("isInstanced", 0);
+		depthShaderProgram.setUniformi("isInstanced", 0);
 		
-		Map<Mesh, List<GameItem>> mapMeshes = scene.getGameMeshes();
+		Map<Mesh, List<Entity>> mapMeshes = scene.getGameMeshes();
 		for (Mesh mesh : mapMeshes.keySet()) {
-			mesh.renderList(mapMeshes.get(mesh), (GameItem gameItem) -> {
+			mesh.renderList(mapMeshes.get(mesh), (Entity gameItem) -> {
 				Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
 				depthShaderProgram.setUniform("modelNonInstancedMatrix", modelMatrix);
 			});
@@ -103,12 +103,12 @@ public class ShadowRenderer {
 	}
 	
 	private void renderInstancedMeshes(Scene scene, Transformation transformation) {
-		depthShaderProgram.setUniform("isInstanced", 1);
+		depthShaderProgram.setUniformi("isInstanced", 1);
 		
-		Map<InstancedMesh, List<GameItem>> mapMeshes = scene.getGameInstancedMeshes();
+		Map<InstancedMesh, List<Entity>> mapMeshes = scene.getGameInstancedMeshes();
 		for (InstancedMesh mesh : mapMeshes.keySet()) {
 			filteredItems.clear();
-			for (GameItem gameItem : mapMeshes.get(mesh)) {
+			for (Entity gameItem : mapMeshes.get(mesh)) {
 				if (gameItem.isInsideFrustum()) {
 					filteredItems.add(gameItem);
 				}

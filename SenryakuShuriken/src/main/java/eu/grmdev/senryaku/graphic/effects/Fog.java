@@ -15,7 +15,7 @@ public class Fog {
 	@Getter
 	@Setter
 	private float density;
-	public static Fog NOFOG = new Fog();
+	public static final Fog NOFOG = new Fog();
 	
 	public Fog() {
 		active = false;

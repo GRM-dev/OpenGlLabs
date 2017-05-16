@@ -4,7 +4,7 @@ import java.lang.Math;
 
 import org.joml.*;
 
-import eu.grmdev.senryaku.core.items.GameItem;
+import eu.grmdev.senryaku.core.entity.Entity;
 import lombok.Getter;
 
 public class Transformation {
@@ -42,12 +42,12 @@ public class Transformation {
 		return ortho2DMatrix.setOrtho2D(left, right, bottom, top);
 	}
 	
-	public Matrix4f buildModelMatrix(GameItem gameItem) {
+	public Matrix4f buildModelMatrix(Entity gameItem) {
 		Quaternionf rotation = gameItem.getRotation();
 		return modelMatrix.translationRotateScale(gameItem.getPosition().x, gameItem.getPosition().y, gameItem.getPosition().z, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.getScale(), gameItem.getScale(), gameItem.getScale());
 	}
 	
-	public Matrix4f buildModelViewMatrix(GameItem gameItem, Matrix4f viewMatrix) {
+	public Matrix4f buildModelViewMatrix(Entity gameItem, Matrix4f viewMatrix) {
 		return buildModelViewMatrix(buildModelMatrix(gameItem), viewMatrix);
 	}
 	
@@ -55,7 +55,7 @@ public class Transformation {
 		return viewMatrix.mulAffine(modelMatrix, modelViewMatrix);
 	}
 	
-	public Matrix4f buildModelLightViewMatrix(GameItem gameItem, Matrix4f lightViewMatrix) {
+	public Matrix4f buildModelLightViewMatrix(Entity gameItem, Matrix4f lightViewMatrix) {
 		return buildModelViewMatrix(buildModelMatrix(gameItem), lightViewMatrix);
 	}
 	
@@ -63,7 +63,7 @@ public class Transformation {
 		return lightViewMatrix.mulAffine(modelMatrix, modelLightViewMatrix);
 	}
 	
-	public Matrix4f buildOrthoProjModelMatrix(GameItem gameItem, Matrix4f orthoMatrix) {
+	public Matrix4f buildOrthoProjModelMatrix(Entity gameItem, Matrix4f orthoMatrix) {
 		return orthoMatrix.mulOrthoAffine(buildModelMatrix(gameItem), orthoModelMatrix);
 	}
 }

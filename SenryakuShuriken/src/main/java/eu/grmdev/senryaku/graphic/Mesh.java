@@ -13,7 +13,9 @@ import java.util.function.Consumer;
 
 import org.lwjgl.system.MemoryUtil;
 
-import eu.grmdev.senryaku.core.items.GameItem;
+import eu.grmdev.senryaku.core.entity.Entity;
+import eu.grmdev.senryaku.graphic.material.Material;
+import eu.grmdev.senryaku.graphic.material.Texture;
 
 public class Mesh {
 
@@ -204,10 +206,10 @@ public class Mesh {
         endRender();
     }
 
-    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer) {
+    public void renderList(List<Entity> gameItems, Consumer<Entity> consumer) {
         initRender();
 
-        for (GameItem gameItem : gameItems) {
+        for (Entity gameItem : gameItems) {
             if (gameItem.isInsideFrustum()) {
                 // Set up data requiered by gameItem
                 consumer.accept(gameItem);
@@ -219,7 +221,7 @@ public class Mesh {
         endRender();
     }
 
-    public void cleanUp() {
+    public void remove() {
         glDisableVertexAttribArray(0);
 
         // Delete the VBOs

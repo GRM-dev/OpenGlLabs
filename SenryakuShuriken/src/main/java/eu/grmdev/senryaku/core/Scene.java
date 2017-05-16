@@ -2,8 +2,8 @@ package eu.grmdev.senryaku.core;
 
 import java.util.*;
 
-import eu.grmdev.senryaku.core.items.GameItem;
-import eu.grmdev.senryaku.core.items.SkyBox;
+import eu.grmdev.senryaku.core.entity.Entity;
+import eu.grmdev.senryaku.core.entity.SkyBox;
 import eu.grmdev.senryaku.graphic.InstancedMesh;
 import eu.grmdev.senryaku.graphic.Mesh;
 import eu.grmdev.senryaku.graphic.effects.Fog;
@@ -12,9 +12,9 @@ import lombok.Setter;
 
 public class Scene {
 	@Getter
-	private final Map<Mesh, List<GameItem>> gameMeshes;
+	private final Map<Mesh, List<Entity>> gameMeshes;
 	@Getter
-	private final Map<InstancedMesh, List<GameItem>> gameInstancedMeshes;
+	private final Map<InstancedMesh, List<Entity>> gameInstancedMeshes;
 	@Getter
 	@Setter
 	private SkyBox skyBox;
@@ -35,14 +35,14 @@ public class Scene {
 		renderShadows = true;
 	}
 	
-	public void setGameItems(GameItem[] gameItems) {
-		int numGameItems = gameItems != null ? gameItems.length : 0;
-		for (int i = 0; i < numGameItems; i++) {
-			GameItem gameItem = gameItems[i];
+	public void setGameItems(Entity[] gameItems) {
+		if (gameItems == null || gameItems.length == 0) { return; }
+		for (int i = 0; i < gameItems.length; i++) {
+			Entity gameItem = gameItems[i];
 			Mesh[] meshes = gameItem.getMeshes();
 			for (Mesh mesh : meshes) {
 				boolean instancedMesh = mesh instanceof InstancedMesh;
-				List<GameItem> list = instancedMesh ? gameInstancedMeshes.get(mesh) : gameMeshes.get(mesh);
+				List<Entity> list = instancedMesh ? gameInstancedMeshes.get(mesh) : gameMeshes.get(mesh);
 				if (list == null) {
 					list = new ArrayList<>();
 					if (instancedMesh) {
@@ -56,12 +56,12 @@ public class Scene {
 		}
 	}
 	
-	public void cleanup() {
+	public void destroy() {
 		for (Mesh mesh : gameMeshes.keySet()) {
-			mesh.cleanUp();
+			mesh.remove();
 		}
 		for (Mesh mesh : gameInstancedMeshes.keySet()) {
-			mesh.cleanUp();
+			mesh.remove();
 		}
 	}
 }

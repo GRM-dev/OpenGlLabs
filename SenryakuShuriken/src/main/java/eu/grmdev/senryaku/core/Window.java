@@ -11,27 +11,26 @@ import org.lwjgl.opengl.GL;
 
 import eu.grmdev.senryaku.Main.Config;
 import lombok.Getter;
+import lombok.Setter;
 
 public class Window {
-	private final String title;
+	private @Getter final String title;
 	private int width;
 	private int height;
-	@Getter
-	private long windowHandle;
+	private @Getter long windowHandle;
 	private boolean resized;
-	private boolean vSync;
-	@Getter
-	private final WindowOptions windowOptions;
-	private final Matrix4f projectionMatrix;
+	private @Getter @Setter boolean vSync;
+	private @Getter final WindowOptions windowOptions;
+	private @Getter final Matrix4f projectionMatrix;
 	
-	public Window(String title, int width, int height, boolean vSync, WindowOptions opts) {
+	public Window(String title, boolean vSync, WindowOptions opts) {
 		this.title = title;
-		this.width = width;
-		this.height = height;
+		this.width = opts.width;
+		this.height = opts.height;
 		this.vSync = vSync;
 		this.resized = false;
 		this.windowOptions = opts;
-		projectionMatrix = new Matrix4f();
+		this.projectionMatrix = new Matrix4f();
 	}
 	
 	public void init() {
@@ -46,7 +45,7 @@ public class Window {
 		
 		glfwMakeContextCurrent(windowHandle);
 		
-		if (isvSync()) {
+		if (isVSync()) {
 			glfwSwapInterval(1);
 		}
 		
@@ -69,11 +68,17 @@ public class Window {
 		glfwShowWindow(windowHandle);
 	}
 	
+	/**
+	 * Centers window on monitor
+	 */
 	private void centerWindow() {
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		glfwSetWindowPos(windowHandle, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
 	}
 	
+	/**
+	 * Adds callbacks to FramebufferSize and Key events
+	 */
 	private void setupCallbacks() {
 		glfwSetFramebufferSizeCallback(windowHandle, (window, width, height) -> {
 			this.width = width;
@@ -107,14 +112,14 @@ public class Window {
 		if (width == 0 || height == 0) {
 			width = 100;
 			height = 100;
-			int max;
-			if (windowOptions.maximized) {
-				max = GLFW_TRUE;
-			} else {
-				max = GLFW_FALSE;
-			}
-			glfwWindowHint(GLFW_MAXIMIZED, max);
 		}
+		int max;
+		if (windowOptions.maximized) {
+			max = GLFW_TRUE;
+		} else {
+			max = GLFW_FALSE;
+		}
+		glfwWindowHint(GLFW_MAXIMIZED, max);
 		
 		windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
 		if (windowHandle == NULL) { throw new RuntimeException("Failed to create the GLFW window"); }
@@ -132,10 +137,6 @@ public class Window {
 	
 	public void setWindowTitle(String title) {
 		glfwSetWindowTitle(windowHandle, title);
-	}
-	
-	public Matrix4f getProjectionMatrix() {
-		return projectionMatrix;
 	}
 	
 	public Matrix4f updateProjectionMatrix() {
@@ -160,10 +161,6 @@ public class Window {
 		return glfwWindowShouldClose(windowHandle);
 	}
 	
-	public String getTitle() {
-		return title;
-	}
-	
 	public int getWidth() {
 		return width;
 	}
@@ -180,24 +177,14 @@ public class Window {
 		this.resized = resized;
 	}
 	
-	public boolean isvSync() {
-		return vSync;
-	}
-	
-	public void setvSync(boolean vSync) {
-		this.vSync = vSync;
-	}
-	
 	public void update() {
 		glfwSwapBuffers(windowHandle);
 		glfwPollEvents();
 	}
 	
-	public WindowOptions getOptions() {
-		return windowOptions;
-	}
-	
 	public static class WindowOptions {
+		public int width;
+		public int height;
 		public boolean cullFace;
 		public boolean showTriangles;
 		public boolean showFps;

@@ -1,4 +1,4 @@
-package eu.grmdev.senryaku.graphic;
+package eu.grmdev.senryaku.graphic.material;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;

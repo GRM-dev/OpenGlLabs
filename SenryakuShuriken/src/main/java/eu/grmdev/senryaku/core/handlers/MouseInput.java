@@ -1,23 +1,20 @@
-package eu.grmdev.senryaku.core;
+package eu.grmdev.senryaku.core.handlers;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 
+import eu.grmdev.senryaku.core.Window;
 import lombok.Getter;
 
 public class MouseInput {
 	private final Vector2d previousPos;
-	@Getter
-	private final Vector2d currentPos;
-	@Getter
-	private final Vector2f displVec;
+	private @Getter final Vector2d currentPos;
+	private @Getter final Vector2f displVec;
 	private boolean inWindow = false;
-	@Getter
-	private boolean leftButtonPressed = false;
-	@Getter
-	private boolean rightButtonPressed = false;
+	private @Getter boolean leftButtonPressed = false;
+	private @Getter boolean rightButtonPressed = false;
 	
 	public MouseInput() {
 		previousPos = new Vector2d(-1, -1);

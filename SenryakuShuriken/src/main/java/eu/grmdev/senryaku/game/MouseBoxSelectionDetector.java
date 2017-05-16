@@ -3,7 +3,7 @@ package eu.grmdev.senryaku.game;
 import org.joml.*;
 
 import eu.grmdev.senryaku.core.Window;
-import eu.grmdev.senryaku.core.items.GameItem;
+import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.graphic.Camera;
 
 public class MouseBoxSelectionDetector extends CameraBoxSelectionDetector {
@@ -20,7 +20,7 @@ public class MouseBoxSelectionDetector extends CameraBoxSelectionDetector {
 		tmpVec = new Vector4f();
 	}
 	
-	public boolean selectGameItem(GameItem[] gameItems, Window window, Vector2d mousePos, Camera camera) {
+	public boolean selectGameItem(Entity[] gameItems, Window window, Vector2d mousePos, Camera camera) {
 		// Transform mouse coordinates into normalized space [-1, 1]
 		int wdwWitdh = window.getWidth();
 		int wdwHeight = window.getHeight();

@@ -1,5 +1,7 @@
 package eu.grmdev.senryaku.core;
 
+import eu.grmdev.senryaku.core.handlers.MouseInput;
+
 public interface IGame {
 
     void init(Window window) throws Exception;
@@ -10,5 +12,5 @@ public interface IGame {
     
     void render(Window window);
     
-    void cleanup();
+    void destroy();
 }

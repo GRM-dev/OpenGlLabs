@@ -11,6 +11,7 @@ import org.lwjgl.system.MemoryStack;
 
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.*;
+import eu.grmdev.senryaku.graphic.material.Material;
 
 public class ShaderProgram {
 	private final int id;
@@ -150,11 +151,11 @@ public class ShaderProgram {
 		}
 	}
 	
-	public void setUniform(String uniformName, Matrix4f value, int index) {
+	public void setUniformm4fi(String uniformName, Matrix4f value, int index) {
 		setUniform(uniformName + "[" + index + "]", value);
 	}
 	
-	public void setUniform(String uniformName, Matrix4f[] matrices) {
+	public void setUniformm4f(String uniformName, Matrix4f[] matrices) {
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			int length = matrices != null ? matrices.length : 0;
 			FloatBuffer fb = stack.mallocFloat(16 * length);
@@ -165,82 +166,82 @@ public class ShaderProgram {
 		}
 	}
 	
-	public void setUniform(String uniformName, int value) {
+	public void setUniformi(String uniformName, int value) {
 		glUniform1i(uniforms.get(uniformName), value);
 	}
 	
-	public void setUniform(String uniformName, float value) {
+	public void setUniformf(String uniformName, float value) {
 		glUniform1f(uniforms.get(uniformName), value);
 	}
 	
-	public void setUniform(String uniformName, float value, int index) {
-		setUniform(uniformName + "[" + index + "]", value);
+	public void setUniformfi(String uniformName, float value, int index) {
+		setUniformf(uniformName + "[" + index + "]", value);
 	}
 	
-	public void setUniform(String uniformName, Vector3f value) {
+	public void setUniformv3f(String uniformName, Vector3f value) {
 		glUniform3f(uniforms.get(uniformName), value.x, value.y, value.z);
 	}
 	
-	public void setUniform(String uniformName, Vector4f value) {
+	public void setUniformv4f(String uniformName, Vector4f value) {
 		glUniform4f(uniforms.get(uniformName), value.x, value.y, value.z, value.w);
 	}
 	
-	public void setUniform(String uniformName, PointLight[] pointLights) {
+	public void setUniformPla(String uniformName, PointLight[] pointLights) {
 		int numLights = pointLights != null ? pointLights.length : 0;
 		for (int i = 0; i < numLights; i++) {
-			setUniform(uniformName, pointLights[i], i);
+			setUniformPl(uniformName, pointLights[i], i);
 		}
 	}
 	
-	public void setUniform(String uniformName, PointLight pointLight, int pos) {
-		setUniform(uniformName + "[" + pos + "]", pointLight);
+	public void setUniformPl(String uniformName, PointLight pointLight, int pos) {
+		setUniformPl(uniformName + "[" + pos + "]", pointLight);
 	}
 	
-	public void setUniform(String uniformName, PointLight pointLight) {
-		setUniform(uniformName + ".colour", pointLight.getColor());
-		setUniform(uniformName + ".position", pointLight.getPosition());
-		setUniform(uniformName + ".intensity", pointLight.getIntensity());
+	public void setUniformPl(String uniformName, PointLight pointLight) {
+		setUniformv3f(uniformName + ".colour", pointLight.getColor());
+		setUniformv3f(uniformName + ".position", pointLight.getPosition());
+		setUniformf(uniformName + ".intensity", pointLight.getIntensity());
 		PointLight.Attenuation att = pointLight.getAttenuation();
-		setUniform(uniformName + ".att.constant", att.getConstant());
-		setUniform(uniformName + ".att.linear", att.getLinear());
-		setUniform(uniformName + ".att.exponent", att.getExponent());
+		setUniformf(uniformName + ".att.constant", att.getConstant());
+		setUniformf(uniformName + ".att.linear", att.getLinear());
+		setUniformf(uniformName + ".att.exponent", att.getExponent());
 	}
 	
-	public void setUniform(String uniformName, SpotLight[] spotLights) {
+	public void setUniformSla(String uniformName, SpotLight[] spotLights) {
 		int numLights = spotLights != null ? spotLights.length : 0;
 		for (int i = 0; i < numLights; i++) {
-			setUniform(uniformName, spotLights[i], i);
+			setUniformSli(uniformName, spotLights[i], i);
 		}
 	}
 	
-	public void setUniform(String uniformName, SpotLight spotLight, int pos) {
-		setUniform(uniformName + "[" + pos + "]", spotLight);
+	public void setUniformSli(String uniformName, SpotLight spotLight, int pos) {
+		setUniformSl(uniformName + "[" + pos + "]", spotLight);
 	}
 	
-	public void setUniform(String uniformName, SpotLight spotLight) {
-		setUniform(uniformName + ".pl", spotLight.getPointLight());
-		setUniform(uniformName + ".conedir", spotLight.getConeDirection());
-		setUniform(uniformName + ".cutoff", spotLight.getCutOff());
+	public void setUniformSl(String uniformName, SpotLight spotLight) {
+		setUniformPl(uniformName + ".pl", spotLight.getPointLight());
+		setUniformv3f(uniformName + ".conedir", spotLight.getConeDirection());
+		setUniformf(uniformName + ".cutoff", spotLight.getCutOff());
 	}
 	
-	public void setUniform(String uniformName, DirectionalLight dirLight) {
-		setUniform(uniformName + ".colour", dirLight.getColor());
-		setUniform(uniformName + ".direction", dirLight.getDirection());
-		setUniform(uniformName + ".intensity", dirLight.getIntensity());
+	public void setUniformDl(String uniformName, DirectionalLight dirLight) {
+		setUniformv3f(uniformName + ".colour", dirLight.getColor());
+		setUniformv3f(uniformName + ".direction", dirLight.getDirection());
+		setUniformf(uniformName + ".intensity", dirLight.getIntensity());
 	}
 	
-	public void setUniform(String uniformName, Material material) {
-		setUniform(uniformName + ".ambient", material.getAmbientColor());
-		setUniform(uniformName + ".diffuse", material.getDiffuseColor());
-		setUniform(uniformName + ".specular", material.getSpecularColor());
-		setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
-		setUniform(uniformName + ".hasNormalMap", material.hasNormalMap() ? 1 : 0);
-		setUniform(uniformName + ".reflectance", material.getReflectance());
+	public void setUniformMat(String uniformName, Material material) {
+		setUniformv4f(uniformName + ".ambient", material.getAmbientColor());
+		setUniformv4f(uniformName + ".diffuse", material.getDiffuseColor());
+		setUniformv4f(uniformName + ".specular", material.getSpecularColor());
+		setUniformi(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
+		setUniformi(uniformName + ".hasNormalMap", material.hasNormalMap() ? 1 : 0);
+		setUniformf(uniformName + ".reflectance", material.getReflectance());
 	}
 	
-	public void setUniform(String uniformName, Fog fog) {
-		setUniform(uniformName + ".activeFog", fog.isActive() ? 1 : 0);
-		setUniform(uniformName + ".colour", fog.getColor());
-		setUniform(uniformName + ".density", fog.getDensity());
+	public void setUniformFog(String uniformName, Fog fog) {
+		setUniformi(uniformName + ".activeFog", fog.isActive() ? 1 : 0);
+		setUniformv3f(uniformName + ".colour", fog.getColor());
+		setUniformf(uniformName + ".density", fog.getDensity());
 	}
 }

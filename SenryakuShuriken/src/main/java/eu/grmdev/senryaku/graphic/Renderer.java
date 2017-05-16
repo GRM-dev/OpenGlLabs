@@ -9,11 +9,12 @@ import org.joml.*;
 
 import eu.grmdev.senryaku.Main.Config;
 import eu.grmdev.senryaku.core.*;
-import eu.grmdev.senryaku.core.items.GameItem;
-import eu.grmdev.senryaku.core.items.SkyBox;
+import eu.grmdev.senryaku.core.entity.Entity;
+import eu.grmdev.senryaku.core.entity.SkyBox;
 import eu.grmdev.senryaku.graphic.effects.shadow.ShadowCascade;
 import eu.grmdev.senryaku.graphic.effects.shadow.ShadowRenderer;
 import eu.grmdev.senryaku.graphic.lights.*;
+import eu.grmdev.senryaku.graphic.material.Texture;
 
 public class Renderer {
 	private final Transformation transformation;
@@ -22,7 +23,7 @@ public class Renderer {
 	private ShaderProgram skyBoxShaderProgram;
 	private final float specularPower;
 	private final FrustumCullingFilter frustumFilter;
-	private final List<GameItem> filteredItems;
+	private final List<Entity> filteredItems;
 	
 	public Renderer() {
 		transformation = new Transformation();
@@ -91,7 +92,7 @@ public class Renderer {
 	public void render(Window window, Camera camera, Scene scene, boolean sceneChanged) {
 		clear();
 		
-		if (window.getOptions().frustumCulling) {
+		if (window.getWindowOptions().frustumCulling) {
 			frustumFilter.updateFrustum(window.getProjectionMatrix(), camera.getViewMatrix());
 			frustumFilter.filter(scene.getGameMeshes());
 			frustumFilter.filter(scene.getGameInstancedMeshes());
@@ -120,7 +121,7 @@ public class Renderer {
 		if (skyBox != null) {
 			skyBoxShaderProgram.bind();
 			
-			skyBoxShaderProgram.setUniform("texture_sampler", 0);
+			skyBoxShaderProgram.setUniformi("texture_sampler", 0);
 			
 			Matrix4f projectionMatrix = window.getProjectionMatrix();
 			skyBoxShaderProgram.setUniform("projectionMatrix", projectionMatrix);
@@ -135,9 +136,9 @@ public class Renderer {
 			Mesh mesh = skyBox.getMesh();
 			Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(skyBox, viewMatrix);
 			skyBoxShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-			skyBoxShaderProgram.setUniform("ambientLight", scene.getSceneLight().getSkyBoxLight());
-			skyBoxShaderProgram.setUniform("colour", mesh.getMaterial().getAmbientColor());
-			skyBoxShaderProgram.setUniform("hasTexture", mesh.getMaterial().isTextured() ? 1 : 0);
+			skyBoxShaderProgram.setUniformv3f("ambientLight", scene.getSceneLight().getSkyBoxLight());
+			skyBoxShaderProgram.setUniformv4f("colour", mesh.getMaterial().getAmbientColor());
+			skyBoxShaderProgram.setUniformi("hasTexture", mesh.getMaterial().isTextured() ? 1 : 0);
 			
 			mesh.render();
 			
@@ -159,48 +160,47 @@ public class Renderer {
 		List<ShadowCascade> shadowCascades = shadowRenderer.getShadowCascades();
 		for (int i = 0; i < Config.NUM_SHADOW_CASCADES; i++) {
 			ShadowCascade shadowCascade = shadowCascades.get(i);
-			sceneShaderProgram.setUniform("orthoProjectionMatrix", shadowCascade.getOrthoProjMatrix(), i);
-			sceneShaderProgram.setUniform("cascadeFarPlanes", Config.SHADOW_CASCADE_SPLITS[i], i);
-			sceneShaderProgram.setUniform("lightViewMatrix", shadowCascade.getLightViewMatrix(), i);
+			sceneShaderProgram.setUniformm4fi("orthoProjectionMatrix", shadowCascade.getOrthoProjMatrix(), i);
+			sceneShaderProgram.setUniformfi("cascadeFarPlanes", Config.SHADOW_CASCADE_SPLITS[i], i);
+			sceneShaderProgram.setUniformm4fi("lightViewMatrix", shadowCascade.getLightViewMatrix(), i);
 		}
 		
 		SceneLight sceneLight = scene.getSceneLight();
 		renderLights(viewMatrix, sceneLight);
 		
-		sceneShaderProgram.setUniform("fog", scene.getFog());
-		sceneShaderProgram.setUniform("texture_sampler", 0);
-		sceneShaderProgram.setUniform("normalMap", 1);
+		sceneShaderProgram.setUniformFog("fog", scene.getFog());
+		sceneShaderProgram.setUniformi("texture_sampler", 0);
+		sceneShaderProgram.setUniformi("normalMap", 1);
 		int start = 2;
 		for (int i = 0; i < Config.NUM_SHADOW_CASCADES; i++) {
-			sceneShaderProgram.setUniform("shadowMap_" + i, start + i);
+			sceneShaderProgram.setUniformi("shadowMap_" + i, start + i);
 		}
-		sceneShaderProgram.setUniform("renderShadow", scene.isRenderShadows() ? 1 : 0);
+		sceneShaderProgram.setUniformi("renderShadow", scene.isRenderShadows() ? 1 : 0);
 		
 		renderNonInstancedMeshes(scene);
-		
 		renderInstancedMeshes(scene, viewMatrix);
 		
 		sceneShaderProgram.unbind();
 	}
 	
 	private void renderNonInstancedMeshes(Scene scene) {
-		sceneShaderProgram.setUniform("isInstanced", 0);
+		sceneShaderProgram.setUniformi("isInstanced", 0);
 		
 		// Render each mesh with the associated game Items
-		Map<Mesh, List<GameItem>> mapMeshes = scene.getGameMeshes();
+		Map<Mesh, List<Entity>> mapMeshes = scene.getGameMeshes();
 		for (Mesh mesh : mapMeshes.keySet()) {
-			sceneShaderProgram.setUniform("material", mesh.getMaterial());
+			sceneShaderProgram.setUniformMat("material", mesh.getMaterial());
 			
 			Texture text = mesh.getMaterial().getTexture();
 			if (text != null) {
-				sceneShaderProgram.setUniform("numCols", text.getNumCols());
-				sceneShaderProgram.setUniform("numRows", text.getNumRows());
+				sceneShaderProgram.setUniformi("numCols", text.getNumCols());
+				sceneShaderProgram.setUniformi("numRows", text.getNumRows());
 			}
 			
 			shadowRenderer.bindTextures(GL_TEXTURE2);
 			
-			mesh.renderList(mapMeshes.get(mesh), (GameItem gameItem) -> {
-				sceneShaderProgram.setUniform("selectedNonInstanced", gameItem.isSelected() ? 1.0f : 0.0f);
+			mesh.renderList(mapMeshes.get(mesh), (Entity gameItem) -> {
+				sceneShaderProgram.setUniformf("selectedNonInstanced", gameItem.isSelected() ? 1.0f : 0.0f);
 				Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
 				sceneShaderProgram.setUniform("modelNonInstancedMatrix", modelMatrix);
 			});
@@ -208,20 +208,20 @@ public class Renderer {
 	}
 	
 	private void renderInstancedMeshes(Scene scene, Matrix4f viewMatrix) {
-		sceneShaderProgram.setUniform("isInstanced", 1);
+		sceneShaderProgram.setUniformi("isInstanced", 1);
 		
-		Map<InstancedMesh, List<GameItem>> mapMeshes = scene.getGameInstancedMeshes();
+		Map<InstancedMesh, List<Entity>> mapMeshes = scene.getGameInstancedMeshes();
 		for (InstancedMesh mesh : mapMeshes.keySet()) {
 			Texture text = mesh.getMaterial().getTexture();
 			if (text != null) {
-				sceneShaderProgram.setUniform("numCols", text.getNumCols());
-				sceneShaderProgram.setUniform("numRows", text.getNumRows());
+				sceneShaderProgram.setUniformi("numCols", text.getNumCols());
+				sceneShaderProgram.setUniformi("numRows", text.getNumRows());
 			}
 			
-			sceneShaderProgram.setUniform("material", mesh.getMaterial());
+			sceneShaderProgram.setUniformMat("material", mesh.getMaterial());
 			
 			filteredItems.clear();
-			for (GameItem gameItem : mapMeshes.get(mesh)) {
+			for (Entity gameItem : mapMeshes.get(mesh)) {
 				if (gameItem.isInsideFrustum()) {
 					filteredItems.add(gameItem);
 				}
@@ -234,8 +234,8 @@ public class Renderer {
 	
 	private void renderLights(Matrix4f viewMatrix, SceneLight sceneLight) {
 		
-		sceneShaderProgram.setUniform("ambientLight", sceneLight.getAmbientLight());
-		sceneShaderProgram.setUniform("specularPower", specularPower);
+		sceneShaderProgram.setUniformv3f("ambientLight", sceneLight.getAmbientLight());
+		sceneShaderProgram.setUniformf("specularPower", specularPower);
 		
 		// Process Point Lights
 		PointLight[] pointLightList = sceneLight.getPointLightList();
@@ -250,7 +250,7 @@ public class Renderer {
 			lightPos.x = aux.x;
 			lightPos.y = aux.y;
 			lightPos.z = aux.z;
-			sceneShaderProgram.setUniform("pointLights", currPointLight, i);
+			sceneShaderProgram.setUniformPl("pointLights", currPointLight, i);
 		}
 		
 		// Process Spot Ligths
@@ -271,7 +271,7 @@ public class Renderer {
 			lightPos.y = aux.y;
 			lightPos.z = aux.z;
 			
-			sceneShaderProgram.setUniform("spotLights", currSpotLight, i);
+			sceneShaderProgram.setUniformSli("spotLights", currSpotLight, i);
 		}
 		
 		// Get a copy of the directional light object and transform its position
@@ -280,7 +280,7 @@ public class Renderer {
 		Vector4f dir = new Vector4f(currDirLight.getDirection(), 0);
 		dir.mul(viewMatrix);
 		currDirLight.setDirection(new Vector3f(dir.x, dir.y, dir.z));
-		sceneShaderProgram.setUniform("directionalLight", currDirLight);
+		sceneShaderProgram.setUniformDl("directionalLight", currDirLight);
 	}
 	
 	private void renderCrossHair(Window window) {

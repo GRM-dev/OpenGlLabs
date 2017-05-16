@@ -13,7 +13,8 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryUtil;
 
-import eu.grmdev.senryaku.core.items.GameItem;
+import eu.grmdev.senryaku.core.entity.Entity;
+import eu.grmdev.senryaku.graphic.material.Texture;
 
 public class InstancedMesh extends Mesh {
 	private static final int FLOAT_SIZE_BYTES = 4;
@@ -80,31 +81,31 @@ public class InstancedMesh extends Mesh {
 		super.endRender();
 	}
 	
-	public void renderListInstanced(List<GameItem> gameItems, Transformation transformation, Matrix4f viewMatrix) {
+	public void renderListInstanced(List<Entity> gameItems, Transformation transformation, Matrix4f viewMatrix) {
 		renderListInstanced(gameItems, false, transformation, viewMatrix);
 	}
 	
-	public void renderListInstanced(List<GameItem> gameItems, boolean billBoard, Transformation transformation, Matrix4f viewMatrix) {
+	public void renderListInstanced(List<Entity> gameItems, boolean billBoard, Transformation transformation, Matrix4f viewMatrix) {
 		initRender();
 		
 		int chunkSize = numInstances;
 		int length = gameItems.size();
 		for (int i = 0; i < length; i += chunkSize) {
 			int end = Math.min(length, i + chunkSize);
-			List<GameItem> subList = gameItems.subList(i, end);
+			List<Entity> subList = gameItems.subList(i, end);
 			renderChunkInstanced(subList, billBoard, transformation, viewMatrix);
 		}
 		
 		endRender();
 	}
 	
-	private void renderChunkInstanced(List<GameItem> gameItems, boolean billBoard, Transformation transformation, Matrix4f viewMatrix) {
+	private void renderChunkInstanced(List<Entity> gameItems, boolean billBoard, Transformation transformation, Matrix4f viewMatrix) {
 		this.instanceDataBuffer.clear();
 		
 		int i = 0;
 		
 		Texture text = getMaterial().getTexture();
-		for (GameItem gameItem : gameItems) {
+		for (Entity gameItem : gameItems) {
 			Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
 			if (viewMatrix != null && billBoard) {
 				viewMatrix.transpose3x3(modelMatrix);
@@ -135,8 +136,8 @@ public class InstancedMesh extends Mesh {
 	}
 	
 	@Override
-	public void cleanUp() {
-		super.cleanUp();
+	public void remove() {
+		super.remove();
 		if (this.instanceDataBuffer != null) {
 			MemoryUtil.memFree(this.instanceDataBuffer);
 			this.instanceDataBuffer = null;

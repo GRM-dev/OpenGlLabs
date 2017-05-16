@@ -10,7 +10,7 @@ public class Main {
 		Config c = new Config();
 		try {
 			IGame gameLogic = new Game();
-			gameEng = new GameEngine("Senryaku Shuriken", c.width, c.height, c.vSync, c.opts, gameLogic);
+			gameEng = new GameEngine("Senryaku Shuriken", c.vSync, c.opts, gameLogic);
 			gameEng.start();
 		}
 		catch (Exception ex) {
@@ -19,11 +19,12 @@ public class Main {
 		}
 	}
 	
+	/**
+	 * Static final config values for game
+	 */
 	public static final class Config {
-		private boolean vSync = true;
 		private Window.WindowOptions opts;
-		private int width = 800;
-		private int height = 600;
+		private boolean vSync = true;
 		public static final String IMAGE_FORMAT = "png";
 		public static final String FONT_NAME = "BOLD";
 		public static final int TARGET_UPS = 30;
@@ -33,6 +34,7 @@ public class Main {
 		public static final float Z_FAR = 1000.f;
 		public static final float Z_NEAR = 0.01f;
 		public static final float FOV = (float) Math.toRadians(60.0f);
+		public static final boolean SHADOWS_ENABLED = true;
 		public final static float CAMERA_POS_STEP = 0.40f;
 		public final static float MOUSE_SENSITIVITY = 0.2f;
 		public static final int NUM_SHADOW_CASCADES = 3;
@@ -48,6 +50,8 @@ public class Main {
 			opts.antialiasing = true;
 			opts.frustumCulling = false;
 			opts.maximized = true;
+			opts.width = 800;
+			opts.height = 600;
 		}
 	}
 }

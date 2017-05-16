@@ -1,4 +1,4 @@
-package eu.grmdev.senryaku.graphic;
+package eu.grmdev.senryaku.graphic.material;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

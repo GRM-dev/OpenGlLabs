@@ -11,8 +11,9 @@ import org.joml.*;
 
 import eu.grmdev.senryaku.Main.Config;
 import eu.grmdev.senryaku.core.*;
-import eu.grmdev.senryaku.core.items.GameItem;
-import eu.grmdev.senryaku.core.items.SkyBox;
+import eu.grmdev.senryaku.core.entity.Entity;
+import eu.grmdev.senryaku.core.entity.SkyBox;
+import eu.grmdev.senryaku.core.handlers.MouseInput;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
@@ -22,16 +23,12 @@ public class Game implements IGame {
 	private final Vector3f cameraInc;
 	private final Renderer renderer;
 	private final Camera camera;
-	private Scene scene;
 	private float lightAngleInc;
 	private float lightAngle;
 	private boolean firstTime;
 	private boolean sceneChanged;
-	private GameItem[] gameItems;
-	
-	private enum Sounds {
-		FIRE
-	};
+	private Scene scene;
+	private Entity[] entities;
 	
 	public Game() {
 		renderer = new Renderer();
@@ -47,10 +44,10 @@ public class Game implements IGame {
 		renderer.init(window);
 		scene = new Scene();
 		
-		GameItem[] entities = setupStartEntities();
+		entities = setupStartEntities();
 		scene.setGameItems(entities);
 		
-		scene.setRenderShadows(true);
+		scene.setRenderShadows(Config.SHADOWS_ENABLED);
 		Vector3f fogColour = new Vector3f(0.5f, 0.5f, 0.5f);
 		scene.setFog(new Fog(true, fogColour, 0.02f));
 		
@@ -59,22 +56,22 @@ public class Game implements IGame {
 		setupCameraStartPos();
 	}
 	
-	private GameItem[] setupStartEntities() throws Exception {
-		List<GameItem> entities = new ArrayList<>();
+	private Entity[] setupStartEntities() throws Exception {
+		List<Entity> entities = new ArrayList<>();
 		String fileName = Utils.loadResourceURL("models/house/house.obj").getFile();
 		File file = new File(fileName);
 		Mesh[] houseMesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/house");
-		GameItem house = new GameItem(houseMesh);
+		Entity house = new Entity(houseMesh);
 		entities.add(house);
 		
 		fileName = Utils.loadResourceURL("models/terrain/terrain.obj").getFile();
 		file = new File(fileName);
 		Mesh[] terrainMesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/terrain");
-		GameItem terrain = new GameItem(terrainMesh);
+		Entity terrain = new Entity(terrainMesh);
 		terrain.setScale(100.0f);
 		entities.add(terrain);
 		
-		return entities.toArray(new GameItem[0]);
+		return entities.toArray(new Entity[0]);
 	}
 	
 	private void setupSkyBox() throws Exception {
@@ -179,8 +176,8 @@ public class Game implements IGame {
 	}
 	
 	@Override
-	public void cleanup() {
+	public void destroy() {
 		renderer.cleanup();
-		scene.cleanup();
+		scene.destroy();
 	}
 }

@@ -1,13 +1,15 @@
-package eu.grmdev.senryaku.core.items;
+package eu.grmdev.senryaku.core.entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.grmdev.senryaku.core.Utils;
-import eu.grmdev.senryaku.graphic.*;
+import eu.grmdev.senryaku.graphic.Mesh;
+import eu.grmdev.senryaku.graphic.material.FontTexture;
+import eu.grmdev.senryaku.graphic.material.Material;
 import lombok.Getter;
 
-public class TextItem extends GameItem {
+public class TextItem extends Entity {
 	private static final float ZPOS = 0.0f;
 	private static final int VERTICES_PER_QUAD = 4;
 	private final FontTexture fontTexture;
@@ -22,18 +24,16 @@ public class TextItem extends GameItem {
 	}
 	
 	private Mesh buildMesh() {
-		List<Float> positions = new ArrayList();
-		List<Float> textCoords = new ArrayList();
+		List<Float> positions = new ArrayList<>();
+		List<Float> textCoords = new ArrayList<>();
 		float[] normals = new float[0];
-		List<Integer> indices = new ArrayList();
+		List<Integer> indices = new ArrayList<>();
 		char[] characters = text.toCharArray();
 		int numChars = characters.length;
 		
 		float startx = 0;
 		for (int i = 0; i < numChars; i++) {
 			FontTexture.CharInfo charInfo = fontTexture.getCharInfo(characters[i]);
-			
-			// Build a character tile composed by two triangles
 			
 			// Left Top vertex
 			positions.add(startx); // x
