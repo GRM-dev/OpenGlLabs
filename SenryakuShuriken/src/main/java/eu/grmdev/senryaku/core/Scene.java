@@ -11,22 +11,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class Scene {
-	@Getter
-	private final Map<Mesh, List<Entity>> gameMeshes;
-	@Getter
-	private final Map<InstancedMesh, List<Entity>> gameInstancedMeshes;
-	@Getter
-	@Setter
-	private SkyBox skyBox;
-	@Getter
-	@Setter
-	private SceneLight sceneLight;
-	@Getter
-	@Setter
-	private Fog fog;
-	@Getter
-	@Setter
-	private boolean renderShadows;
+	private @Getter final Map<Mesh, List<Entity>> gameMeshes;
+	private @Getter final Map<InstancedMesh, List<Entity>> gameInstancedMeshes;
+	private @Getter @Setter SkyBox skyBox;
+	private @Getter @Setter SceneLight sceneLight;
+	private @Getter @Setter Fog fog;
+	private @Getter @Setter boolean renderShadows;
 	
 	public Scene() {
 		gameMeshes = new HashMap<>();

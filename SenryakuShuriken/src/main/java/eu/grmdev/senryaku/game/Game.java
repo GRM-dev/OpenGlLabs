@@ -29,6 +29,7 @@ public class Game implements IGame {
 	private boolean sceneChanged;
 	private Scene scene;
 	private Entity[] entities;
+	private Hud hud;
 	
 	public Game() {
 		renderer = new Renderer();
@@ -37,6 +38,7 @@ public class Game implements IGame {
 		lightAngleInc = 0;
 		lightAngle = 90;
 		firstTime = true;
+		hud = new Hud();
 	}
 	
 	@Override
@@ -54,6 +56,7 @@ public class Game implements IGame {
 		setupSkyBox();
 		setupLights();
 		setupCameraStartPos();
+		setupHUD(window);
 	}
 	
 	private Entity[] setupStartEntities() throws Exception {
@@ -74,6 +77,11 @@ public class Game implements IGame {
 		return entities.toArray(new Entity[0]);
 	}
 	
+	/**
+	 * Loads Sky Box from obj file and applies it to scene
+	 * 
+	 * @throws Exception
+	 */
 	private void setupSkyBox() throws Exception {
 		float skyBoxScale = 100.0f;
 		String fileName = Utils.loadResourceURL("models/skybox.obj").getFile();
@@ -83,6 +91,9 @@ public class Game implements IGame {
 		scene.setSkyBox(skyBox);
 	}
 	
+	/**
+	 * Creates Lights and adds it to scene lights
+	 */
 	private void setupLights() {
 		SceneLight sceneLight = new SceneLight();
 		scene.setSceneLight(sceneLight);
@@ -96,12 +107,19 @@ public class Game implements IGame {
 		sceneLight.setDirectionalLight(directionalLight);
 	}
 	
+	/**
+	 * Changes position of camera to startup position
+	 */
 	private void setupCameraStartPos() {
 		camera.getPosition().x = -17.0f;
 		camera.getPosition().y = 17.0f;
 		camera.getPosition().z = -30.0f;
 		camera.getRotation().x = 20.0f;
 		camera.getRotation().y = 140.f;
+	}
+	
+	private void setupHUD(Window window) throws Exception {
+		hud.init(window);
 	}
 	
 	@Override
@@ -173,10 +191,15 @@ public class Game implements IGame {
 			firstTime = false;
 		}
 		renderer.render(window, camera, scene, sceneChanged);
+		hud.render(window);
 	}
 	
+	/**
+	 * Called on game closing. Throws the thrash out of memory
+	 */
 	@Override
 	public void destroy() {
+		hud.destroy();
 		renderer.cleanup();
 		scene.destroy();
 	}

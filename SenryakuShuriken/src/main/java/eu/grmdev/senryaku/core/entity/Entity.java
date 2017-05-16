@@ -8,28 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class Entity {
-	@Getter
-	@Setter
-	private boolean selected;
-	@Getter
-	@Setter
-	private Mesh[] meshes;
-	@Getter
-	private final Vector3f position;
-	@Getter
-	@Setter
-	private float scale;
-	@Getter
-	private final Quaternionf rotation;
-	@Getter
-	@Setter
-	private int textPos;
-	@Getter
-	@Setter
-	private boolean disableFrustumCulling;
-	@Getter
-	@Setter
-	private boolean insideFrustum;
+	private @Getter @Setter boolean selected;
+	private @Getter @Setter Mesh[] meshes;
+	private @Getter final Vector3f position;
+	private @Getter @Setter float scale;
+	private @Getter final Quaternionf rotation;
+	private @Getter @Setter int textPos;
+	private @Getter @Setter boolean disableFrustumCulling;
+	private @Getter @Setter boolean insideFrustum;
 	
 	public Entity() {
 		selected = false;
