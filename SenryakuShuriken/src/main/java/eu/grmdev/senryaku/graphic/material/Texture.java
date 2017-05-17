@@ -11,7 +11,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.system.MemoryStack;
 
-import eu.grmdev.senryaku.core.Utils;
+import eu.grmdev.senryaku.core.misc.Utils;
 import lombok.Getter;
 
 public class Texture {

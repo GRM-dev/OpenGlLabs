@@ -15,8 +15,8 @@ import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.system.MemoryUtil;
 
 import eu.grmdev.senryaku.Main.Config;
-import eu.grmdev.senryaku.core.Utils;
 import eu.grmdev.senryaku.core.Window;
+import eu.grmdev.senryaku.core.misc.Utils;
 
 public class Hud {
 	private long nvg;
@@ -44,10 +44,10 @@ public class Hud {
 	public void render(Window window) {
 		nvgBeginFrame(nvg, window.getWidth(), window.getHeight(), 1);
 		
-		drawRibbon(window, 0, 0, window.getWidth(), 50, rgba(0x23, 0xa1, 0xff, 200, color));
-		drawRibbon(window, 0, 50, window.getWidth(), 10, rgba(0xc1, 0xe3, 0xf9, 200, color));
-		drawRibbon(window, 0, window.getHeight() - 100, window.getWidth(), 50, rgba(0x23, 0xa1, 0xff, 200, color));
-		drawRibbon(window, 0, window.getHeight() - 50, window.getWidth(), 10, rgba(0xc1, 0xe3, 0xf9, 200, color));
+		drawRectangular(window, 0, 0, window.getWidth(), 50, rgba(0x23, 0xa1, 0xff, 200, color));
+		drawRectangular(window, 0, 50, window.getWidth(), 10, rgba(0xc1, 0xe3, 0xf9, 200, color));
+		drawRectangular(window, 0, window.getHeight() - 80, window.getWidth(), 80, rgba(0x23, 0xa1, 0xff, 200, color));
+		drawRectangular(window, 0, window.getHeight() - 100, window.getWidth(), 20, rgba(0xc1, 0xe3, 0xf9, 200, color));
 		
 		glfwGetCursorPos(window.getWindowHandle(), posx, posy);
 		
@@ -58,9 +58,9 @@ public class Hud {
 		window.restoreState();
 	}
 	
-	private void drawRibbon(Window window, int x, int y, int width, int height, NVGColor color) {
+	private void drawRectangular(Window window, int x, int y, int width, int height, NVGColor color) {
 		nvgBeginPath(nvg);
-		nvgRect(nvg, 0, 0, width, height);
+		nvgRect(nvg, x, y, width, height);
 		nvgFillColor(nvg, color);
 		nvgFill(nvg);
 	}

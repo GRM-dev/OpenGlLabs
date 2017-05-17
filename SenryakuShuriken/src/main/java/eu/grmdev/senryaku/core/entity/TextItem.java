@@ -3,7 +3,7 @@ package eu.grmdev.senryaku.core.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.grmdev.senryaku.core.Utils;
+import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.Mesh;
 import eu.grmdev.senryaku.graphic.material.FontTexture;
 import eu.grmdev.senryaku.graphic.material.Material;

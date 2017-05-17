@@ -2,6 +2,7 @@ package eu.grmdev.senryaku.core;
 
 import eu.grmdev.senryaku.Main.Config;
 import eu.grmdev.senryaku.core.handlers.MouseInput;
+import eu.grmdev.senryaku.core.misc.Timer;
 
 public class GameEngine implements Runnable {
 	private final Window window;

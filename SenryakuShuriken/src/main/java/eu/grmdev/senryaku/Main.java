@@ -41,6 +41,7 @@ public class Main {
 		public static final float[] SHADOW_CASCADE_SPLITS = new float[]{Z_FAR / 20.0f, Z_FAR / 10.0f, Z_FAR};
 		public static final int SHADOW_MAP_WIDTH = (int) Math.pow(65, 2);
 		public static final int SHADOW_MAP_HEIGHT = SHADOW_MAP_WIDTH;
+		public static final boolean FOG_ENABLED = false;
 		
 		public Config() {
 			opts = new Window.WindowOptions();

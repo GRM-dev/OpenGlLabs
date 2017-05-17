@@ -1,4 +1,4 @@
-package eu.grmdev.senryaku.core;
+package eu.grmdev.senryaku.core.misc;
 
 public class Timer {
 	private double lastLoopTime;

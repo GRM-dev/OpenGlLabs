@@ -11,6 +11,7 @@ import org.joml.Matrix4f;
 import eu.grmdev.senryaku.Main.Config;
 import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
+import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
 import lombok.Getter;
@@ -93,7 +94,7 @@ public class ShadowRenderer {
 	private void renderNonInstancedMeshes(Scene scene, Transformation transformation) {
 		depthShaderProgram.setUniformi("isInstanced", 0);
 		
-		Map<Mesh, List<Entity>> mapMeshes = scene.getGameMeshes();
+		Map<Mesh, List<Entity>> mapMeshes = scene.getEntityMeshes();
 		for (Mesh mesh : mapMeshes.keySet()) {
 			mesh.renderList(mapMeshes.get(mesh), (Entity gameItem) -> {
 				Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);

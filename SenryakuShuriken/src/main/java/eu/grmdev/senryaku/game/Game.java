@@ -14,8 +14,10 @@ import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
 import eu.grmdev.senryaku.core.handlers.MouseInput;
-import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
-import eu.grmdev.senryaku.graphic.*;
+import eu.grmdev.senryaku.core.map.GameMap;
+import eu.grmdev.senryaku.core.misc.Utils;
+import eu.grmdev.senryaku.graphic.Camera;
+import eu.grmdev.senryaku.graphic.Renderer;
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
 
@@ -31,7 +33,7 @@ public class Game implements IGame {
 	private Entity[] entities;
 	private Hud hud;
 	
-	public Game() {
+	public Game() throws Exception {
 		renderer = new Renderer();
 		camera = new Camera();
 		cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
@@ -39,6 +41,7 @@ public class Game implements IGame {
 		lightAngle = 90;
 		firstTime = true;
 		hud = new Hud();
+		
 	}
 	
 	@Override
@@ -47,13 +50,13 @@ public class Game implements IGame {
 		scene = new Scene();
 		
 		entities = setupStartEntities();
-		scene.setGameItems(entities);
+		scene.setEntities(entities);
 		
 		scene.setRenderShadows(Config.SHADOWS_ENABLED);
 		Vector3f fogColour = new Vector3f(0.5f, 0.5f, 0.5f);
-		scene.setFog(new Fog(true, fogColour, 0.02f));
+		scene.setFog(new Fog(Config.FOG_ENABLED, fogColour, 0.02f));
 		
-		setupSkyBox();
+		setupWorld();
 		setupLights();
 		setupCameraStartPos();
 		setupHUD(window);
@@ -61,18 +64,22 @@ public class Game implements IGame {
 	
 	private Entity[] setupStartEntities() throws Exception {
 		List<Entity> entities = new ArrayList<>();
-		String fileName = Utils.loadResourceURL("models/house/house.obj").getFile();
-		File file = new File(fileName);
-		Mesh[] houseMesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/house");
-		Entity house = new Entity(houseMesh);
-		entities.add(house);
+		// String fileName =
+		// Utils.loadResourceURL("models/house/house.obj").getFile();
+		// File file = new File(fileName);
+		// Mesh[] houseMesh = StaticMeshesLoader.load(file.getAbsolutePath(),
+		// "/models/house");
+		// Entity house = new Entity(houseMesh);
+		// entities.add(house);
 		
-		fileName = Utils.loadResourceURL("models/terrain/terrain.obj").getFile();
-		file = new File(fileName);
-		Mesh[] terrainMesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/terrain");
-		Entity terrain = new Entity(terrainMesh);
-		terrain.setScale(100.0f);
-		entities.add(terrain);
+		// fileName =
+		// Utils.loadResourceURL("models/terrain/terrain.obj").getFile();
+		// file = new File(fileName);
+		// Mesh[] terrainMesh = StaticMeshesLoader.load(file.getAbsolutePath(),
+		// "/models/terrain");
+		// Entity terrain = new Entity(terrainMesh);
+		// terrain.setScale(100.0f);
+		// entities.add(terrain);
 		
 		return entities.toArray(new Entity[0]);
 	}
@@ -82,13 +89,17 @@ public class Game implements IGame {
 	 * 
 	 * @throws Exception
 	 */
-	private void setupSkyBox() throws Exception {
+	private void setupWorld() throws Exception {
 		float skyBoxScale = 100.0f;
 		String fileName = Utils.loadResourceURL("models/skybox.obj").getFile();
 		File file = new File(fileName);
 		SkyBox skyBox = new SkyBox(file.getAbsolutePath(), new Vector4f(0.65f, 0.65f, 0.65f, 1.0f));
 		skyBox.setScale(skyBoxScale);
 		scene.setSkyBox(skyBox);
+		
+		GameMap map = new GameMap(1);
+		scene.setMap(map);
+		map.init();
 	}
 	
 	/**
@@ -111,11 +122,11 @@ public class Game implements IGame {
 	 * Changes position of camera to startup position
 	 */
 	private void setupCameraStartPos() {
-		camera.getPosition().x = -17.0f;
-		camera.getPosition().y = 17.0f;
-		camera.getPosition().z = -30.0f;
-		camera.getRotation().x = 20.0f;
-		camera.getRotation().y = 140.f;
+		camera.getPosition().x = 0.0f;
+		camera.getPosition().y = 7.0f;
+		camera.getPosition().z = 3.0f;
+		camera.getRotation().x = 65.0f;
+		camera.getRotation().y = 0.0f;
 	}
 	
 	private void setupHUD(Window window) throws Exception {
