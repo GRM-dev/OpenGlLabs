@@ -7,7 +7,7 @@ import java.util.*;
 
 import org.joml.*;
 
-import eu.grmdev.senryaku.Main.Config;
+import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;

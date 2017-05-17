@@ -11,7 +11,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import eu.grmdev.senryaku.Main.Config;
+import eu.grmdev.senryaku.Config;
 import lombok.Getter;
 
 public class FontTexture {

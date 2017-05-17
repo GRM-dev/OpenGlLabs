@@ -1,0 +1,20 @@
+.root {
+    -fx-background-image: url("/images/ninja_bg.jpg");
+    -fx-background-repeat: no-repeat;
+}
+
+.button {    
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 11pt;
+}
+
+.label {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Segoe UI Semibold";
+}
+
+#title_label {
+    -fx-font-size: 26pt;
+        -fx-text-fill: #120;
+    -fx-opacity: .8
+}

@@ -9,16 +9,16 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
-import eu.grmdev.senryaku.Main.Config;
+import eu.grmdev.senryaku.Config;
 import lombok.Getter;
 import lombok.Setter;
 
 public class Window {
 	private @Getter final String title;
-	private int width;
-	private int height;
+	private @Getter int width;
+	private @Getter int height;
 	private @Getter long windowHandle;
-	private boolean resized;
+	private @Getter @Setter boolean resized;
 	private @Getter @Setter boolean vSync;
 	private @Getter final WindowOptions windowOptions;
 	private @Getter final Matrix4f projectionMatrix;
@@ -88,7 +88,7 @@ public class Window {
 		
 		glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
-				glfwSetWindowShouldClose(window, true);
+				GameEngine.getInstance().stop();
 			}
 		});
 	}
@@ -159,22 +159,6 @@ public class Window {
 	
 	public boolean windowShouldClose() {
 		return glfwWindowShouldClose(windowHandle);
-	}
-	
-	public int getWidth() {
-		return width;
-	}
-	
-	public int getHeight() {
-		return height;
-	}
-	
-	public boolean isResized() {
-		return resized;
-	}
-	
-	public void setResized(boolean resized) {
-		this.resized = resized;
 	}
 	
 	public void update() {

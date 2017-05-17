@@ -8,7 +8,7 @@ import java.util.*;
 
 import org.joml.Matrix4f;
 
-import eu.grmdev.senryaku.Main.Config;
+import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.misc.Utils;

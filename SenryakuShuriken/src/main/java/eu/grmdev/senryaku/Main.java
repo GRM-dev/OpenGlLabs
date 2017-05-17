@@ -1,58 +1,57 @@
 package eu.grmdev.senryaku;
 
-import eu.grmdev.senryaku.core.*;
+import eu.grmdev.senryaku.core.GameEngine;
 import eu.grmdev.senryaku.game.Game;
+import eu.grmdev.senryaku.jfx.FxGui;
 
 public class Main {
 	private static GameEngine gameEng;
+	private static Game game;
+	private static FxGui gui;
+	private static boolean running;
+	private static boolean DEBUG = !true;
+	private static Config c;
 	
 	public static void main(String[] args) {
-		Config c = new Config();
-		try {
-			IGame gameLogic = new Game();
-			gameEng = new GameEngine("Senryaku Shuriken", c.vSync, c.opts, gameLogic);
-			gameEng.start();
+		c = new Config();
+		gui = new FxGui();
+		if (!DEBUG) {
+			gui.startup();
 		}
-		catch (Exception ex) {
-			ex.printStackTrace();
-			System.exit(-1);
+		try {
+			game = new Game();
+			if (DEBUG) {
+				startGame();
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
-	/**
-	 * Static final config values for game
-	 */
-	public static final class Config {
-		private Window.WindowOptions opts;
-		private boolean vSync = true;
-		public static final String IMAGE_FORMAT = "png";
-		public static final String FONT_NAME = "BOLD";
-		public static final int TARGET_UPS = 30;
-		public static final int TARGET_FPS = 75;
-		public static final int MAX_SPOT_LIGHTS = 5;
-		public static final int MAX_POINT_LIGHTS = 5;
-		public static final float Z_FAR = 1000.f;
-		public static final float Z_NEAR = 0.01f;
-		public static final float FOV = (float) Math.toRadians(60.0f);
-		public static final boolean SHADOWS_ENABLED = true;
-		public final static float CAMERA_POS_STEP = 0.40f;
-		public final static float MOUSE_SENSITIVITY = 0.2f;
-		public static final int NUM_SHADOW_CASCADES = 3;
-		public static final float[] SHADOW_CASCADE_SPLITS = new float[]{Z_FAR / 20.0f, Z_FAR / 10.0f, Z_FAR};
-		public static final int SHADOW_MAP_WIDTH = (int) Math.pow(65, 2);
-		public static final int SHADOW_MAP_HEIGHT = SHADOW_MAP_WIDTH;
-		public static final boolean FOG_ENABLED = false;
-		
-		public Config() {
-			opts = new Window.WindowOptions();
-			opts.cullFace = false;
-			opts.showFps = true;
-			opts.compatibleProfile = true;
-			opts.antialiasing = true;
-			opts.frustumCulling = false;
-			opts.maximized = true;
-			opts.width = 800;
-			opts.height = 600;
+	public static void startGame() {
+		if (!running) {
+			running = true;
+			try {
+				gameEng = new GameEngine("Senryaku Shuriken", c.vSync, c.opts, game);
+				gameEng.start();
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(-1);
+			}
 		}
+	}
+	
+	public static void closeApp() {
+		gui.closeGui();
+		if (running) {
+			running = false;
+			gameEng.stop();
+		}
+	}
+	
+	public static void setGameClosed() {
+		running = false;
 	}
 }

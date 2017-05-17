@@ -14,7 +14,7 @@ import java.util.Date;
 import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.system.MemoryUtil;
 
-import eu.grmdev.senryaku.Main.Config;
+import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.Window;
 import eu.grmdev.senryaku.core.misc.Utils;
 

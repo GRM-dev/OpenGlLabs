@@ -1,10 +1,14 @@
 package eu.grmdev.senryaku.core;
 
-import eu.grmdev.senryaku.Main.Config;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+
+import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.handlers.MouseInput;
 import eu.grmdev.senryaku.core.misc.Timer;
+import lombok.Getter;
 
 public class GameEngine implements Runnable {
+	private @Getter static GameEngine instance;
 	private final Window window;
 	private final Thread gameLoopThread;
 	private final Timer timer;
@@ -15,6 +19,7 @@ public class GameEngine implements Runnable {
 	private String title;
 	
 	public GameEngine(String windowTitle, boolean vSync, Window.WindowOptions opts, IGame gameLogic) throws Exception {
+		GameEngine.instance = this;
 		this.title = windowTitle;
 		gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
 		window = new Window(windowTitle, vSync, opts);
@@ -110,4 +115,7 @@ public class GameEngine implements Runnable {
 		window.update();
 	}
 	
+	public void stop() {
+		glfwSetWindowShouldClose(window.getWindowHandle(), true);
+	}
 }
