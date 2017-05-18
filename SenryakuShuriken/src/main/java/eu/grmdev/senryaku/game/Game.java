@@ -14,10 +14,10 @@ import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
 import eu.grmdev.senryaku.core.handlers.MouseInput;
+import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.core.map.GameMap;
 import eu.grmdev.senryaku.core.misc.Utils;
-import eu.grmdev.senryaku.graphic.Camera;
-import eu.grmdev.senryaku.graphic.Renderer;
+import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
 
@@ -41,7 +41,6 @@ public class Game implements IGame {
 		lightAngle = 90;
 		firstTime = true;
 		hud = new Hud();
-		
 	}
 	
 	@Override
@@ -64,22 +63,20 @@ public class Game implements IGame {
 	
 	private Entity[] setupStartEntities() throws Exception {
 		List<Entity> entities = new ArrayList<>();
-		// String fileName =
-		// Utils.loadResourceURL("models/house/house.obj").getFile();
-		// File file = new File(fileName);
-		// Mesh[] houseMesh = StaticMeshesLoader.load(file.getAbsolutePath(),
-		// "/models/house");
-		// Entity house = new Entity(houseMesh);
-		// entities.add(house);
+		String fileName = Utils.loadResourceURL("models/player/ninja.obj").getFile();
+		File file = new File(fileName);
+		Mesh[] terrainMesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/player");
+		Entity player = new Entity(terrainMesh);
+		player.setScale(0.5f);
+		player.getPosition().y = 0.5f;
+		player.getPosition().x = -0.16f;
+		entities.add(player);
 		
-		// fileName =
-		// Utils.loadResourceURL("models/terrain/terrain.obj").getFile();
-		// file = new File(fileName);
-		// Mesh[] terrainMesh = StaticMeshesLoader.load(file.getAbsolutePath(),
-		// "/models/terrain");
-		// Entity terrain = new Entity(terrainMesh);
-		// terrain.setScale(100.0f);
-		// entities.add(terrain);
+		fileName = Utils.loadResourceURL("models/cube/cube.obj").getFile();
+		file = new File(fileName);
+		Mesh[] houseMesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/cube");
+		Entity cube = new Entity(houseMesh);
+		entities.add(cube);
 		
 		return entities.toArray(new Entity[0]);
 	}

@@ -9,7 +9,7 @@ public class Main {
 	private static Game game;
 	private static FxGui gui;
 	private static boolean running;
-	private static boolean DEBUG = !true;
+	private static boolean DEBUG = true;
 	private static Config c;
 	
 	public static void main(String[] args) {

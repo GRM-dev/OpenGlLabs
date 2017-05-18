@@ -111,8 +111,12 @@ public class Terrain {
 		
 		for (int row = 0; row < terrainSize[0]; row++) {
 			for (int col = 0; col < terrainSize[1]; col++) {
-				float xDisplacement = (row - ((float) terrainSize[0] - 1) / 2) * scale;
-				float zDisplacement = (col - ((float) terrainSize[1] - 1) / 2) * scale;
+				float xDisplacement = row * scale;
+				float zDisplacement = col * scale;
+				// float xDisplacement = (row - ((float) terrainSize[0] - 1) / 2) *
+				// scale;
+				// float zDisplacement = (col - ((float) terrainSize[1] - 1) / 2) *
+				// scale;
 				
 				Entity terrainBlock = new Entity(mesh);
 				terrainBlock.setScale(scale);
