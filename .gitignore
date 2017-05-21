@@ -5,7 +5,7 @@
 # Object files
 *.o
 *.ko
-*.obj
+#*.obj
 *.elf
 
 # Linker output
@@ -97,7 +97,8 @@ dkms.conf
 [Rr]eleases/
 bld/
 [Bb]in/
-[Oo]bj/
+#[Oo]bj/
+objs/
 [Ll]og/
 
 # Visual Studio 2015 cache/options directory
