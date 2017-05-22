@@ -29,7 +29,7 @@ public class Main {
 		}
 	}
 	
-	public static void startGame() {
+	public static synchronized void startGame() {
 		if (!running) {
 			running = true;
 			try {
@@ -43,7 +43,7 @@ public class Main {
 		}
 	}
 	
-	public static void closeApp() {
+	public static synchronized void closeApp() {
 		gui.closeGui();
 		if (running) {
 			running = false;

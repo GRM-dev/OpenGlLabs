@@ -1,16 +1,16 @@
 package eu.grmdev.senryaku.core;
 
-import eu.grmdev.senryaku.core.handlers.MouseInput;
+import eu.grmdev.senryaku.core.handlers.MouseHandler;
 
 public interface IGame {
-
-    void init(Window window) throws Exception;
-    
-    void input(Window window, MouseInput mouseInput);
-
-    void update(float interval, MouseInput mouseInput, Window window);
-    
-    void render(Window window);
-    
-    void destroy();
+	
+	void init(Window window) throws Exception;
+	
+	void input(Window window, MouseHandler mouseInput);
+	
+	void update(float interval, MouseHandler mouseInput, Window window);
+	
+	void render(Window window);
+	
+	void destroy();
 }

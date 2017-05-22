@@ -13,7 +13,7 @@ import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
-import eu.grmdev.senryaku.core.handlers.MouseInput;
+import eu.grmdev.senryaku.core.handlers.MouseHandler;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.core.map.GameMap;
 import eu.grmdev.senryaku.core.misc.Utils;
@@ -131,7 +131,7 @@ public class Game implements IGame {
 	}
 	
 	@Override
-	public void input(Window window, MouseInput mouseInput) {
+	public void input(Window window, MouseHandler mouseInput) {
 		sceneChanged = false;
 		cameraInc.set(0, 0, 0);
 		if (window.isKeyPressed(GLFW_KEY_W)) {
@@ -167,7 +167,7 @@ public class Game implements IGame {
 	}
 	
 	@Override
-	public void update(float interval, MouseInput mouseInput, Window window) {
+	public void update(float interval, MouseHandler mouseInput, Window window) {
 		if (mouseInput.isRightButtonPressed()) {
 			Vector2f rotVec = mouseInput.getDisplVec();
 			camera.moveRotation(rotVec.x * Config.MOUSE_SENSITIVITY, rotVec.y * Config.MOUSE_SENSITIVITY, 0);

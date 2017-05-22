@@ -8,7 +8,7 @@ import org.joml.Vector2f;
 import eu.grmdev.senryaku.core.Window;
 import lombok.Getter;
 
-public class MouseInput {
+public class MouseHandler {
 	private final Vector2d previousPos;
 	private @Getter final Vector2d currentPos;
 	private @Getter final Vector2f displVec;
@@ -16,7 +16,7 @@ public class MouseInput {
 	private @Getter boolean leftButtonPressed = false;
 	private @Getter boolean rightButtonPressed = false;
 	
-	public MouseInput() {
+	public MouseHandler() {
 		previousPos = new Vector2d(-1, -1);
 		currentPos = new Vector2d(0, 0);
 		displVec = new Vector2f();

@@ -125,6 +125,11 @@ public class Window {
 		if (windowHandle == NULL) { throw new RuntimeException("Failed to create the GLFW window"); }
 	}
 	
+	public void update() {
+		glfwSwapBuffers(windowHandle);
+		glfwPollEvents();
+	}
+
 	public void restoreState() {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_STENCIL_TEST);
@@ -159,11 +164,6 @@ public class Window {
 	
 	public boolean windowShouldClose() {
 		return glfwWindowShouldClose(windowHandle);
-	}
-	
-	public void update() {
-		glfwSwapBuffers(windowHandle);
-		glfwPollEvents();
 	}
 	
 	public static class WindowOptions {

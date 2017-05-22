@@ -3,40 +3,43 @@ package eu.grmdev.senryaku.core;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 import eu.grmdev.senryaku.Config;
-import eu.grmdev.senryaku.core.handlers.MouseInput;
 import eu.grmdev.senryaku.core.misc.Timer;
 import lombok.Getter;
 
 public class GameEngine implements Runnable {
 	private @Getter static GameEngine instance;
 	private final Window window;
-	private final Thread gameLoopThread;
+	private final Thread renderThread;
 	private final Timer timer;
 	private final IGame gameLogic;
-	private final MouseInput mouseInput;
 	private double lastFps;
 	private int fps;
 	private String title;
+	private LogicThread logicThread;
 	
 	public GameEngine(String windowTitle, boolean vSync, Window.WindowOptions opts, IGame gameLogic) throws Exception {
 		GameEngine.instance = this;
 		this.title = windowTitle;
-		gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
-		window = new Window(windowTitle, vSync, opts);
-		mouseInput = new MouseInput();
 		this.gameLogic = gameLogic;
 		timer = new Timer();
+		window = new Window(windowTitle, vSync, opts);
+		renderThread = new Thread(this, "GAME_RENDER_LOOP_THREAD");
+		logicThread = new LogicThread(gameLogic, window);
 	}
 	
 	public void start() {
-		gameLoopThread.start();
+		renderThread.start();
+		logicThread.start();
 	}
 	
 	@Override
 	public void run() {
 		try {
+			System.out.println("Start Render Thread");
 			init();
-			gameLoop();
+			logicThread.init();
+			renderLoop();
+			System.out.println("Stop Render Thread");
 		}
 		catch (Exception excp) {
 			excp.printStackTrace();
@@ -49,39 +52,19 @@ public class GameEngine implements Runnable {
 	protected void init() throws Exception {
 		window.init();
 		timer.init();
-		mouseInput.init(window);
 		gameLogic.init(window);
 		lastFps = timer.getTime();
 		fps = 0;
 	}
 	
-	protected void gameLoop() {
-		float elapsedTime;
-		float accumulator = 0f;
-		float interval = 1f / Config.TARGET_UPS;
+	protected void renderLoop() {
 		boolean running = true;
-		
 		while (running && !window.windowShouldClose()) {
-			elapsedTime = timer.getElapsedTime();
-			accumulator += elapsedTime;
-			
-			input();
-			
-			while (accumulator >= interval) {
-				update(interval);
-				accumulator -= interval;
-			}
-			
 			render();
-			
 			if (!window.isVSync()) {
 				sync();
 			}
 		}
-	}
-	
-	protected void destroy() {
-		gameLogic.destroy();
 	}
 	
 	private void sync() {
@@ -93,15 +76,6 @@ public class GameEngine implements Runnable {
 			}
 			catch (InterruptedException ie) {}
 		}
-	}
-	
-	protected void input() {
-		mouseInput.input(window);
-		gameLogic.input(window, mouseInput);
-	}
-	
-	protected void update(float interval) {
-		gameLogic.update(interval, mouseInput, window);
 	}
 	
 	protected void render() {
@@ -117,5 +91,10 @@ public class GameEngine implements Runnable {
 	
 	public void stop() {
 		glfwSetWindowShouldClose(window.getWindowHandle(), true);
+	}
+	
+	protected void destroy() {
+		logicThread.setStop();
+		gameLogic.destroy();
 	}
 }
