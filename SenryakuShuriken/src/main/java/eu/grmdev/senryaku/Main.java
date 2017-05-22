@@ -1,12 +1,13 @@
 package eu.grmdev.senryaku;
 
 import eu.grmdev.senryaku.core.GameEngine;
+import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.game.Game;
 import eu.grmdev.senryaku.jfx.FxGui;
 
 public class Main {
 	private static GameEngine gameEng;
-	private static Game game;
+	private static IGame game;
 	private static FxGui gui;
 	private static boolean running;
 	private static boolean DEBUG = true;

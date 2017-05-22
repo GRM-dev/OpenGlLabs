@@ -1,5 +1,6 @@
 package eu.grmdev.senryaku.core;
 
+import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.handlers.EventHandler;
 import eu.grmdev.senryaku.core.handlers.MouseHandler;
 
@@ -28,4 +29,6 @@ public interface IGame {
 	void render(Window window);
 	
 	void destroy();
+
+	Entity getPlayer();
 }

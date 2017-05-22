@@ -10,6 +10,7 @@ import java.util.List;
 import org.joml.*;
 
 import eu.grmdev.senryaku.Config;
+import eu.grmdev.senryaku.Main;
 import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
@@ -18,7 +19,6 @@ import eu.grmdev.senryaku.core.handlers.MouseHandler;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.core.map.GameMap;
 import eu.grmdev.senryaku.core.misc.Utils;
-import eu.grmdev.senryaku.game.data.KeyEventListenersData;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
@@ -34,6 +34,7 @@ public class Game implements IGame {
 	private Scene scene;
 	private Entity[] entities;
 	private Hud hud;
+	private Player player;
 	
 	public Game() throws Exception {
 		renderer = new Renderer();
@@ -71,22 +72,17 @@ public class Game implements IGame {
 	 */
 	@Override
 	public void initLogic(EventHandler eh) throws Exception {
-		assignListeners(eh);
+		assignGlobalListeners(eh);
+		player.init(eh);
 	}
 	
 	private Entity[] setupStartEntities() throws Exception {
 		List<Entity> entities = new ArrayList<>();
-		String fileName = Utils.loadResourceURL("models/player/ninja.obj").getFile();
-		File file = new File(fileName);
-		Mesh[] terrainMesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/player");
-		Entity player = new Entity(terrainMesh);
-		player.setScale(0.5f);
-		player.getPosition().y = 0.5f;
-		player.getPosition().x = -0.16f;
+		player = new Player();
 		entities.add(player);
 		
-		fileName = Utils.loadResourceURL("models/cube/cube.obj").getFile();
-		file = new File(fileName);
+		String fileName = Utils.loadResourceURL("models/cube/cube.obj").getFile();
+		File file = new File(fileName);
 		Mesh[] houseMesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/cube");
 		Entity cube = new Entity(houseMesh);
 		entities.add(cube);
@@ -143,33 +139,38 @@ public class Game implements IGame {
 		hud.init(window);
 	}
 	
-	private void assignListeners(EventHandler eHandler) {
-		KeyEventListenersData.init(eHandler);
+	private void assignGlobalListeners(EventHandler eHandler) {
+		eHandler.addKeyEventListener(event -> {
+			{
+				if (event.getKey() == GLFW_KEY_ESCAPE) {
+					Main.closeApp();
+				}
+			}
+		});
 	}
 	
 	@Override
 	public void input(Window window, MouseHandler mouseInput) {
-		cameraInc.set(0, 0, 0);
 		if (window.isKeyPressed(GLFW_KEY_W)) {
 			sceneChanged = true;
-			cameraInc.z = -1;
+			cameraInc.z -= 1;
 		} else if (window.isKeyPressed(GLFW_KEY_S)) {
 			sceneChanged = true;
-			cameraInc.z = 1;
+			cameraInc.z += 1;
 		}
 		if (window.isKeyPressed(GLFW_KEY_A)) {
 			sceneChanged = true;
-			cameraInc.x = -1;
+			cameraInc.x -= 1;
 		} else if (window.isKeyPressed(GLFW_KEY_D)) {
 			sceneChanged = true;
-			cameraInc.x = 1;
+			cameraInc.x += 1;
 		}
 		if (window.isKeyPressed(GLFW_KEY_Z)) {
 			sceneChanged = true;
-			cameraInc.y = -1;
+			cameraInc.y -= 1;
 		} else if (window.isKeyPressed(GLFW_KEY_X)) {
 			sceneChanged = true;
-			cameraInc.y = 1;
+			cameraInc.y += 1;
 		}
 		if (window.isKeyPressed(GLFW_KEY_LEFT)) {
 			sceneChanged = true;
@@ -190,7 +191,7 @@ public class Game implements IGame {
 			sceneChanged = true;
 		}
 		camera.movePosition(cameraInc.x * Config.CAMERA_POS_STEP, cameraInc.y * Config.CAMERA_POS_STEP, cameraInc.z * Config.CAMERA_POS_STEP);
-		
+		cameraInc.set(0, 0, 0);
 		lightAngle += lightAngleInc;
 		if (lightAngle < 0) {
 			lightAngle = 0;
@@ -228,5 +229,10 @@ public class Game implements IGame {
 		hud.destroy();
 		renderer.cleanup();
 		scene.destroy();
+	}
+	
+	@Override
+	public Entity getPlayer() {
+		return player;
 	}
 }

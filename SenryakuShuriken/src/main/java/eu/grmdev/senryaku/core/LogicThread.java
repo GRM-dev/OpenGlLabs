@@ -3,6 +3,7 @@ package eu.grmdev.senryaku.core;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 
 import eu.grmdev.senryaku.Config;
+import eu.grmdev.senryaku.core.events.GameEvent;
 import eu.grmdev.senryaku.core.handlers.*;
 
 public class LogicThread extends Thread {
@@ -19,6 +20,9 @@ public class LogicThread extends Thread {
 	private boolean indicateStop;
 	private Window window;
 	private boolean isReady;
+	private GameEvent tickLoopEvent;
+	private GameEvent cycleLoopEvent;
+	private int lastTickCounter;
 	
 	public LogicThread(IGame game, Window window) {
 		this.game = game;
@@ -47,6 +51,9 @@ public class LogicThread extends Thread {
 		}
 		try {
 			game.initLogic(eHandler);
+			eHandler.addCycleGameEventListener(event -> {
+				System.out.println("TPS: " + lastTickCounter);
+			});
 			System.out.println("Start Logic Thread");
 			loop();
 			System.out.println("Stop Logic Thread");
@@ -59,12 +66,20 @@ public class LogicThread extends Thread {
 	private void loop() {
 		lastTickTimeNano = System.nanoTime();
 		lastFullTickNano = lastTickTimeNano;
+		tickLoopEvent = new GameEvent(true, null) {};
+		cycleLoopEvent = new GameEvent(true, null) {};
 		while (!shouldStop()) {
 			input();
 			keyHandler.dispatchAllActiveKeyEvents();
+			if (tickCounter == 0) {
+				eHandler.dispatchCycleGameEvent(cycleLoopEvent);
+			}
+			eHandler.dispatchTickGameEvent(tickLoopEvent);
 			update(pastTickNanoDiff);
+			tickLoopEvent.reset();
 			sync();
 		}
+		tickLoopEvent.setConsumed(true);
 	}
 	
 	protected void input() {
@@ -101,8 +116,8 @@ public class LogicThread extends Thread {
 			pastTickNanoDiff = (long) (-diff / 1E3);
 		}
 		if (thisTickTimeNano / 1E9 - lastFullTickNano / 1E9 >= 0.98) {
-			System.out.println("TPS: " + tickCounter);
 			lastFullTickNano = thisTickTimeNano;
+			lastTickCounter = tickCounter;
 			tickCounter = 0;
 		}
 		lastTickTimeNano = thisTickTimeNano;

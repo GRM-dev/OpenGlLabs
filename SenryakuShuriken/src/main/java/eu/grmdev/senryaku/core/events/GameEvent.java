@@ -39,4 +39,9 @@ public abstract class GameEvent {
 			consumed = true;
 		}
 	}
+	
+	public void reset() {
+		consumed = false;
+		remove = false;
+	}
 }

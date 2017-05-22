@@ -9,7 +9,7 @@ import lombok.Setter;
 
 public class Entity {
 	private @Getter @Setter boolean selected;
-	private @Getter @Setter Mesh[] meshes;
+	protected @Getter @Setter Mesh[] meshes;
 	private @Getter final Vector3f position;
 	private @Getter @Setter float scale;
 	private @Getter final Quaternionf rotation;
