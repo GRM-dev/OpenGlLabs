@@ -1,10 +1,13 @@
 package eu.grmdev.senryaku.core;
 
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+
+import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.handlers.*;
 
 public class LogicThread extends Thread {
 	private long lastTickTimeNano;
-	private float tps = 20;
+	private float tps = Config.TARGET_UPS;
 	private long tickTime = (long) (1000 / tps);
 	private long pastTickNanoDiff;
 	private int tickCounter;
@@ -28,6 +31,7 @@ public class LogicThread extends Thread {
 	
 	public void init() {
 		mouseHandler.init(window);
+		glfwSetKeyCallback(window.getWindowHandle(), keyHandler);
 		isReady = true;
 	}
 	
@@ -41,9 +45,15 @@ public class LogicThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Start Logic Thread");
-		loop();
-		System.out.println("Stop Logic Thread");
+		try {
+			game.initLogic(eHandler);
+			System.out.println("Start Logic Thread");
+			loop();
+			System.out.println("Stop Logic Thread");
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	private void loop() {
@@ -51,8 +61,8 @@ public class LogicThread extends Thread {
 		lastFullTickNano = lastTickTimeNano;
 		while (!shouldStop()) {
 			input();
-			update(pastTickNanoDiff);
 			keyHandler.dispatchAllActiveKeyEvents();
+			update(pastTickNanoDiff);
 			sync();
 		}
 	}

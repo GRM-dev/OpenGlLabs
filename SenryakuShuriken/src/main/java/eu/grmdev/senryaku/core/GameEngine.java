@@ -49,15 +49,15 @@ public class GameEngine implements Runnable {
 		}
 	}
 	
-	protected void init() throws Exception {
+	private void init() throws Exception {
 		window.init();
 		timer.init();
-		gameLogic.init(window);
+		gameLogic.initRender(window);
 		lastFps = timer.getTime();
 		fps = 0;
 	}
 	
-	protected void renderLoop() {
+	private void renderLoop() {
 		boolean running = true;
 		while (running && !window.windowShouldClose()) {
 			render();

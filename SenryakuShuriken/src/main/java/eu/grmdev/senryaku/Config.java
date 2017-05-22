@@ -10,8 +10,8 @@ public final class Config {
 	public final boolean vSync = true;
 	public static final String IMAGE_FORMAT = "png";
 	public static final String FONT_NAME = "BOLD";
-	public static final int TARGET_UPS = 30;
-	public static final int TARGET_FPS = 75;
+	public static final int TARGET_UPS = 20;
+	public static final int TARGET_FPS = 60;
 	public static final int MAX_SPOT_LIGHTS = 5;
 	public static final int MAX_POINT_LIGHTS = 5;
 	public static final float Z_FAR = 1000.f;

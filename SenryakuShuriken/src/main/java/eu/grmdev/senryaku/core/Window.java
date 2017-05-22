@@ -2,11 +2,18 @@ package eu.grmdev.senryaku.core;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
 import org.joml.Matrix4f;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.*;
+import org.lwjgl.glfw.GLFWImage.Buffer;
 import org.lwjgl.opengl.GL;
 
 import eu.grmdev.senryaku.Config;
@@ -38,7 +45,7 @@ public class Window {
 		
 		if (!glfwInit()) { throw new IllegalStateException("Unable to initialize GLFW"); }
 		createWindow();
-		setupCallbacks();
+		setupWindowCallbacks();
 		if (!windowOptions.maximized) {
 			centerWindow();
 		}
@@ -50,6 +57,8 @@ public class Window {
 		}
 		
 		GL.createCapabilities();
+		
+		setWindowIcon();
 		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glEnable(GL_DEPTH_TEST);
@@ -77,19 +86,42 @@ public class Window {
 	}
 	
 	/**
+	 * Sets the Windows Icon of game window
+	 */
+	private void setWindowIcon() {
+		try {
+			File f = new File(getClass().getResource("/images/icon.png").toURI());
+			if (!f.exists()) throw new IOException();
+			
+			IntBuffer w = BufferUtils.createIntBuffer(1);
+			IntBuffer h = BufferUtils.createIntBuffer(1);
+			IntBuffer comp = BufferUtils.createIntBuffer(1);
+			
+			ByteBuffer buf = stbi_load(f.toString(), w, h, comp, 4);
+			if (buf == null) { throw new IOException(stbi_failure_reason()); }
+			
+			int imgWidth = w.get();
+			int imgHeight = h.get();
+			
+			try (Buffer icons = GLFWImage.malloc(1)) {
+				icons.position(0).width(imgWidth).height(imgHeight).pixels(buf);
+				glfwSetWindowIcon(windowHandle, icons);
+				stbi_image_free(buf);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Adds callbacks to FramebufferSize and Key events
 	 */
-	private void setupCallbacks() {
+	private void setupWindowCallbacks() {
 		glfwSetFramebufferSizeCallback(windowHandle, (window, width, height) -> {
 			this.width = width;
 			this.height = height;
 			this.setResized(true);
-		});
-		
-		glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
-			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
-				GameEngine.getInstance().stop();
-			}
 		});
 	}
 	
@@ -129,7 +161,7 @@ public class Window {
 		glfwSwapBuffers(windowHandle);
 		glfwPollEvents();
 	}
-
+	
 	public void restoreState() {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_STENCIL_TEST);

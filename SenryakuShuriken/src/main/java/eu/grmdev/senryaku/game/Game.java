@@ -13,10 +13,12 @@ import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
+import eu.grmdev.senryaku.core.handlers.EventHandler;
 import eu.grmdev.senryaku.core.handlers.MouseHandler;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.core.map.GameMap;
 import eu.grmdev.senryaku.core.misc.Utils;
+import eu.grmdev.senryaku.game.data.KeyEventListenersData;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
@@ -43,8 +45,11 @@ public class Game implements IGame {
 		hud = new Hud();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void init(Window window) throws Exception {
+	public void initRender(Window window) throws Exception {
 		renderer.init(window);
 		scene = new Scene();
 		
@@ -59,6 +64,14 @@ public class Game implements IGame {
 		setupLights();
 		setupCameraStartPos();
 		setupHUD(window);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void initLogic(EventHandler eh) throws Exception {
+		assignListeners(eh);
 	}
 	
 	private Entity[] setupStartEntities() throws Exception {
@@ -130,9 +143,12 @@ public class Game implements IGame {
 		hud.init(window);
 	}
 	
+	private void assignListeners(EventHandler eHandler) {
+		KeyEventListenersData.init(eHandler);
+	}
+	
 	@Override
 	public void input(Window window, MouseHandler mouseInput) {
-		sceneChanged = false;
 		cameraInc.set(0, 0, 0);
 		if (window.isKeyPressed(GLFW_KEY_W)) {
 			sceneChanged = true;
@@ -198,7 +214,9 @@ public class Game implements IGame {
 			sceneChanged = true;
 			firstTime = false;
 		}
-		renderer.render(window, camera, scene, sceneChanged);
+		boolean sc = sceneChanged;
+		sceneChanged = false;
+		renderer.render(window, camera, scene, sc);
 		hud.render(window);
 	}
 	
