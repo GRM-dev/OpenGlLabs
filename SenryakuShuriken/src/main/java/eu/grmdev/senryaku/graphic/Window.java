@@ -17,6 +17,7 @@ import org.lwjgl.glfw.GLFWImage.Buffer;
 import org.lwjgl.opengl.GL;
 
 import eu.grmdev.senryaku.Config;
+import eu.grmdev.senryaku.Main;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -122,6 +123,13 @@ public class Window {
 			this.width = width;
 			this.height = height;
 			this.setResized(true);
+		});
+		glfwSetWindowCloseCallback(windowHandle, new GLFWWindowCloseCallback() {
+			
+			@Override
+			public void invoke(long window) {
+				Main.closeApp();
+			}
 		});
 	}
 	

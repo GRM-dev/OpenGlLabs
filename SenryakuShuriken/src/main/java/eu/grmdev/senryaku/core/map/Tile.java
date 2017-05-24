@@ -10,15 +10,17 @@ import eu.grmdev.senryaku.graphic.material.Texture;
 import lombok.Getter;
 
 public enum Tile {
-	EMPTY("tile_def") ,
-	FLOOR("tile_c") ,
-	WALL("tile_a");
+	EMPTY("tile_def",false) ,
+	FLOOR("tile_c",true) ,
+	WALL("tile_a",false);
 	
 	private @Getter String textureFile;
+	private @Getter boolean passable;
 	private Mesh mesh;
 	
-	private Tile(String textureFile) {
+	private Tile(String textureFile, boolean passable) {
 		this.textureFile = textureFile;
+		this.passable = passable;
 	}
 	
 	public static Tile value(int i) {

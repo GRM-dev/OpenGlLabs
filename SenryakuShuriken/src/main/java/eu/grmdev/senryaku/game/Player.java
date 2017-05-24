@@ -8,24 +8,30 @@ import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.events.KeyEvent;
 import eu.grmdev.senryaku.core.events.listeners.KeyEventListener;
 import eu.grmdev.senryaku.core.handlers.EventHandler;
+import eu.grmdev.senryaku.core.handlers.LevelManager;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
+import eu.grmdev.senryaku.core.map.GameMap;
+import eu.grmdev.senryaku.core.map.Tile;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.Camera;
 import eu.grmdev.senryaku.graphic.Mesh;
 
 public class Player extends Entity {
 	private Camera camera;
+	private LevelManager levelManager;
 	
-	public Player(Camera camera) throws Exception {
+	public Player(Camera camera, LevelManager levelManager) throws Exception {
 		super();
 		this.camera = camera;
+		this.levelManager = levelManager;
 		String fileName = Utils.loadResourceURL("models/player/ninja.obj").getFile();
 		File file = new File(fileName);
-		Mesh[] terrainMesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/player");
-		this.meshes = terrainMesh;
+		Mesh[] mesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/player");
+		this.meshes = mesh;
 		setScale(0.5f);
 		setPosition(-0.2f, 0.5f, -0.2f);
 		tAnimation.reset();
+		this.levelManager.setPlayer(this);
 	}
 	
 	public void init(EventHandler eh) {
@@ -38,22 +44,32 @@ public class Player extends Entity {
 				if (!event.isRepeatable() || event.getCreationTime() - (lastFired + cooldown) > 0) {
 					lastFired = event.getCreationTime();
 					int key = event.getKey();
-					if (key == GLFW_KEY_W) {
-						move(0f, -1.f);
-					} else if (key == GLFW_KEY_S) {
-						move(0f, 1.0f);
+					if (key == GLFW_KEY_W && canMove(0, -1)) {
+						move(0, -1);
+					} else if (key == GLFW_KEY_S && canMove(0, 1)) {
+						move(0, 1);
 					}
-					if (key == GLFW_KEY_A) {
-						move(-1.0f, 0f);
-					} else if (key == GLFW_KEY_D) {
-						move(1.0f, 0f);
+					if (key == GLFW_KEY_A && canMove(-1, 0)) {
+						move(-1, 0);
+					} else if (key == GLFW_KEY_D && canMove(1, 0)) {
+						move(1, 0);
 					}
 				}
 			}
 		});
 	}
 	
-	private void move(float rx, float rz) {
+	protected boolean canMove(int rx, int rz) {
+		GameMap map = levelManager.getCurrentMap();
+		int x = (int) Math.floor(tAnimation.getDestPosition().x + rx);
+		int z = (int) Math.floor(tAnimation.getDestPosition().z + rz);
+		Tile tile = map.getTerrain().getTile(x, z);
+		System.out.println("x: " + x + " z: " + z + " | " + (tile != null) + " | " + (tile == null ? "-" : tile.isPassable()));
+		if (tile == null) { return false; }
+		return tile.isPassable();
+	}
+	
+	private void move(int rx, int rz) {
 		tAnimation.move(rx, rz);
 	}
 	

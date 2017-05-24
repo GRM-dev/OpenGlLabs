@@ -10,7 +10,7 @@ public class Main {
 	private static IGame game;
 	private static FxGui gui;
 	private static boolean running;
-	private static boolean DEBUG = true;
+	private static boolean DEBUG = false;
 	private static Config c;
 	
 	public static void main(String[] args) {
@@ -36,6 +36,7 @@ public class Main {
 			try {
 				gameEng = new GameEngine("Senryaku Shuriken", c.vSync, c.opts, game);
 				gameEng.start();
+				gui.closeGui();
 			}
 			catch (Exception ex) {
 				ex.printStackTrace();

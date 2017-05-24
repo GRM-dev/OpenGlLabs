@@ -76,9 +76,8 @@ public class Game implements IGame {
 	
 	private Entity[] setupStartEntities() throws Exception {
 		List<Entity> entities = new ArrayList<>();
-		player = new Player(camera);
+		player = new Player(camera, levelManager);
 		entities.add(player);
-		levelManager.setPlayer(player);
 		
 		// String fileName =
 		// Utils.loadResourceURL("models/cube/cube.obj").getFile();
