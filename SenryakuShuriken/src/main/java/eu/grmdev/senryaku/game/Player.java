@@ -24,8 +24,7 @@ public class Player extends Entity {
 		Mesh[] terrainMesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/player");
 		this.meshes = terrainMesh;
 		setScale(0.5f);
-		getPosition().y = 0.5f;
-		getPosition().x = -0.2f;
+		setPosition(-0.2f, 0.5f, -0.2f);
 		tAnimation.reset();
 	}
 	
@@ -56,10 +55,10 @@ public class Player extends Entity {
 	
 	private void move(float rx, float rz) {
 		tAnimation.move(rx, rz);
-		camera.setPosition(tAnimation.getDestPosition().x, camera.getPosition().y, tAnimation.getDestPosition().z);
 	}
 	
 	public void animate(float interval) {
 		tAnimation.animate(interval);
+		camera.setPosition(tAnimation.getPosition().x, camera.getPosition().y, tAnimation.getPosition().z);
 	}
 }

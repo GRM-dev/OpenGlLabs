@@ -12,7 +12,7 @@ public class Entity {
 	private @Getter @Setter boolean selected;
 	protected @Getter @Setter Mesh[] meshes;
 	protected @Getter final Vector3f position;
-	private @Getter @Setter float scale;
+	protected @Getter @Setter float scale;
 	private @Getter final Quaternionf rotation;
 	private @Getter @Setter int textPos;
 	private @Getter @Setter boolean disableFrustumCulling;
@@ -44,6 +44,7 @@ public class Entity {
 		this.position.x = x;
 		this.position.y = y;
 		this.position.z = z;
+		tAnimation.reset();
 	}
 	
 	public final void setRotation(Quaternionf q) {

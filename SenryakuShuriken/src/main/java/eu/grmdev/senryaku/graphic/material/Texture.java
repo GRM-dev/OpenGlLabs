@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import static org.lwjgl.system.MemoryStack.stackPush;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -55,7 +56,7 @@ public class Texture {
 		this.numRows = numRows;
 	}
 	
-	public Texture(String fileName) throws Exception {
+	public Texture(String fileName) throws IOException {
 		this(Utils.ioResourceToByteBuffer(fileName, 1024));
 	}
 	

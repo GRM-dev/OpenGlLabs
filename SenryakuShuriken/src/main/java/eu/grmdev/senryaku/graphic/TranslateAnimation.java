@@ -21,7 +21,6 @@ public class TranslateAnimation {
 	}
 	
 	public void move(float rx, float rz) {
-		System.out.println(rx + "-" + rz);
 		destPosition.x += rx;
 		destPosition.z += rz;
 		recalc();
@@ -39,8 +38,8 @@ public class TranslateAnimation {
 	
 	public void animate(float interval) {
 		if (moveCounter < tps) {
-			position.x += v.x * interval * 0.01f;
-			position.z += v.z * interval * 0.01f;
+			position.x += v.x * interval * 0.02f;
+			position.z += v.z * interval * 0.02f;
 			moveCounter++;
 		} else {
 			position.set(destPosition);

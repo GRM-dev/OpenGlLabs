@@ -15,7 +15,6 @@ import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
 import eu.grmdev.senryaku.core.handlers.*;
-import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
@@ -29,23 +28,20 @@ public class Game implements IGame {
 	private final Hud hud;
 	private final Camera camera;
 	private @Getter final LevelManager levelManager;
-	private boolean firstTime;
 	private float lightAngleInc;
 	private float lightAngle;
-	private boolean sceneChanged;
 	private Entity[] entities;
 	private Player player;
 	
 	public Game() throws Exception {
 		renderer = new Renderer();
 		camera = new Camera();
-		cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
 		levelManager = new LevelManager();
-		firstTime = true;
-		lightAngleInc = 0;
-		lightAngle = 90;
+		cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
 		scene = new Scene();
 		hud = new Hud();
+		lightAngle = 90;
+		lightAngleInc = 0;
 	}
 	
 	/**
@@ -64,7 +60,7 @@ public class Game implements IGame {
 		
 		setupWorld();
 		setupLights();
-		setupCameraStartPos();
+		setupCameraParams();
 		setupHUD(window);
 	}
 	
@@ -82,12 +78,15 @@ public class Game implements IGame {
 		List<Entity> entities = new ArrayList<>();
 		player = new Player(camera);
 		entities.add(player);
+		levelManager.setPlayer(player);
 		
-		String fileName = Utils.loadResourceURL("models/cube/cube.obj").getFile();
-		File file = new File(fileName);
-		Mesh[] houseMesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/cube");
-		Entity cube = new Entity(houseMesh);
-		entities.add(cube);
+		// String fileName =
+		// Utils.loadResourceURL("models/cube/cube.obj").getFile();
+		// File file = new File(fileName);
+		// Mesh[] houseMesh = StaticMeshesLoader.load(file.getAbsolutePath(),
+		// "/models/cube");
+		// Entity cube = new Entity(houseMesh);
+		// entities.add(cube);
 		
 		return entities.toArray(new Entity[0]);
 	}
@@ -126,7 +125,7 @@ public class Game implements IGame {
 	/**
 	 * Changes position of camera to startup position
 	 */
-	private void setupCameraStartPos() {
+	private void setupCameraParams() {
 		camera.setPosition(0.0f, 7.0f, 3.0f);
 		camera.getRotation().x = 65.0f;
 		camera.getOffset().z = 3f;
@@ -149,17 +148,13 @@ public class Game implements IGame {
 		eHandler.addTickGameEventListener(event -> {
 			Window window = event.getWindow();
 			if (window.isKeyPressed(GLFW_KEY_PAGE_UP)) {
-				sceneChanged = true;
 				cameraInc.y -= 1;
 			} else if (window.isKeyPressed(GLFW_KEY_PAGE_DOWN)) {
-				sceneChanged = true;
 				cameraInc.y += 1;
 			}
 			if (window.isKeyPressed(GLFW_KEY_LEFT_BRACKET)) {
-				sceneChanged = true;
 				lightAngleInc -= 0.05f;
 			} else if (window.isKeyPressed(GLFW_KEY_RIGHT_BRACKET)) {
-				sceneChanged = true;
 				lightAngleInc += 0.05f;
 			} else {
 				lightAngleInc = 0;
@@ -190,7 +185,6 @@ public class Game implements IGame {
 		if (mouse.isRightButtonPressed()) {
 			Vector2f rotVec = mouse.getDisplVec();
 			camera.moveRotation(rotVec.x * Config.MOUSE_SENSITIVITY, rotVec.y * Config.MOUSE_SENSITIVITY, 0);
-			sceneChanged = true;
 		}
 		player.animate(interval);
 		camera.movePosition(cameraInc.x * Config.CAMERA_POS_STEP, cameraInc.y * Config.CAMERA_POS_STEP, cameraInc.z * Config.CAMERA_POS_STEP);
@@ -214,13 +208,7 @@ public class Game implements IGame {
 	
 	@Override
 	public void render(Window window) {
-		if (firstTime) {
-			sceneChanged = true;
-			firstTime = false;
-		}
-		boolean sc = sceneChanged;
-		sceneChanged = false;
-		renderer.render(window, camera, scene, sc, levelManager);
+		renderer.render(window, camera, scene, levelManager);
 		hud.render(window);
 	}
 	

@@ -1,5 +1,7 @@
 package eu.grmdev.senryaku.core.map;
 
+import java.util.*;
+
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.Mesh;
@@ -7,13 +9,13 @@ import eu.grmdev.senryaku.graphic.material.Material;
 import eu.grmdev.senryaku.graphic.material.Texture;
 import lombok.Getter;
 
-public class Terrain {
-	private @Getter final Entity[] entity;
+public class Terrain extends Entity {
+	private @Getter final Map<Mesh, List<Entity>> entitiesByMesh;
+	private @Getter final Entity[][] entitiesByPos;
 	private final int[] terrainSize;
-	private @Getter Mesh mesh;
-	private final Box2D[][] boundingBoxes;
+	// private final Box2D[][] boundingBoxes;
 	// @formatter:off
-	private static final float[] VERTICES=new float[]{
+	public static final float[] VERTICES=new float[]{
 		// V0
       -0.5f, -0.5f, 0.5f,
       // V1
@@ -31,7 +33,7 @@ public class Terrain {
       // V7
       -0.5f, 0.5f, -0.5f,
 	};
-	private static final int[] INDICES=new int[]{
+	public static final int[] INDICES=new int[]{
 		0, 1, 2,
 		2, 3, 0,
 		// top
@@ -50,7 +52,7 @@ public class Terrain {
 		3, 2, 6,
 		6, 7, 3,
 	};
-	private static final float[] COLORS=new float[]{
+	public static final float[] COLORS=new float[]{
 		0.5f, 0.0f, 0.0f,
 		0.0f, 0.5f, 0.0f,
 		0.0f, 0.0f, 0.5f,
@@ -60,7 +62,7 @@ public class Terrain {
 		0.0f, 0.0f, 0.5f,
 		0.0f, 0.5f, 0.5f,
 	};
-	private static final float[] TEX_COORDS=new float[]{
+	public static final float[] TEX_COORDS=new float[]{
 		0.0f, 0.0f,
       0.0f, 0.5f,
       0.5f, 0.5f,
@@ -89,43 +91,52 @@ public class Terrain {
 	};
 	private String textureFile;
 // @formatter:on	
-	private float scale;
 	private Tile[][] tiles;
-	private int[] poss;
+	private float tileScale = 1.0f;
 	
-	public Terrain(int[] poss, Tile[][] tiles, float scale, String textureFile) throws Exception {
-		this.poss = poss;
+	public Terrain(Tile[][] tiles, String textureFile) throws Exception {
+		super();
 		this.tiles = tiles;
-		this.scale = scale;
 		this.textureFile = textureFile;
 		this.terrainSize = new int[]{tiles.length, tiles[0].length};
-		entity = new Entity[terrainSize[0] * terrainSize[1]];
-		boundingBoxes = new Box2D[terrainSize[0]][terrainSize[1]];
+		entitiesByMesh = new HashMap<>();
+		entitiesByPos = new Entity[terrainSize[0]][terrainSize[1]];
+		// boundingBoxes = new Box2D[terrainSize[0]][terrainSize[1]];
 	}
 	
 	public void init() throws Exception {
-		mesh = new Mesh(VERTICES, TEX_COORDS, Utils.calcNormals(VERTICES, INDICES), INDICES);
-		Texture texture = new Texture(textureFile);
-		Material material = new Material(texture);
-		mesh.setMaterial(material);
+		createBackgroundMesh();
 		
 		for (int row = 0; row < terrainSize[0]; row++) {
 			for (int col = 0; col < terrainSize[1]; col++) {
-				float xDisplacement = row * scale;
-				float zDisplacement = col * scale;
+				float xDisplacement = row * tileScale;
+				float zDisplacement = col * tileScale;
 				// float xDisplacement = (row - ((float) terrainSize[0] - 1) / 2) *
 				// scale;
 				// float zDisplacement = (col - ((float) terrainSize[1] - 1) / 2) *
 				// scale;
-				
+				Mesh mesh = tiles[row][col].getMesh();
 				Entity terrainBlock = new Entity(mesh);
-				terrainBlock.setScale(scale);
+				terrainBlock.setScale(tileScale);
 				terrainBlock.setPosition(xDisplacement, 0, zDisplacement);
-				entity[row * terrainSize[1] + col] = terrainBlock;
+				if (!entitiesByMesh.containsKey(mesh)) {
+					entitiesByMesh.put(mesh, new ArrayList<>());
+				}
+				entitiesByMesh.get(mesh).add(terrainBlock);
+				entitiesByPos[row][col] = terrainBlock;
 				
 				// boundingBoxes[row][col] = getBoundingBox(terrainBlock);
 			}
 		}
+	}
+	
+	private void createBackgroundMesh() throws Exception {
+		Mesh mesh = new Mesh(VERTICES, TEX_COORDS, Utils.calcNormals(VERTICES, INDICES), INDICES);
+		Texture texture = new Texture(textureFile);
+		Material material = new Material(texture);
+		mesh.setMaterial(material);
+		this.meshes = new Mesh[]{mesh};
+		setScale(100f);
 	}
 	
 	// public float getHeight(Vector3f position) {

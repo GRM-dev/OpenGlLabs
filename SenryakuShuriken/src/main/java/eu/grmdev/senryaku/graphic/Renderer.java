@@ -14,6 +14,7 @@ import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
 import eu.grmdev.senryaku.core.handlers.LevelManager;
 import eu.grmdev.senryaku.core.map.GameMap;
+import eu.grmdev.senryaku.core.map.Terrain;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.effects.shadow.ShadowCascade;
 import eu.grmdev.senryaku.graphic.effects.shadow.ShadowRenderer;
@@ -93,7 +94,7 @@ public class Renderer {
 		sceneShaderProgram.createUniform("selectedNonInstanced");
 	}
 	
-	public void render(Window window, Camera camera, Scene scene, boolean sceneChanged, LevelManager levelManager) {
+	public void render(Window window, Camera camera, Scene scene, LevelManager levelManager) {
 		clear();
 		
 		if (window.getWindowOptions().frustumCulling) {
@@ -102,7 +103,7 @@ public class Renderer {
 			frustumFilter.filter(scene.getGameInstancedMeshes());
 		}
 		
-		if (scene.isRenderShadows() && sceneChanged) {
+		if (scene.isRenderShadows()) {
 			shadowRenderer.render(window, scene, camera, transformation, this);
 		}
 		
@@ -203,25 +204,38 @@ public class Renderer {
 			if (!map.isInitialized()) {
 				map.init();
 			}
-			Mesh mesh = map.getTerrain().getMesh();
+			Terrain terrain = map.getTerrain();
 			sceneShaderProgram.setUniformi("isInstanced", 0);
-			
-			sceneShaderProgram.setUniformMat("material", mesh.getMaterial());
-			
-			Texture text = mesh.getMaterial().getTexture();
-			if (text != null) {
-				sceneShaderProgram.setUniformi("numCols", text.getNumCols());
-				sceneShaderProgram.setUniformi("numRows", text.getNumRows());
+			Mesh terrainMesh = terrain.getMesh();
+			sceneShaderProgram.setUniformMat("material", terrainMesh.getMaterial());
+			Texture texture = terrainMesh.getMaterial().getTexture();
+			if (texture != null) {
+				sceneShaderProgram.setUniformi("numCols", texture.getNumCols());
+				sceneShaderProgram.setUniformi("numRows", texture.getNumRows());
 			}
-			
 			shadowRenderer.bindTextures(GL_TEXTURE2);
+			Matrix4f modelMatrix = transformation.buildModelMatrix(terrain);
+			sceneShaderProgram.setUniform("modelNonInstancedMatrix", modelMatrix);
+			terrainMesh.render();
 			
-			mesh.renderArray(map.getTerrain().getEntity(), (Entity gameItem) -> {
-				sceneShaderProgram.setUniformf("selectedNonInstanced", gameItem.isSelected() ? 1.0f : 0.0f);
-				Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
-				sceneShaderProgram.setUniform("modelNonInstancedMatrix", modelMatrix);
-			});
+			for (Mesh mesh : terrain.getEntitiesByMesh().keySet())
+				renderTiles(mesh, terrain.getEntitiesByMesh().get(mesh));
 		}
+	}
+	
+	private void renderTiles(Mesh mesh, List<Entity> entities) {
+		sceneShaderProgram.setUniformMat("material", mesh.getMaterial());
+		Texture texture = mesh.getMaterial().getTexture();
+		if (texture != null) {
+			sceneShaderProgram.setUniformi("numCols", texture.getNumCols());
+			sceneShaderProgram.setUniformi("numRows", texture.getNumRows());
+		}
+		shadowRenderer.bindTextures(GL_TEXTURE2);
+		mesh.renderList(entities, (Entity entity) -> {
+			sceneShaderProgram.setUniformf("selectedNonInstanced", entity.isSelected() ? 1.0f : 0.0f);
+			Matrix4f modelMatrix = transformation.buildModelMatrix(entity);
+			sceneShaderProgram.setUniform("modelNonInstancedMatrix", modelMatrix);
+		});
 	}
 	
 	private void renderNonInstancedMeshes(Scene scene) {
