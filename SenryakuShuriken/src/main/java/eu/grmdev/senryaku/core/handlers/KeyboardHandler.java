@@ -52,10 +52,10 @@ public class KeyboardHandler extends GLFWKeyCallback {
 	}
 	
 	public synchronized void dispatchAllActiveKeyEvents() {
-		if (!pressedKeys.isEmpty()) {
-			synchronized (pressedKeys) {
+		synchronized (pressedKeys) {
+			if (!pressedKeys.isEmpty()) {
 				for (int key : pressedKeys) {
-					KeyEvent event = new KeyEvent(key, GLFW_PRESS, true);
+					KeyEvent event = new KeyEvent(key, GLFW_REPEAT, true);
 					eHandler.dispatchKeyEvent(event);
 				}
 			}

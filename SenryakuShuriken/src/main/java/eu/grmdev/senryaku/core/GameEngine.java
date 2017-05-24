@@ -67,6 +67,17 @@ public class GameEngine implements Runnable {
 		}
 	}
 	
+	private void render() {
+		if (window.getWindowOptions().showFps && timer.getLastLoopTime() - lastFps > 1) {
+			lastFps = timer.getLastLoopTime();
+			window.setWindowTitle(title + " - " + fps + " FPS");
+			fps = 0;
+		}
+		fps++;
+		gameLogic.render(window);
+		window.update();
+	}
+	
 	private void sync() {
 		float loopSlot = 1f / Config.TARGET_FPS;
 		double endTime = timer.getLastLoopTime() + loopSlot;
@@ -78,22 +89,11 @@ public class GameEngine implements Runnable {
 		}
 	}
 	
-	protected void render() {
-		if (window.getWindowOptions().showFps && timer.getLastLoopTime() - lastFps > 1) {
-			lastFps = timer.getLastLoopTime();
-			window.setWindowTitle(title + " - " + fps + " FPS");
-			fps = 0;
-		}
-		fps++;
-		gameLogic.render(window);
-		window.update();
-	}
-	
 	public void stop() {
 		glfwSetWindowShouldClose(window.getWindowHandle(), true);
 	}
 	
-	protected void destroy() {
+	private void destroy() {
 		logicThread.setStop();
 		gameLogic.destroy();
 	}

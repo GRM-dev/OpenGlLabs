@@ -22,9 +22,10 @@ import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
+import lombok.Getter;
 
 public class Game implements IGame {
-	private final Vector3f cameraInc;
+	private @Getter final Vector3f cameraInc;
 	private final Renderer renderer;
 	private final Camera camera;
 	private float lightAngleInc;
@@ -78,7 +79,7 @@ public class Game implements IGame {
 	
 	private Entity[] setupStartEntities() throws Exception {
 		List<Entity> entities = new ArrayList<>();
-		player = new Player();
+		player = new Player(camera);
 		entities.add(player);
 		
 		String fileName = Utils.loadResourceURL("models/cube/cube.obj").getFile();
@@ -147,49 +148,53 @@ public class Game implements IGame {
 				}
 			}
 		});
+		eHandler.addTickGameEventListener(event -> {
+			Window window = event.getWindow();
+			if (window.isKeyPressed(GLFW_KEY_PAGE_UP)) {
+				sceneChanged = true;
+				cameraInc.y -= 1;
+			} else if (window.isKeyPressed(GLFW_KEY_PAGE_DOWN)) {
+				sceneChanged = true;
+				cameraInc.y += 1;
+			}
+			if (window.isKeyPressed(GLFW_KEY_LEFT_BRACKET)) {
+				sceneChanged = true;
+				lightAngleInc -= 0.05f;
+			} else if (window.isKeyPressed(GLFW_KEY_RIGHT_BRACKET)) {
+				sceneChanged = true;
+				lightAngleInc += 0.05f;
+			} else {
+				lightAngleInc = 0;
+			}
+		});
 	}
 	
 	@Override
 	public void input(Window window, MouseHandler mouseInput) {
-		if (window.isKeyPressed(GLFW_KEY_W)) {
-			sceneChanged = true;
-			cameraInc.z -= 1;
-		} else if (window.isKeyPressed(GLFW_KEY_S)) {
-			sceneChanged = true;
-			cameraInc.z += 1;
-		}
-		if (window.isKeyPressed(GLFW_KEY_A)) {
-			sceneChanged = true;
-			cameraInc.x -= 1;
-		} else if (window.isKeyPressed(GLFW_KEY_D)) {
-			sceneChanged = true;
-			cameraInc.x += 1;
-		}
-		if (window.isKeyPressed(GLFW_KEY_Z)) {
-			sceneChanged = true;
-			cameraInc.y -= 1;
-		} else if (window.isKeyPressed(GLFW_KEY_X)) {
-			sceneChanged = true;
-			cameraInc.y += 1;
-		}
-		if (window.isKeyPressed(GLFW_KEY_LEFT)) {
-			sceneChanged = true;
-			lightAngleInc -= 0.05f;
-		} else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
-			sceneChanged = true;
-			lightAngleInc += 0.05f;
-		} else {
-			lightAngleInc = 0;
-		}
+		// if (window.isKeyPressed(GLFW_KEY_W)) {
+		// sceneChanged = true;
+		// cameraInc.z -= 0.1;
+		// } else if (window.isKeyPressed(GLFW_KEY_S)) {
+		// sceneChanged = true;
+		// cameraInc.z += 0.1;
+		// }
+		// if (window.isKeyPressed(GLFW_KEY_A)) {
+		// sceneChanged = true;
+		// cameraInc.x -= 0.1;
+		// } else if (window.isKeyPressed(GLFW_KEY_D)) {
+		// sceneChanged = true;
+		// cameraInc.x += 0.1;
+		// }
 	}
 	
 	@Override
-	public void update(float interval, MouseHandler mouseInput, Window window) {
-		if (mouseInput.isRightButtonPressed()) {
-			Vector2f rotVec = mouseInput.getDisplVec();
+	public void update(float interval, MouseHandler mouse, Window window) {
+		if (mouse.isRightButtonPressed()) {
+			Vector2f rotVec = mouse.getDisplVec();
 			camera.moveRotation(rotVec.x * Config.MOUSE_SENSITIVITY, rotVec.y * Config.MOUSE_SENSITIVITY, 0);
 			sceneChanged = true;
 		}
+		player.animate(interval);
 		camera.movePosition(cameraInc.x * Config.CAMERA_POS_STEP, cameraInc.y * Config.CAMERA_POS_STEP, cameraInc.z * Config.CAMERA_POS_STEP);
 		cameraInc.set(0, 0, 0);
 		lightAngle += lightAngleInc;

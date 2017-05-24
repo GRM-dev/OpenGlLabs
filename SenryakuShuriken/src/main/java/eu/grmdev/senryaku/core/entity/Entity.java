@@ -4,18 +4,20 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import eu.grmdev.senryaku.graphic.Mesh;
+import eu.grmdev.senryaku.graphic.TranslateAnimation;
 import lombok.Getter;
 import lombok.Setter;
 
 public class Entity {
 	private @Getter @Setter boolean selected;
 	protected @Getter @Setter Mesh[] meshes;
-	private @Getter final Vector3f position;
+	protected @Getter final Vector3f position;
 	private @Getter @Setter float scale;
 	private @Getter final Quaternionf rotation;
 	private @Getter @Setter int textPos;
 	private @Getter @Setter boolean disableFrustumCulling;
 	private @Getter @Setter boolean insideFrustum;
+	protected TranslateAnimation tAnimation;
 	
 	public Entity() {
 		selected = false;
@@ -25,6 +27,7 @@ public class Entity {
 		textPos = 0;
 		insideFrustum = true;
 		disableFrustumCulling = false;
+		tAnimation = new TranslateAnimation(position);
 	}
 	
 	public Entity(Mesh mesh) {

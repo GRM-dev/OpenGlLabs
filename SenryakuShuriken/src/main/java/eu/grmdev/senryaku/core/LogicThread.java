@@ -7,12 +7,12 @@ import eu.grmdev.senryaku.core.events.GameEvent;
 import eu.grmdev.senryaku.core.handlers.*;
 
 public class LogicThread extends Thread {
-	private long lastTickTimeNano;
+	private long startTickTime;
 	private float tps = Config.TARGET_UPS;
 	private long tickTime = (long) (1000 / tps);
-	private long pastTickNanoDiff;
+	private long lastTickSpan;
 	private int tickCounter;
-	private double lastFullTickNano;
+	private double startCycleTime;
 	private IGame game;
 	private final EventHandler eHandler;
 	private final MouseHandler mouseHandler;
@@ -51,11 +51,18 @@ public class LogicThread extends Thread {
 		}
 		try {
 			game.initLogic(eHandler);
+			tickLoopEvent = new GameEvent(window) {};
+			cycleLoopEvent = new GameEvent(window) {};
 			eHandler.addCycleGameEventListener(event -> {
 				System.out.println("TPS: " + lastTickCounter);
 			});
 			System.out.println("Start Logic Thread");
-			loop();
+			startTickTime = System.currentTimeMillis();
+			startCycleTime = startTickTime;
+			while (!shouldStop()) {
+				loop();
+			}
+			tickLoopEvent.setConsumed(true);
 			System.out.println("Stop Logic Thread");
 		}
 		catch (Exception ex) {
@@ -64,30 +71,23 @@ public class LogicThread extends Thread {
 	}
 	
 	private void loop() {
-		lastTickTimeNano = System.nanoTime();
-		lastFullTickNano = lastTickTimeNano;
-		tickLoopEvent = new GameEvent(true, null) {};
-		cycleLoopEvent = new GameEvent(true, null) {};
-		while (!shouldStop()) {
-			input();
-			keyHandler.dispatchAllActiveKeyEvents();
-			if (tickCounter == 0) {
-				eHandler.dispatchCycleGameEvent(cycleLoopEvent);
-			}
-			eHandler.dispatchTickGameEvent(tickLoopEvent);
-			update(pastTickNanoDiff);
-			tickLoopEvent.reset();
-			sync();
+		input();
+		keyHandler.dispatchAllActiveKeyEvents();
+		if (tickCounter == 0) {
+			eHandler.dispatchCycleGameEvent(cycleLoopEvent);
 		}
-		tickLoopEvent.setConsumed(true);
+		eHandler.dispatchTickGameEvent(tickLoopEvent);
+		update(lastTickSpan);
+		tickLoopEvent.reset();
+		sync();
 	}
 	
-	protected void input() {
+	private void input() {
 		mouseHandler.input(window);
 		game.input(window, mouseHandler);
 	}
 	
-	protected void update(float interval) {
+	private void update(float interval) {
 		game.update(interval, mouseHandler, window);
 	}
 	
@@ -101,25 +101,29 @@ public class LogicThread extends Thread {
 	
 	private void sync() {
 		tickCounter++;
-		long thisTickTimeNano = System.nanoTime();
-		long diff = (long) (tickTime - (thisTickTimeNano - lastTickTimeNano) / 1E6);
-		if (diff > 0) {
-			try {
-				Thread.sleep(diff);
-				thisTickTimeNano = System.nanoTime();
-				pastTickNanoDiff = thisTickTimeNano - lastTickTimeNano;
-			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		} else {
-			pastTickNanoDiff = (long) (-diff / 1E3);
+		long endTickTime = System.currentTimeMillis();
+		long durationSpan = endTickTime - startTickTime;
+		long durationToSleep = tickTime - durationSpan;
+		if (durationToSleep > 0) {
+			sleepFor(durationToSleep);
+			endTickTime = System.currentTimeMillis();
+			durationSpan = endTickTime - startTickTime;
 		}
-		if (thisTickTimeNano / 1E9 - lastFullTickNano / 1E9 >= 0.98) {
-			lastFullTickNano = thisTickTimeNano;
+		if (endTickTime - startCycleTime >= 998) {
+			startCycleTime = endTickTime;
 			lastTickCounter = tickCounter;
 			tickCounter = 0;
 		}
-		lastTickTimeNano = thisTickTimeNano;
+		lastTickSpan = durationSpan;
+		startTickTime = endTickTime;
+	}
+	
+	private void sleepFor(long duration) {
+		try {
+			Thread.sleep(duration);
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }

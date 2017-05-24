@@ -6,22 +6,22 @@ import org.joml.Vector3f;
 import lombok.Getter;
 
 public class Camera {
-	@Getter
-	private final Vector3f position;
-	@Getter
-	private final Vector3f rotation;
-	@Getter
-	private Matrix4f viewMatrix;
+	private @Getter final Vector3f position;
+	private @Getter final Vector3f destPosition;
+	private @Getter final Vector3f rotation;
+	private @Getter Matrix4f viewMatrix;
+	private TranslateAnimation tAnimation;
 	
 	public Camera() {
-		position = new Vector3f(0, 0, 0);
-		rotation = new Vector3f(0, 0, 0);
+		this(new Vector3f(), new Vector3f());
 		viewMatrix = new Matrix4f();
+		tAnimation = new TranslateAnimation(position);
 	}
 	
 	public Camera(Vector3f position, Vector3f rotation) {
 		this.position = position;
 		this.rotation = rotation;
+		destPosition = new Vector3f(position);
 	}
 	
 	public Matrix4f updateViewMatrix() {
@@ -45,13 +45,13 @@ public class Camera {
 		position.y = y;
 		position.z = z;
 	}
-
+	
 	public void moveRotation(float offsetX, float offsetY, float offsetZ) {
 		rotation.x += offsetX;
 		rotation.y += offsetY;
 		rotation.z += offsetZ;
 	}
-
+	
 	public void setRotation(float x, float y, float z) {
 		rotation.x = x;
 		rotation.y = y;

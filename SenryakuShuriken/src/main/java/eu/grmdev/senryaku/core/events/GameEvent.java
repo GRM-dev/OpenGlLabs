@@ -4,21 +4,23 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 import java.util.function.Function;
 
+import eu.grmdev.senryaku.core.Window;
 import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
 import lombok.Getter;
 import lombok.Setter;
 
 public abstract class GameEvent {
-	@Getter
-	@Setter
-	private boolean consumed;
-	@Getter
-	private boolean remove;
-	@Getter
-	protected boolean repeatable;
+	private @Setter @Getter boolean consumed;
+	private @Getter boolean remove;
+	protected @Getter boolean repeatable;
 	private Function<GameEvent, Boolean> repeatingCondition;
-	@Getter
-	private double creationTime;
+	private @Getter double creationTime;
+	private @Getter Window window;
+	
+	protected GameEvent(Window window) {
+		this(true, null);
+		this.window = window;
+	}
 	
 	protected GameEvent(boolean repeatable, Function<GameEvent, Boolean> repeatingCondition) {
 		this.repeatable = repeatable;

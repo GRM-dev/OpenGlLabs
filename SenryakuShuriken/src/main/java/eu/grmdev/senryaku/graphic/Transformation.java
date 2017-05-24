@@ -11,8 +11,7 @@ public class Transformation {
 	private final Matrix4f modelMatrix;
 	private final Matrix4f modelViewMatrix;
 	private final Matrix4f modelLightViewMatrix;
-	@Getter
-	private final Matrix4f lightViewMatrix;
+	private @Getter final Matrix4f lightViewMatrix;
 	private final Matrix4f ortho2DMatrix;
 	private final Matrix4f orthoModelMatrix;
 	
@@ -34,7 +33,6 @@ public class Transformation {
 	}
 	
 	public static Matrix4f updateGenericViewMatrix(Vector3f position, Vector3f rotation, Matrix4f matrix) {
-		// First do the rotation so camera rotates over its position
 		return matrix.rotationX((float) Math.toRadians(rotation.x)).rotateY((float) Math.toRadians(rotation.y)).translate(-position.x, -position.y, -position.z);
 	}
 	

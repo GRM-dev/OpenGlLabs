@@ -18,7 +18,7 @@ public final class Config {
 	public static final float Z_NEAR = 0.01f;
 	public static final float FOV = (float) Math.toRadians(60.0f);
 	public static final boolean SHADOWS_ENABLED = true;
-	public final static float CAMERA_POS_STEP = 0.40f;
+	public final static float CAMERA_POS_STEP = 0.7f;
 	public final static float MOUSE_SENSITIVITY = 0.2f;
 	public static final int NUM_SHADOW_CASCADES = 3;
 	public static final float[] SHADOW_CASCADE_SPLITS = new float[]{Z_FAR / 20.0f, Z_FAR / 10.0f, Z_FAR};
@@ -33,7 +33,7 @@ public final class Config {
 		opts.compatibleProfile = true;
 		opts.antialiasing = true;
 		opts.frustumCulling = false;
-		opts.maximized = true;
+		opts.maximized = false;
 		opts.width = 800;
 		opts.height = 600;
 	}
