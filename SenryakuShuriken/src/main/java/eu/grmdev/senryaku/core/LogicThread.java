@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.events.GameEvent;
 import eu.grmdev.senryaku.core.handlers.*;
+import eu.grmdev.senryaku.graphic.Window;
 
 public class LogicThread extends Thread {
 	private long startTickTime;

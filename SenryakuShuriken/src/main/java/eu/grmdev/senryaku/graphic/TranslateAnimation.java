@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class TranslateAnimation {
-	private Vector3f position;
-	private Vector3f destPosition;
+	private @Getter Vector3f position;
+	private @Getter Vector3f destPosition;
 	private Vector3f v;
 	private int moveCounter = 0;
 	private @Getter @Setter float speed = 0.5f;

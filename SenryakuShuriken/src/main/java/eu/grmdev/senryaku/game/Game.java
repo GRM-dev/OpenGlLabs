@@ -14,10 +14,8 @@ import eu.grmdev.senryaku.Main;
 import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
-import eu.grmdev.senryaku.core.handlers.EventHandler;
-import eu.grmdev.senryaku.core.handlers.MouseHandler;
+import eu.grmdev.senryaku.core.handlers.*;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
-import eu.grmdev.senryaku.core.map.GameMap;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
@@ -27,23 +25,26 @@ import lombok.Getter;
 public class Game implements IGame {
 	private @Getter final Vector3f cameraInc;
 	private final Renderer renderer;
+	private Scene scene;
+	private final Hud hud;
 	private final Camera camera;
+	private @Getter final LevelManager levelManager;
+	private boolean firstTime;
 	private float lightAngleInc;
 	private float lightAngle;
-	private boolean firstTime;
 	private boolean sceneChanged;
-	private Scene scene;
 	private Entity[] entities;
-	private Hud hud;
 	private Player player;
 	
 	public Game() throws Exception {
 		renderer = new Renderer();
 		camera = new Camera();
 		cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
+		levelManager = new LevelManager();
+		firstTime = true;
 		lightAngleInc = 0;
 		lightAngle = 90;
-		firstTime = true;
+		scene = new Scene();
 		hud = new Hud();
 	}
 	
@@ -53,7 +54,6 @@ public class Game implements IGame {
 	@Override
 	public void initRender(Window window) throws Exception {
 		renderer.init(window);
-		scene = new Scene();
 		
 		entities = setupStartEntities();
 		scene.setEntities(entities);
@@ -75,6 +75,7 @@ public class Game implements IGame {
 	public void initLogic(EventHandler eh) throws Exception {
 		assignGlobalListeners(eh);
 		player.init(eh);
+		levelManager.goTo(1);
 	}
 	
 	private Entity[] setupStartEntities() throws Exception {
@@ -104,9 +105,6 @@ public class Game implements IGame {
 		skyBox.setScale(skyBoxScale);
 		scene.setSkyBox(skyBox);
 		
-		GameMap map = new GameMap(1);
-		scene.setMap(map);
-		map.init();
 	}
 	
 	/**
@@ -129,11 +127,11 @@ public class Game implements IGame {
 	 * Changes position of camera to startup position
 	 */
 	private void setupCameraStartPos() {
-		camera.getPosition().x = 0.0f;
-		camera.getPosition().y = 7.0f;
-		camera.getPosition().z = 3.0f;
+		camera.setPosition(0.0f, 7.0f, 3.0f);
 		camera.getRotation().x = 65.0f;
-		camera.getRotation().y = 0.0f;
+		camera.getOffset().z = 3f;
+		camera.getOffset().x = 0.3f;
+		
 	}
 	
 	private void setupHUD(Window window) throws Exception {
@@ -222,7 +220,7 @@ public class Game implements IGame {
 		}
 		boolean sc = sceneChanged;
 		sceneChanged = false;
-		renderer.render(window, camera, scene, sc);
+		renderer.render(window, camera, scene, sc, levelManager);
 		hud.render(window);
 	}
 	

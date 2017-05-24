@@ -8,9 +8,11 @@ import java.util.*;
 import org.joml.*;
 
 import eu.grmdev.senryaku.Config;
-import eu.grmdev.senryaku.core.*;
+import eu.grmdev.senryaku.core.Scene;
+import eu.grmdev.senryaku.core.SceneLight;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
+import eu.grmdev.senryaku.core.handlers.LevelManager;
 import eu.grmdev.senryaku.core.map.GameMap;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.effects.shadow.ShadowCascade;
@@ -91,7 +93,7 @@ public class Renderer {
 		sceneShaderProgram.createUniform("selectedNonInstanced");
 	}
 	
-	public void render(Window window, Camera camera, Scene scene, boolean sceneChanged) {
+	public void render(Window window, Camera camera, Scene scene, boolean sceneChanged, LevelManager levelManager) {
 		clear();
 		
 		if (window.getWindowOptions().frustumCulling) {
@@ -107,7 +109,7 @@ public class Renderer {
 		glViewport(0, 0, window.getWidth(), window.getHeight());
 		window.updateProjectionMatrix();
 		
-		renderScene(window, camera, scene);
+		renderScene(window, camera, scene, levelManager);
 		renderSkyBox(window, camera, scene);
 		
 		renderAxes(window, camera);
@@ -118,7 +120,7 @@ public class Renderer {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 	
-	private void renderScene(Window window, Camera camera, Scene scene) {
+	private void renderScene(Window window, Camera camera, Scene scene, LevelManager levelManager) {
 		sceneShaderProgram.bind();
 		
 		Matrix4f viewMatrix = camera.getViewMatrix();
@@ -139,7 +141,12 @@ public class Renderer {
 		
 		renderEffects(scene);
 		
-		renderGameMap(window, camera, scene);
+		try {
+			renderGameMap(window, camera, levelManager.getCurrentMap());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		renderNonInstancedMeshes(scene);
 		renderInstancedMeshes(scene, viewMatrix);
@@ -191,9 +198,11 @@ public class Renderer {
 		}
 	}
 	
-	private void renderGameMap(Window window, Camera camera, Scene scene) {
-		GameMap map = scene.getMap();
+	private void renderGameMap(Window window, Camera camera, GameMap map) throws Exception {
 		if (map != null) {
+			if (!map.isInitialized()) {
+				map.init();
+			}
 			Mesh mesh = map.getTerrain().getMesh();
 			sceneShaderProgram.setUniformi("isInstanced", 0);
 			

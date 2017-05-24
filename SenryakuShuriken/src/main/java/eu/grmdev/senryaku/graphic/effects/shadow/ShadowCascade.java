@@ -5,8 +5,8 @@ import java.lang.Math;
 import org.joml.*;
 
 import eu.grmdev.senryaku.Config;
-import eu.grmdev.senryaku.core.Window;
 import eu.grmdev.senryaku.graphic.Transformation;
+import eu.grmdev.senryaku.graphic.Window;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
 import lombok.Getter;
 

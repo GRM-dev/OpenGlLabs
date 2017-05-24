@@ -4,6 +4,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.misc.Timer;
+import eu.grmdev.senryaku.graphic.Window;
 import lombok.Getter;
 
 public class GameEngine implements Runnable {
@@ -11,20 +12,20 @@ public class GameEngine implements Runnable {
 	private final Window window;
 	private final Thread renderThread;
 	private final Timer timer;
-	private final IGame gameLogic;
+	private final IGame game;
 	private double lastFps;
 	private int fps;
 	private String title;
 	private LogicThread logicThread;
 	
-	public GameEngine(String windowTitle, boolean vSync, Window.WindowOptions opts, IGame gameLogic) throws Exception {
+	public GameEngine(String windowTitle, boolean vSync, Window.WindowOptions opts, IGame game) throws Exception {
 		GameEngine.instance = this;
 		this.title = windowTitle;
-		this.gameLogic = gameLogic;
+		this.game = game;
 		timer = new Timer();
 		window = new Window(windowTitle, vSync, opts);
 		renderThread = new Thread(this, "GAME_RENDER_LOOP_THREAD");
-		logicThread = new LogicThread(gameLogic, window);
+		logicThread = new LogicThread(game, window);
 	}
 	
 	public void start() {
@@ -52,7 +53,7 @@ public class GameEngine implements Runnable {
 	private void init() throws Exception {
 		window.init();
 		timer.init();
-		gameLogic.initRender(window);
+		game.initRender(window);
 		lastFps = timer.getTime();
 		fps = 0;
 	}
@@ -74,7 +75,7 @@ public class GameEngine implements Runnable {
 			fps = 0;
 		}
 		fps++;
-		gameLogic.render(window);
+		game.render(window);
 		window.update();
 	}
 	
@@ -95,6 +96,6 @@ public class GameEngine implements Runnable {
 	
 	private void destroy() {
 		logicThread.setStop();
-		gameLogic.destroy();
+		game.destroy();
 	}
 }

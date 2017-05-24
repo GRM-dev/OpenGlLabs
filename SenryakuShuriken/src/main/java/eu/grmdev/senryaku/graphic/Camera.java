@@ -7,25 +7,23 @@ import lombok.Getter;
 
 public class Camera {
 	private @Getter final Vector3f position;
-	private @Getter final Vector3f destPosition;
+	private @Getter final Vector3f offset;
 	private @Getter final Vector3f rotation;
 	private @Getter Matrix4f viewMatrix;
-	private TranslateAnimation tAnimation;
 	
 	public Camera() {
 		this(new Vector3f(), new Vector3f());
 		viewMatrix = new Matrix4f();
-		tAnimation = new TranslateAnimation(position);
 	}
 	
 	public Camera(Vector3f position, Vector3f rotation) {
 		this.position = position;
 		this.rotation = rotation;
-		destPosition = new Vector3f(position);
+		offset = new Vector3f();
 	}
 	
 	public Matrix4f updateViewMatrix() {
-		return Transformation.updateGenericViewMatrix(position, rotation, viewMatrix);
+		return Transformation.updateGenericViewMatrix(position, offset, rotation, viewMatrix);
 	}
 	
 	public void movePosition(float offsetX, float offsetY, float offsetZ) {

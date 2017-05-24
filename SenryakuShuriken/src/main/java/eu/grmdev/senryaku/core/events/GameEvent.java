@@ -4,8 +4,8 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 import java.util.function.Function;
 
-import eu.grmdev.senryaku.core.Window;
 import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
+import eu.grmdev.senryaku.graphic.Window;
 import lombok.Getter;
 import lombok.Setter;
 

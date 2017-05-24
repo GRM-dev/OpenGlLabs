@@ -5,7 +5,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 
-import eu.grmdev.senryaku.core.Window;
+import eu.grmdev.senryaku.graphic.Window;
 import lombok.Getter;
 
 public class MouseHandler {

@@ -56,8 +56,7 @@ public class Player extends Entity {
 	
 	private void move(float rx, float rz) {
 		tAnimation.move(rx, rz);
-		// camera.x += rx;
-		// camera.z += rz;
+		camera.setPosition(tAnimation.getDestPosition().x, camera.getPosition().y, tAnimation.getDestPosition().z);
 	}
 	
 	public void animate(float interval) {

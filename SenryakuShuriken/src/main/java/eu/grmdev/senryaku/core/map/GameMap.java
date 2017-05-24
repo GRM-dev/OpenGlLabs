@@ -20,13 +20,14 @@ public class GameMap {
 	private String title;
 	private int columns;
 	private int rows;
+	private @Getter boolean initialized;
 	
 	public GameMap(int level) throws Exception {
 		this.level = level;
 		loadMap();
 	}
 	
-	private void loadMap() throws Exception {
+	public void loadMap() throws Exception {
 		URL filename = getClass().getResource("/maps/map_" + level + ".smap");
 		URI uri = filename.toURI();
 		if (filename == null || !(new File(uri)).exists()) { throw new FileNotFoundException("Can't load map for lavel: " + level); }
@@ -72,5 +73,6 @@ public class GameMap {
 	
 	public void init() throws Exception {
 		terrain.init();
+		initialized = true;
 	}
 }

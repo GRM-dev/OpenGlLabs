@@ -15,8 +15,8 @@ import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.system.MemoryUtil;
 
 import eu.grmdev.senryaku.Config;
-import eu.grmdev.senryaku.core.Window;
 import eu.grmdev.senryaku.core.misc.Utils;
+import eu.grmdev.senryaku.graphic.Window;
 
 public class Hud {
 	private long nvg;

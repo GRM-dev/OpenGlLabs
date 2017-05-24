@@ -2,9 +2,9 @@ package eu.grmdev.senryaku.game;
 
 import org.joml.*;
 
-import eu.grmdev.senryaku.core.Window;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.graphic.Camera;
+import eu.grmdev.senryaku.graphic.Window;
 
 public class MouseBoxSelectionDetector extends CameraBoxSelectionDetector {
 	private final Matrix4f invProjectionMatrix;

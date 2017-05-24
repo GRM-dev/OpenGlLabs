@@ -1,6 +1,6 @@
 package eu.grmdev.senryaku;
 
-import eu.grmdev.senryaku.core.Window;
+import eu.grmdev.senryaku.graphic.Window;
 
 /**
  * Static final config values for game
