@@ -2,8 +2,6 @@ package eu.grmdev.senryaku.game;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-import java.io.File;
-
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.events.KeyEvent;
 import eu.grmdev.senryaku.core.events.listeners.KeyEventListener;
@@ -12,7 +10,6 @@ import eu.grmdev.senryaku.core.handlers.LevelManager;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.core.map.GameMap;
 import eu.grmdev.senryaku.core.map.Tile;
-import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.Camera;
 import eu.grmdev.senryaku.graphic.Mesh;
 
@@ -24,9 +21,7 @@ public class Player extends Entity {
 		super();
 		this.camera = camera;
 		this.levelManager = levelManager;
-		String fileName = Utils.loadResourceURL("models/player/ninja.obj").getFile();
-		File file = new File(fileName);
-		Mesh[] mesh = StaticMeshesLoader.load(file.getAbsolutePath(), "/models/player");
+		Mesh[] mesh = StaticMeshesLoader.load("models/player/ninja.obj", "/models/player");
 		this.meshes = mesh;
 		setScale(0.5f);
 		setPosition(-0.2f, 0.5f, -0.2f);

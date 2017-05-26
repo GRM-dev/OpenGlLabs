@@ -1,10 +1,12 @@
 package eu.grmdev.senryaku.core.misc;
 
 import static org.lwjgl.BufferUtils.createByteBuffer;
+import static org.lwjgl.assimp.Assimp.aiImportFile;
 
 import java.io.*;
 import java.lang.reflect.Array;
-import java.net.URL;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.file.*;
@@ -13,10 +15,11 @@ import java.util.*;
 import org.joml.GeometryUtils;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.assimp.AIScene;
 
 public class Utils {
 	
-	public static String loadResource(String fileName) throws Exception {
+	public static String loadResourceContent(String fileName) throws Exception {
 		String result;
 		try (InputStream in = Utils.class.getClass().getResourceAsStream(fileName); Scanner scanner = new Scanner(in, "UTF-8")) {
 			result = scanner.useDelimiter("\\A").next();
@@ -24,8 +27,47 @@ public class Utils {
 		return result;
 	}
 	
-	public static URL loadResourceURL(String fileName) {
-		return Thread.currentThread().getContextClassLoader().getResource(fileName);
+	public static File getFile(String fileName) throws MalformedURLException {
+		// return
+		// Thread.currentThread().getContextClassLoader().getResource(fileName);
+		String path = fileName.startsWith("./resources") ? fileName : loadResourcePath(fileName);
+		return new File(path);
+	}
+	
+	public static String loadResourcePath(String fileName) {
+		return "./resources" + (fileName.startsWith("/") ? "" : "/") + fileName;
+	}
+	
+	public static String loadFullResourcePath(String filename) {
+		File f = new File(loadResourcePath(filename));
+		if (!f.exists()) {
+			System.out.println("");
+		}
+		return f.getPath();
+	}
+	
+	public static InputStream loadResourceAsStream(String fileName) {
+		return Utils.class.getResourceAsStream(fileName);
+	}
+	
+	public static AIScene loadAssimpObject(String filename, int flags) throws Exception {
+		File f = getFile(filename);
+		if (f == null || !f.exists()) { throw new IOException("Model file not exists: " + filename); }
+		AIScene aiScene = aiImportFile(f.getAbsolutePath(), flags);
+		if (aiScene == null) {
+			System.out.println("null " + filename);
+			throw new Exception("Error loading model: " + f.getAbsolutePath());
+		}
+		return aiScene;
+	}
+	
+	public static URI loadResourceForTemp(String fileName, String tempName, String tempFileSuffix) throws IOException {
+		try (InputStream inputStream = Utils.class.getResourceAsStream(fileName)) {
+			File tempFile = File.createTempFile(tempName, tempFileSuffix);
+			tempFile.deleteOnExit();
+			Files.copy(inputStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			return tempFile.toURI();
+		}
 	}
 	
 	public static List<String> readAllLines(String fileName) throws Exception {
@@ -65,8 +107,9 @@ public class Utils {
 	}
 	
 	public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
-		ByteBuffer buffer;
+		resource = loadFullResourcePath(resource);
 		
+		ByteBuffer buffer;
 		Path path = Paths.get(resource);
 		if (Files.isReadable(path)) {
 			try (SeekableByteChannel fc = Files.newByteChannel(path)) {

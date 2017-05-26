@@ -47,7 +47,7 @@
       </BorderPane>
    </children>
    <stylesheets>
-      <URL value="@../styles/custom.css" />
-      <URL value="@../styles/dark_style.css" />
+      <URL value="@/styles/custom.css" />
+      <URL value="@/styles/dark_style.css" />
    </stylesheets>
 </AnchorPane>

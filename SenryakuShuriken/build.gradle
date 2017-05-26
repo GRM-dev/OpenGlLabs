@@ -1,26 +1,32 @@
 buildscript {
-    repositories {
-        jcenter()
-    }
     dependencies {
-         classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+		classpath "com.github.jengelman.gradle.plugins:shadow:2.0.0"
+    }
+    
+    repositories {
+        mavenLocal()
+        mavenCentral()
+		maven {
+      		url "https://plugins.gradle.org/m2/"
+    	}
     }
 }
 
+
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.internal.os.OperatingSystem
-apply from: "http://dl.bintray.com/content/shemnon/javafx-gradle/8.1.1/javafx.plugin"
 
 apply plugin: 'java'
 apply plugin: 'pmd'
 apply plugin: 'eclipse'
-apply plugin: 'gradle-one-jar'
 apply plugin: 'signing'
+apply plugin: 'application'
 
 group = "eu.grmdev"
 description = "LWJGL Game with ninja"
 version = '1.0'
-def mainClassName = "eu.grmdev.senryaku.Main"
+mainClassName = "eu.grmdev.senryaku.Main"
 def appId = "SenryakuShuriken"
 archivesBaseName = appId
 
@@ -30,9 +36,21 @@ project.ext.jomlVersion = "1.9.3"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
 configurations {
-	provided
-	compile.extendsFrom provided
+	providedCompile
+	compile.extendsFrom providedCompile
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java", "src/main/resources"]
+        }
+    }
 }
 
 switch ( OperatingSystem.current() ) {
@@ -47,32 +65,6 @@ switch ( OperatingSystem.current() ) {
 		break
 }
 
-jar {
-    manifest {
-        attributes 'Implementation-Title': appId,
-                   'Implementation-Version': version
-    }
-}
-
-task execJar(type: OneJar) {
-	mainClass = mainClassName
-	archiveName = archivesBaseName+"-V"+version+".jar"
-}
-
-task javadocJar(type: Jar) {
-	classifier = 'javadoc'
-	from javadoc
-}
-
-task sourcesJar(type: Jar) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
-
-artifacts {
-	archives javadocJar, sourcesJar
-}
-
 repositories {
 	mavenCentral()
 	mavenLocal()
@@ -81,8 +73,12 @@ repositories {
     maven { url "http://repo.maven.apache.org/maven2" }
 }
 
+apply plugin: 'javafx-gradle-plugin'
+apply plugin: "com.github.johnrengelman.shadow"
+
 dependencies {
 	compile group: 'com.google.guava', 						name: 'guava', 						version: '21.0'
+	compile group: 'commons-io', 							name: 'commons-io', 				version: '2.5'
 	compile group: 'org.apache.commons', 					name: 'commons-lang3', 				version: '3.5'
 	compile group: 'org.apache.logging.log4j', 				name: 'log4j-core', 				version: '2.8.2'
 	compile group: 'org.apache.logging.log4j', 				name: 'log4j', 						version: '2.8.2'
@@ -179,43 +175,80 @@ task loadProperties {
 	}
 }
 
+jar {
+    manifest {
+        attributes 'Implementation-Title': appId,
+                   'Implementation-Version': version,
+				   'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+      			   'Main-Class': mainClassName
+    }
+}
+
+task javadocJar(type: Jar) {
+	classifier = 'javadoc'
+	from javadoc
+}
+
+task sourcesJar(type: Jar) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+task copyGResources(type: Copy) {
+    from "${projectDir}/src/main/resources"
+    into "${buildDir}/libs/resources"
+}
+
+task copyEResources(type: Copy) {
+    from "${projectDir}/src/main/resources"
+    into "${projectDir}/resources"
+}
+
 build.dependsOn loadProperties
+classes.dependsOn copyGResources
+classes.dependsOn copyEResources
 
 String getProjectProperty(String propertyName) {
 	project.hasProperty(propertyName) ? project.property(propertyName) : null
 }
 
-javafx {
-	javaRuntime = System.properties['JAVA_HOME']
-	appID appId
-	appName appId
+artifacts {
+	archives javadocJar, sourcesJar
+}
+
+jfx {
+	verbose = true
+	appName = appId
 	mainClass = mainClassName
+	useEnvironmentRelativeExecutables = true
 	
-	jvmArgs = ['-XX:+AggressiveOpts', '-XX:CompileThreshold=1']
-	systemProperties = ['prism.disableRegionCaching':'true']
-	arguments = ['-l', '--fast']
+	css2bin = false
+    preLoader = null // String
+    updateExistingJar = true
+    allPermissions = false
+    manifestAttributes = null // Map<String, String>
+    addPackagerJar = true
+    copyAdditionalAppResourcesToJar = true
+    skipCopyingDependencies = false
+	checkForAbsolutePaths = true
+	
+	//jvmArgs = ['-XX:+AggressiveOpts', '-XX:CompileThreshold=1']
+	//systemProperties = ['prism.disableRegionCaching':'true']
+	//arguments = ['-l', '--fast']
+	
+    nativeOutputDir = "build/jfx/native"
 
 	// Generate key: keytool -genkey -alias release -keyalg RSA -keystore keystore.jks -keysize 2048
-	releaseKey {
-		alias = 'release'
-		keyPass = getProjectProperty('rPass')
-		keyStore = file("${System.properties['user.home']}/keystore/senryaku_keystore.jks")
-		storePass = getProjectProperty('storePass')
-	}
+	keyStore = file("${System.properties['user.home']}/keystore/senryaku_keystore.jks")
+	keyStoreAlias = 'release'
+	keyPassword = getProjectProperty('rPass')
+	keyStorePassword = getProjectProperty('storePass')	
 	
-	signingMode 'release'
+	vendor = 'Levvy'
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.5'
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ["src/main/java", "src/main/resources"]
-        }
-    }
 }
 
 task pmd {

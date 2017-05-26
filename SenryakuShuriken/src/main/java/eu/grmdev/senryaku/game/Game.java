@@ -2,7 +2,6 @@ package eu.grmdev.senryaku.game;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-import java.io.File;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,6 @@ import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
 import eu.grmdev.senryaku.core.handlers.*;
-import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
@@ -97,9 +95,7 @@ public class Game implements IGame {
 	 */
 	private void setupWorld() throws Exception {
 		float skyBoxScale = 100.0f;
-		String fileName = Utils.loadResourceURL("models/skybox.obj").getFile();
-		File file = new File(fileName);
-		SkyBox skyBox = new SkyBox(file.getAbsolutePath(), new Vector4f(0.65f, 0.65f, 0.65f, 1.0f));
+		SkyBox skyBox = new SkyBox("models/skybox.obj", new Vector4f(0.65f, 0.65f, 0.65f, 1.0f));
 		skyBox.setScale(skyBoxScale);
 		scene.setSkyBox(skyBox);
 		

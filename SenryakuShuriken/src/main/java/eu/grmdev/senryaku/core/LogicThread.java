@@ -44,6 +44,7 @@ public class LogicThread extends Thread {
 	public void run() {
 		while (!isReady) {
 			try {
+				if (shouldStop()) { return; }
 				Thread.sleep(50);
 			}
 			catch (InterruptedException e) {

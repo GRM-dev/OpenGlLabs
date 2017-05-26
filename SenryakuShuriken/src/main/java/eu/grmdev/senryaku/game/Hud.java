@@ -114,7 +114,9 @@ public class Hud {
 	}
 	
 	public void destroy() {
-		nvgDelete(nvg);
+		if (nvg != 0) {
+			nvgDelete(nvg);
+		}
 		if (posx != null) {
 			MemoryUtil.memFree(posx);
 		}

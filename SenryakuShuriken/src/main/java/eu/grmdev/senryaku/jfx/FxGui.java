@@ -1,8 +1,10 @@
 package eu.grmdev.senryaku.jfx;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 
+import eu.grmdev.senryaku.core.misc.Utils;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +34,9 @@ public class FxGui extends Application {
 			Parent startRoot = FXMLLoader.load(startScreenUrl);
 			startScene = new Scene(startRoot);
 			startScene.setFill(Color.TRANSPARENT);
+			
+			addCss();
+			
 			stage.setScene(startScene);
 			stage.setTitle("Senryaku Shuriken");
 			stage.sizeToScene();
@@ -48,6 +53,13 @@ public class FxGui extends Application {
 		catch (IOException ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	private void addCss() throws IOException {
+		URI tempStyleSheetDest = Utils.loadResourceForTemp("/styles/custom.css", "javafx_stylesheet", "a");
+		startScene.getStylesheets().add(tempStyleSheetDest.toString());
+		tempStyleSheetDest = Utils.loadResourceForTemp("/styles/dark_style.css", "javafx_stylesheet", "b");
+		startScene.getStylesheets().add(tempStyleSheetDest.toString());
 	}
 	
 	public void closeGui() {

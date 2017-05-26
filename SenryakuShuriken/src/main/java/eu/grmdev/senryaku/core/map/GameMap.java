@@ -1,8 +1,6 @@
 package eu.grmdev.senryaku.core.map;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -32,11 +30,10 @@ public class GameMap {
 	}
 	
 	public void loadMap() throws Exception {
-		URL filename = getClass().getResource("/maps/map_" + level + ".smap");
-		URI uri = filename.toURI();
-		if (filename == null || !(new File(uri)).exists()) { throw new FileNotFoundException("Can't load map for lavel: " + level); }
+		String filename = Utils.loadFullResourcePath("/maps/map_" + level + ".smap");
+		if (filename == null || !(new File(filename)).exists()) { throw new FileNotFoundException("Can't load map for lavel: " + level); }
 		
-		List<String> fileLines = readFile(uri);
+		List<String> fileLines = readFile(filename);
 		parseHeader(fileLines);
 		
 		HashMap<Integer, HashMap<Integer, Tile>> data = new HashMap<>();
@@ -77,9 +74,9 @@ public class GameMap {
 		fileLines.remove(0);
 	}
 	
-	private List<String> readFile(URI uri) throws IOException {
+	private List<String> readFile(String path) throws IOException {
 		List<String> fileLines;
-		try (Stream<String> stream = Files.lines(Paths.get(uri))) {
+		try (Stream<String> stream = Files.lines(Paths.get(path))) {
 			fileLines = stream.map(String::toUpperCase).collect(Collectors.toList());
 		}
 		return fileLines;

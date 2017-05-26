@@ -11,22 +11,24 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
 
 import eu.grmdev.senryaku.core.misc.Utils;
-import eu.grmdev.senryaku.graphic.*;
+import eu.grmdev.senryaku.graphic.Mesh;
 import eu.grmdev.senryaku.graphic.material.Material;
 import eu.grmdev.senryaku.graphic.material.Texture;
 
 public class StaticMeshesLoader {
-	
-	private static final int DEF_FLAGS = aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals;
+	public static final int DEF_FLAGS = aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals;
 	
 	public static Mesh[] load(String resourcePath, String texturesDir) throws Exception {
 		return load(resourcePath, texturesDir, DEF_FLAGS);
 	}
 	
 	public static Mesh[] load(String resourcePath, String texturesDir, int flags) throws Exception {
-		AIScene aiScene = aiImportFile(resourcePath, flags);
-		if (aiScene == null) { throw new Exception("Error loading model"); }
-		
+		System.out.println("Mesh loading: " + resourcePath);
+		AIScene aiScene = Utils.loadAssimpObject(resourcePath, flags);
+		return load(texturesDir, aiScene);
+	}
+	
+	public static Mesh[] load(String texturesDir, AIScene aiScene) throws Exception {
 		int numMaterials = aiScene.mNumMaterials();
 		PointerBuffer aiMaterials = aiScene.mMaterials();
 		List<Material> materials = new ArrayList<>();

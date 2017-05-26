@@ -5,10 +5,11 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -90,15 +91,14 @@ public class Window {
 	 * Sets the Windows Icon of game window
 	 */
 	private void setWindowIcon() {
-		try {
-			File f = new File(getClass().getResource("/images/icon.png").toURI());
-			if (!f.exists()) throw new IOException();
-			
+		try (InputStream in = getClass().getResourceAsStream("/images/icon.png")) {
 			IntBuffer w = BufferUtils.createIntBuffer(1);
 			IntBuffer h = BufferUtils.createIntBuffer(1);
 			IntBuffer comp = BufferUtils.createIntBuffer(1);
-			
-			ByteBuffer buf = stbi_load(f.toString(), w, h, comp, 4);
+			File tempStyleSheetDest = File.createTempFile("app_lwjgl_logo", "");
+			tempStyleSheetDest.deleteOnExit();
+			Files.copy(in, tempStyleSheetDest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			ByteBuffer buf = stbi_load(tempStyleSheetDest.toString(), w, h, comp, 4);
 			if (buf == null) { throw new IOException(stbi_failure_reason()); }
 			
 			int imgWidth = w.get();
