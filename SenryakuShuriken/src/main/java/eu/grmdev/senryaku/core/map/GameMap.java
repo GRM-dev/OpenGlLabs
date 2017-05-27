@@ -1,12 +1,8 @@
 package eu.grmdev.senryaku.core.map;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.joml.Vector2i;
 
@@ -30,10 +26,8 @@ public class GameMap {
 	}
 	
 	public void loadMap() throws Exception {
-		String filename = Utils.loadFullResourcePath("/maps/map_" + level + ".smap");
-		if (filename == null || !(new File(filename)).exists()) { throw new FileNotFoundException("Can't load map for lavel: " + level); }
-		
-		List<String> fileLines = readFile(filename);
+		System.out.println("Loading map level " + level);
+		List<String> fileLines = readFile();
 		parseHeader(fileLines);
 		
 		HashMap<Integer, HashMap<Integer, Tile>> data = new HashMap<>();
@@ -64,6 +58,11 @@ public class GameMap {
 		terrain = new Terrain(tiles, backgroundTextureFile);
 	}
 	
+	private List<String> readFile() throws IOException {
+		List<String> fileLines = Utils.readAllLines("/maps/map_" + level + ".smap");
+		return fileLines;
+	}
+	
 	private void parseHeader(List<String> fileLines) {
 		String[] header = fileLines.get(0).split("\\|");
 		int[] positions = new int[]{Integer.parseInt(header[0]), Integer.parseInt(header[1]), Integer.parseInt(header[2]), Integer.parseInt(header[3])};
@@ -72,14 +71,6 @@ public class GameMap {
 		title = header[4].trim();
 		backgroundTextureFile = "/textures/" + header[5].trim().toLowerCase() + ".png";
 		fileLines.remove(0);
-	}
-	
-	private List<String> readFile(String path) throws IOException {
-		List<String> fileLines;
-		try (Stream<String> stream = Files.lines(Paths.get(path))) {
-			fileLines = stream.map(String::toUpperCase).collect(Collectors.toList());
-		}
-		return fileLines;
 	}
 	
 	public void init() throws Exception {

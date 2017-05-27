@@ -23,7 +23,6 @@ public class StaticMeshesLoader {
 	}
 	
 	public static Mesh[] load(String resourcePath, String texturesDir, int flags) throws Exception {
-		System.out.println("Mesh loading: " + resourcePath);
 		AIScene aiScene = Utils.loadAssimpObject(resourcePath, flags);
 		return load(texturesDir, aiScene);
 	}

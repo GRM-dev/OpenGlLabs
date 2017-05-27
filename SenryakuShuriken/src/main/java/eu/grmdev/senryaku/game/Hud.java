@@ -31,7 +31,7 @@ public class Hud {
 		this.nvg = window.getWindowOptions().antialiasing ? nvgCreate(NVG_ANTIALIAS | NVG_STENCIL_STROKES) : nvgCreate(NVG_STENCIL_STROKES);
 		if (this.nvg == NULL) { throw new Exception("Cannot init nanovg"); }
 		
-		fontBuffer = Utils.ioResourceToByteBuffer("/fonts/OpenSans-Bold.ttf", 150 * 1024);
+		fontBuffer = Utils.ioResourceToByteBuffer("/fonts/OpenSans-Bold.ttf", true, 150 * 1024);
 		int font = nvgCreateFontMem(nvg, Config.FONT_NAME, fontBuffer, 0);
 		if (font == -1) { throw new Exception("Could not add font"); }
 		

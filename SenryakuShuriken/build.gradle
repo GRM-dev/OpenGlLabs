@@ -194,19 +194,37 @@ task sourcesJar(type: Jar) {
 	from sourceSets.main.allSource
 }
 
-task copyGResources(type: Copy) {
-    from "${projectDir}/src/main/resources"
-    into "${buildDir}/libs/resources"
+task copyResources() {
+	def f_dir = "${projectDir}/src/main/resources"
+
+	doLast {
+		copy {
+			from f_dir
+    		into "${buildDir}/libs/resources"
+			include '*models/**'
+			include 'textures/**'
+		}
+
+		copy{
+			from f_dir
+			into "${projectDir}/resources"
+		}
+	}
 }
 
-task copyEResources(type: Copy) {
-    from "${projectDir}/src/main/resources"
-    into "${projectDir}/resources"
+shadowJar{
+	exclude 'models/**'
+	exclude '/textures/**'
+}
+
+task removeOutResources(type: Delete) {
+  delete 'resources'
 }
 
 build.dependsOn loadProperties
-classes.dependsOn copyGResources
-classes.dependsOn copyEResources
+classes.dependsOn copyResources
+eclipseClasspath.dependsOn copyResources
+clean.dependsOn removeOutResources
 
 String getProjectProperty(String propertyName) {
 	project.hasProperty(propertyName) ? project.property(propertyName) : null

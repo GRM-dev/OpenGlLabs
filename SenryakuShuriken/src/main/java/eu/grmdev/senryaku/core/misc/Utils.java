@@ -21,27 +21,30 @@ public class Utils {
 	
 	public static String loadResourceContent(String fileName) throws Exception {
 		String result;
-		try (InputStream in = Utils.class.getClass().getResourceAsStream(fileName); Scanner scanner = new Scanner(in, "UTF-8")) {
+		try (InputStream in = loadResourceAsStream(fileName); Scanner scanner = new Scanner(in, "UTF-8")) {
 			result = scanner.useDelimiter("\\A").next();
 		}
 		return result;
 	}
 	
+	public static String loadResourcePath(String fileName, boolean innerResource) {
+		if (innerResource) {
+			return Utils.class.getResource(fileName).getFile();
+		} else {
+			return "./resources" + (fileName.startsWith("/") ? "" : "/") + fileName;
+		}
+	}
+	
 	public static File getFile(String fileName) throws MalformedURLException {
-		// return
-		// Thread.currentThread().getContextClassLoader().getResource(fileName);
-		String path = fileName.startsWith("./resources") ? fileName : loadResourcePath(fileName);
+		String path = fileName.startsWith("./resources") ? fileName : loadResourcePath(fileName, false);
 		return new File(path);
 	}
 	
-	public static String loadResourcePath(String fileName) {
-		return "./resources" + (fileName.startsWith("/") ? "" : "/") + fileName;
-	}
-	
-	public static String loadFullResourcePath(String filename) {
-		File f = new File(loadResourcePath(filename));
+	public static String loadFullResourcePath(String filename, boolean innerResource) {
+		File f = new File(loadResourcePath(filename, innerResource));
 		if (!f.exists()) {
-			System.out.println("");
+			System.out.println("!!!!!!!!! No File: " + filename + "  -> inner: " + innerResource);
+			return null;
 		}
 		return f.getPath();
 	}
@@ -51,6 +54,9 @@ public class Utils {
 	}
 	
 	public static AIScene loadAssimpObject(String filename, int flags) throws Exception {
+		System.out.println(" /===== Mesh: =====\\");
+		System.out.println(filename);
+		System.out.println("  \\----------/");
 		File f = getFile(filename);
 		if (f == null || !f.exists()) { throw new IOException("Model file not exists: " + filename); }
 		AIScene aiScene = aiImportFile(f.getAbsolutePath(), flags);
@@ -70,7 +76,7 @@ public class Utils {
 		}
 	}
 	
-	public static List<String> readAllLines(String fileName) throws Exception {
+	public static List<String> readAllLines(String fileName) throws IOException {
 		List<String> list = new ArrayList<>();
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(Utils.class.getClass().getResourceAsStream(fileName)))) {
 			String line;
@@ -106,9 +112,13 @@ public class Utils {
 		return result;
 	}
 	
-	public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
-		resource = loadFullResourcePath(resource);
-		
+	public static ByteBuffer ioResourceToByteBuffer(String resource, boolean innerResource, int bufferSize) throws IOException {
+		if (!innerResource) {
+			resource = loadFullResourcePath(resource, false);
+		}
+		System.out.println(" /===== Texture: =====\\");
+		System.out.println(resource);
+		System.out.println("    \\==========/");
 		ByteBuffer buffer;
 		Path path = Paths.get(resource);
 		if (Files.isReadable(path)) {
