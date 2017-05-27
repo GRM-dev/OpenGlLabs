@@ -49,13 +49,14 @@ public class Hud {
 	public void render() {
 		nvgBeginFrame(nvg, window.getWidth(), window.getHeight(), 1);
 		
-		drawRectangle(0, 0, window.getWidth(), 50, rgba(0x23, 0xa1, 0xff, 200, color));
-		drawRectangle(0, 50, window.getWidth(), 10, rgba(0xc1, 0xe3, 0xf9, 200, color));
-		drawRectangle(0, window.getHeight() - 80, window.getWidth(), 80, rgba(0x23, 0xa1, 0xff, 200, color));
-		drawRectangle(0, window.getHeight() - 100, window.getWidth(), 20, rgba(0xc1, 0xe3, 0xf9, 200, color));
+		drawRectangle(0, 0, window.getWidth(), 45, rgba(0xb3, 0x40, 0x19, 200, color));
+		drawRectangle(0, 45, window.getWidth(), 10, rgba(0x5f, 0x16, 0x07, 200, color));
+		drawRectangle(0, window.getHeight() - 80, window.getWidth(), 20, rgba(0x5f, 0x16, 0x07, 200, color));
+		drawRectangle(0, window.getHeight() - 60, window.getWidth(), 60, rgba(0xb3, 0x40, 0x19, 200, color));
 		
 		glfwGetCursorPos(window.getWindowHandle(), posx, posy);
 		
+		renderMenuButton();
 		renderScore();
 		renderClock();
 		
@@ -67,40 +68,47 @@ public class Hud {
 		window.restoreState();
 	}
 	
+	private void renderMenuButton() {
+		float x = 12;
+		float y = 11;
+		float w = 60;
+		float h = 28;
+		float r = 5;
+		int mx = (int) posx.get(0);
+		int my = (int) posy.get(0);
+		
+		nvgBeginPath(nvg);
+		nvgRoundedRect(nvg, x, y, w, h, r);
+		nvgFillColor(nvg, rgba(0x99, 0x78, 0x5f, 200, color));
+		nvgFill(nvg);
+		
+		boolean hover = mx > x && mx < x + w && my > y && my < y + h;
+		if (hover) {
+			nvgFillColor(nvg, rgba(0x00, 0x00, 0x00, 0xff, color));
+		} else {
+			nvgFillColor(nvg, rgba(0x23, 0xa1, 0xf1, 0xff, color));
+		}
+		renderText("Menu", x + 30, 12, 25.0f, Config.FONT_NAME, NVG_ALIGN_CENTER | NVG_ALIGN_TOP, color);
+	}
+	
+	private void renderScore() {
+		int xcenter = 150;
+		int ycenter = 23;
+		
+		nvgBeginPath(nvg);
+		nvgFillColor(nvg, rgba(0xe6, 0xea, 0xed, 0xff, color));
+		renderText("Moves: " + String.format("%02d", counter), xcenter, ycenter - 10, 30.0f, Config.FONT_NAME, NVG_ALIGN_CENTER | NVG_ALIGN_TOP, color);
+	}
+	
+	private void renderClock() {
+		renderText(dateFormat.format(new Date()), window.getWidth() - 150, 5, 40.0f, Config.FONT_NAME, NVG_ALIGN_LEFT | NVG_ALIGN_TOP, rgba(0xe6, 0xea, 0xed, 255, color));
+	}
+	
 	private void drawRectangle(int x, int y, int width, int height, NVGColor color) {
 		nvgBeginPath(nvg);
 		nvgRect(nvg, x, y, width, height);
 		nvgFillColor(nvg, color);
 		nvgFill(nvg);
-	}
-	
-	private void renderScore() {
-		int xcenter = 50;
-		int ycenter = 30;
-		int radius = 17;
-		int x = (int) posx.get(0);
-		int y = (int) posy.get(0);
-		
-		nvgBeginPath(nvg);
-		nvgCircle(nvg, xcenter, ycenter, radius);
-		nvgFillColor(nvg, rgba(0xc1, 0xe3, 0xf9, 200, color));
-		nvgFill(nvg);
-		
-		nvgFontSize(nvg, 25.0f);
-		nvgFontFace(nvg, Config.FONT_NAME);
-		nvgTextAlign(nvg, NVG_ALIGN_CENTER | NVG_ALIGN_TOP);
-		
-		boolean hover = Math.pow(x - xcenter, 2) + Math.pow(y - ycenter, 2) < Math.pow(radius, 2);
-		if (hover) {
-			nvgFillColor(nvg, rgba(0x00, 0x00, 0x00, 255, color));
-		} else {
-			nvgFillColor(nvg, rgba(0x23, 0xa1, 0xf1, 255, color));
-		}
-		nvgText(nvg, 50, 17, String.format("%02d", counter));
-	}
-	
-	private void renderClock() {
-		renderText(dateFormat.format(new Date()), window.getWidth() - 150, 5, 40.0f, Config.FONT_NAME, NVG_ALIGN_LEFT | NVG_ALIGN_TOP, rgba(0xe6, 0xea, 0xed, 255, color));
 	}
 	
 	private void renderText(String text, float x, float y, float size, String font, int alignment, NVGColor color) {
@@ -122,9 +130,8 @@ public class Hud {
 	}
 	
 	public void incCounter() {
-		counter++;
-		if (counter > 99) {
-			counter = 0;
+		if (counter < 99) {
+			counter++;
 		}
 	}
 	

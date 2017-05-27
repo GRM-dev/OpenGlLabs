@@ -43,14 +43,14 @@ public class Player extends Entity {
 				if (event.getCreationTime() - (lastFired + cooldown) > 0) {
 					lastFired = event.getCreationTime();
 					int key = event.getKey();
-					if (key == GLFW_KEY_W && canMoveTo(0, -1)) {
+					if (key == GLFW_KEY_W && canMove(0, -1)) {
 						move(0, -1);
-					} else if (key == GLFW_KEY_S && canMoveTo(0, 1)) {
+					} else if (key == GLFW_KEY_S && canMove(0, 1)) {
 						move(0, 1);
 					}
-					if (key == GLFW_KEY_A && canMoveTo(-1, 0)) {
+					if (key == GLFW_KEY_A && canMove(-1, 0)) {
 						move(-1, 0);
-					} else if (key == GLFW_KEY_D && canMoveTo(1, 0)) {
+					} else if (key == GLFW_KEY_D && canMove(1, 0)) {
 						move(1, 0);
 					}
 				}
@@ -58,7 +58,7 @@ public class Player extends Entity {
 		});
 	}
 	
-	protected boolean canMoveTo(int rx, int rz) {
+	protected boolean canMove(int rx, int rz) {
 		GameMap map = levelManager.getCurrentMap();
 		float x = (float) Math.floor(tAnimation.getDestPosition().x + rx);
 		float z = (float) Math.floor(tAnimation.getDestPosition().z + rz);
@@ -69,6 +69,7 @@ public class Player extends Entity {
 		tAnimation.move(rx, rz);
 		checkCollsions(tAnimation.getDestPosition());
 		checkEnd(tAnimation.getDestPosition());
+		hud.incCounter();
 	}
 	
 	private void checkCollsions(Vector3f pos) {
