@@ -12,6 +12,7 @@ public class Entity {
 	private @Getter @Setter boolean selected;
 	protected @Getter @Setter Mesh[] meshes;
 	protected @Getter final Vector3f position;
+	protected @Getter final Vector3f renderOffset;
 	protected @Getter @Setter float scale;
 	private @Getter final Quaternionf rotation;
 	private @Getter @Setter int textPos;
@@ -22,12 +23,13 @@ public class Entity {
 	public Entity() {
 		selected = false;
 		position = new Vector3f(0, 0, 0);
-		scale = 1;
+		renderOffset = new Vector3f(0, 0, 0);
 		rotation = new Quaternionf();
+		tAnimation = new TranslateAnimation(position);
+		scale = 1;
 		textPos = 0;
 		insideFrustum = true;
 		disableFrustumCulling = false;
-		tAnimation = new TranslateAnimation(position);
 	}
 	
 	public Entity(Mesh mesh) {

@@ -74,7 +74,7 @@ public class Game implements IGame {
 	
 	private Entity[] setupStartEntities() throws Exception {
 		List<Entity> entities = new ArrayList<>();
-		player = new Player(camera, levelManager);
+		player = new Player(camera, levelManager, hud);
 		entities.add(player);
 		
 		// String fileName =
@@ -204,7 +204,7 @@ public class Game implements IGame {
 	@Override
 	public void render(Window window) {
 		renderer.render(window, camera, scene, levelManager);
-		hud.render(window);
+		hud.render();
 	}
 	
 	/**

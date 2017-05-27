@@ -56,7 +56,7 @@ public class Utils {
 	public static AIScene loadAssimpObject(String filename, int flags) throws Exception {
 		System.out.println(" /===== Mesh: =====\\");
 		System.out.println(filename);
-		System.out.println("  \\----------/");
+		System.out.println("  \\-------------/");
 		File f = getFile(filename);
 		if (f == null || !f.exists()) { throw new IOException("Model file not exists: " + filename); }
 		AIScene aiScene = aiImportFile(f.getAbsolutePath(), flags);
@@ -118,7 +118,7 @@ public class Utils {
 		}
 		System.out.println(" /===== Texture: =====\\");
 		System.out.println(resource);
-		System.out.println("    \\==========/");
+		System.out.println("      \\==========/");
 		ByteBuffer buffer;
 		Path path = Paths.get(resource);
 		if (Files.isReadable(path)) {
@@ -155,7 +155,6 @@ public class Utils {
 	
 	public static <T> T[][] transpose(final T[][] array) {
 		Objects.requireNonNull(array);
-		// get y count
 		final int yCount = Arrays.stream(array).mapToInt(a -> a.length).max().orElse(0);
 		final int xCount = array.length;
 		final Class<?> componentType = array.getClass().getComponentType().getComponentType();

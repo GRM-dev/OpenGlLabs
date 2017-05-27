@@ -17,6 +17,8 @@ import org.lwjgl.system.MemoryUtil;
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.Window;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Hud {
 	private long nvg;
@@ -26,8 +28,11 @@ public class Hud {
 	private DoubleBuffer posx;
 	private DoubleBuffer posy;
 	private int counter;
+	private Window window;
+	private @Setter @Getter boolean showEndLevelScreen;
 	
 	public void init(Window window) throws Exception {
+		this.window = window;
 		this.nvg = window.getWindowOptions().antialiasing ? nvgCreate(NVG_ANTIALIAS | NVG_STENCIL_STROKES) : nvgCreate(NVG_STENCIL_STROKES);
 		if (this.nvg == NULL) { throw new Exception("Cannot init nanovg"); }
 		
@@ -41,31 +46,35 @@ public class Hud {
 		counter = 0;
 	}
 	
-	public void render(Window window) {
+	public void render() {
 		nvgBeginFrame(nvg, window.getWidth(), window.getHeight(), 1);
 		
-		drawRectangular(window, 0, 0, window.getWidth(), 50, rgba(0x23, 0xa1, 0xff, 200, color));
-		drawRectangular(window, 0, 50, window.getWidth(), 10, rgba(0xc1, 0xe3, 0xf9, 200, color));
-		drawRectangular(window, 0, window.getHeight() - 80, window.getWidth(), 80, rgba(0x23, 0xa1, 0xff, 200, color));
-		drawRectangular(window, 0, window.getHeight() - 100, window.getWidth(), 20, rgba(0xc1, 0xe3, 0xf9, 200, color));
+		drawRectangle(0, 0, window.getWidth(), 50, rgba(0x23, 0xa1, 0xff, 200, color));
+		drawRectangle(0, 50, window.getWidth(), 10, rgba(0xc1, 0xe3, 0xf9, 200, color));
+		drawRectangle(0, window.getHeight() - 80, window.getWidth(), 80, rgba(0x23, 0xa1, 0xff, 200, color));
+		drawRectangle(0, window.getHeight() - 100, window.getWidth(), 20, rgba(0xc1, 0xe3, 0xf9, 200, color));
 		
 		glfwGetCursorPos(window.getWindowHandle(), posx, posy);
 		
-		renderScore(window);
-		renderClock(window);
+		renderScore();
+		renderClock();
+		
+		if (showEndLevelScreen) {
+			renderEndLevelScreen();
+		}
 		
 		nvgEndFrame(nvg);
 		window.restoreState();
 	}
 	
-	private void drawRectangular(Window window, int x, int y, int width, int height, NVGColor color) {
+	private void drawRectangle(int x, int y, int width, int height, NVGColor color) {
 		nvgBeginPath(nvg);
 		nvgRect(nvg, x, y, width, height);
 		nvgFillColor(nvg, color);
 		nvgFill(nvg);
 	}
 	
-	private void renderScore(Window window) {
+	private void renderScore() {
 		int xcenter = 50;
 		int ycenter = 30;
 		int radius = 17;
@@ -90,12 +99,26 @@ public class Hud {
 		nvgText(nvg, 50, 17, String.format("%02d", counter));
 	}
 	
-	private void renderClock(Window window) {
-		nvgFontSize(nvg, 40.0f);
-		nvgFontFace(nvg, Config.FONT_NAME);
-		nvgTextAlign(nvg, NVG_ALIGN_LEFT | NVG_ALIGN_TOP);
-		nvgFillColor(nvg, rgba(0xe6, 0xea, 0xed, 255, color));
-		nvgText(nvg, window.getWidth() - 150, 5, dateFormat.format(new Date()));
+	private void renderClock() {
+		renderText(dateFormat.format(new Date()), window.getWidth() - 150, 5, 40.0f, Config.FONT_NAME, NVG_ALIGN_LEFT | NVG_ALIGN_TOP, rgba(0xe6, 0xea, 0xed, 255, color));
+	}
+	
+	private void renderText(String text, float x, float y, float size, String font, int alignment, NVGColor color) {
+		nvgFontSize(nvg, size);
+		nvgFontFace(nvg, font);
+		nvgTextAlign(nvg, alignment);
+		nvgFillColor(nvg, color);
+		nvgText(nvg, x, y, text);
+	}
+	
+	private void renderEndLevelScreen() {
+		int cx = window.getWidth() / 2;
+		int cy = window.getHeight() / 2;
+		int sx = 500;
+		int sy = 300;
+		drawRectangle(cx - sx / 2 - 10, cy - sy / 2 - 10, sx + 20, sy + 20, rgba(0x23, 0xa1, 0xff, 200, color));
+		drawRectangle(cx - sx / 2, cy - sy / 2, sx, sy, rgba(0xc1, 0xe3, 0xf9, 200, color));
+		renderText("Level Complete!", cx - sx / 3, cy - sy / 3, 60f, Config.FONT_NAME, NVG_ALIGN_LEFT | NVG_ALIGN_TOP, rgba(0xe6, 0xea, 0xed, 255, color));
 	}
 	
 	public void incCounter() {

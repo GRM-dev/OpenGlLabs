@@ -153,4 +153,10 @@ public class Terrain extends Entity {
 		if (x < 0 || z < 0 || x > terrainSize[0] || z > terrainSize[1]) { return null; }
 		return tiles[x][z];
 	}
+	
+	public Tile getTile(float x, float z) {
+		int xi = (int) Math.ceil(x);
+		int zi = (int) Math.ceil(z);
+		return getTile(xi, zi);
+	}
 }

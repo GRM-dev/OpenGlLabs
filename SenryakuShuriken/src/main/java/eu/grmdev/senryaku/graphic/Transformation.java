@@ -44,28 +44,31 @@ public class Transformation {
 		return ortho2DMatrix.setOrtho2D(left, right, bottom, top);
 	}
 	
-	public Matrix4f buildModelMatrix(Entity gameItem) {
-		Quaternionf rotation = gameItem.getRotation();
-		return modelMatrix.translationRotateScale(gameItem.getPosition().x, gameItem.getPosition().y, gameItem.getPosition().z, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.getScale(), gameItem.getScale(), gameItem.getScale());
+	public Matrix4f buildModelMatrix(Entity entity) {
+		Quaternionf rotation = entity.getRotation();
+		float tx = entity.getPosition().x + entity.getRenderOffset().x;
+		float ty = entity.getPosition().y + entity.getRenderOffset().y;
+		float tz = entity.getPosition().z + entity.getRenderOffset().z;
+		return modelMatrix.translationRotateScale(tx, ty, tz, rotation.x, rotation.y, rotation.z, rotation.w, entity.getScale(), entity.getScale(), entity.getScale());
 	}
 	
-	public Matrix4f buildModelViewMatrix(Entity gameItem, Matrix4f viewMatrix) {
-		return buildModelViewMatrix(buildModelMatrix(gameItem), viewMatrix);
+	public Matrix4f buildModelViewMatrix(Entity entity, Matrix4f viewMatrix) {
+		return buildModelViewMatrix(buildModelMatrix(entity), viewMatrix);
 	}
 	
 	public Matrix4f buildModelViewMatrix(Matrix4f modelMatrix, Matrix4f viewMatrix) {
 		return viewMatrix.mulAffine(modelMatrix, modelViewMatrix);
 	}
 	
-	public Matrix4f buildModelLightViewMatrix(Entity gameItem, Matrix4f lightViewMatrix) {
-		return buildModelViewMatrix(buildModelMatrix(gameItem), lightViewMatrix);
+	public Matrix4f buildModelLightViewMatrix(Entity entity, Matrix4f lightViewMatrix) {
+		return buildModelViewMatrix(buildModelMatrix(entity), lightViewMatrix);
 	}
 	
 	public Matrix4f buildModelLightViewMatrix(Matrix4f modelMatrix, Matrix4f lightViewMatrix) {
 		return lightViewMatrix.mulAffine(modelMatrix, modelLightViewMatrix);
 	}
 	
-	public Matrix4f buildOrthoProjModelMatrix(Entity gameItem, Matrix4f orthoMatrix) {
-		return orthoMatrix.mulOrthoAffine(buildModelMatrix(gameItem), orthoModelMatrix);
+	public Matrix4f buildOrthoProjModelMatrix(Entity entity, Matrix4f orthoMatrix) {
+		return orthoMatrix.mulOrthoAffine(buildModelMatrix(entity), orthoModelMatrix);
 	}
 }

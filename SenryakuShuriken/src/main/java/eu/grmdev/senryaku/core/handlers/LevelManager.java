@@ -28,7 +28,7 @@ public class LevelManager {
 		}
 		if (player != null) {
 			Vector2i startPos = currentMap.getStartPos();
-			player.setPosition(startPos.x, player.getPosition().y, startPos.y);
+			player.setPosition(startPos.x, Player.PLAYER_DEF_Y_POS, startPos.y);
 		}
 	}
 }

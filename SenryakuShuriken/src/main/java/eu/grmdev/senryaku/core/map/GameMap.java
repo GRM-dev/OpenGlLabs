@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.joml.Vector2i;
+import org.joml.Vector3f;
 
 import eu.grmdev.senryaku.core.misc.Utils;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class GameMap {
 	private @Getter Vector2i endPos;
 	private @Getter boolean initialized;
 	private String backgroundTextureFile;
+	private boolean finished;
 	
 	public GameMap(int level) throws Exception {
 		this.level = level;
@@ -76,5 +78,20 @@ public class GameMap {
 	public void init() throws Exception {
 		terrain.init();
 		initialized = true;
+	}
+	
+	public boolean canMoveTo(float x, float playerDefYPos, float z) {
+		if (finished) { return false; }
+		Tile tile = getTerrain().getTile(x, z);
+		if (tile == null) { return false; }
+		return tile.isPassable();
+	}
+	
+	public synchronized boolean checkEnd(Vector3f pos) {
+		if (endPos.x == pos.x && endPos.y == pos.z && !finished) {
+			System.out.println("Finished");
+			finished = true;
+		}
+		return finished;
 	}
 }
