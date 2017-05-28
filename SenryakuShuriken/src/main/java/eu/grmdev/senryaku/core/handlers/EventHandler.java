@@ -10,7 +10,8 @@ import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
 import eu.grmdev.senryaku.core.events.listeners.KeyEventListener;
 
 public class EventHandler {
-	private List<KeyEventListener> keyEventsListeners = new LinkedList<>();
+	private List<KeyEventListener> keyPressedEventsListeners = new LinkedList<>();
+	private List<KeyEventListener> keyReleasedEventsListeners = new LinkedList<>();
 	private List<KeyEventListener> hudKeyEventsListeners = new LinkedList<>();
 	private List<GameEventListener> tickGameEventsListeners = new LinkedList<>();
 	private List<GameEventListener> cycleGameEventsListeners = new LinkedList<>();
@@ -21,9 +22,24 @@ public class EventHandler {
 	}
 	
 	public synchronized void dispatchKeyEvent(KeyEvent event) {
-		if (!game.isPaused() && !keyEventsListeners.isEmpty()) {
-			for (KeyEventListener gEl : keyEventsListeners) {
-				gEl.actionPerformed(event);
+		if (!game.isPaused()) {
+			if (event.getKeyType() == KeyEvent.PRESSED && !keyPressedEventsListeners.isEmpty()) {
+				for (KeyEventListener gEl : keyPressedEventsListeners) {
+					gEl.actionPerformed(event);
+					event.dispatch();
+					if (event.isRemove()) {
+						break;
+					}
+					
+				}
+			} else if (!keyReleasedEventsListeners.isEmpty()) {
+				for (KeyEventListener gEl : keyReleasedEventsListeners) {
+					gEl.actionPerformed(event);
+					event.dispatch();
+					if (event.isRemove()) {
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -32,6 +48,10 @@ public class EventHandler {
 		if (game.isPaused() && !hudKeyEventsListeners.isEmpty()) {
 			for (KeyEventListener gEl : hudKeyEventsListeners) {
 				gEl.actionPerformed(event);
+				event.dispatch();
+				if (event.isRemove()) {
+					break;
+				}
 			}
 		}
 	}
@@ -40,7 +60,10 @@ public class EventHandler {
 		if (!tickGameEventsListeners.isEmpty()) {
 			for (GameEventListener gEl : tickGameEventsListeners) {
 				gEl.actionPerformed(event);
-				event.dispatch(gEl);
+				event.dispatch();
+				if (event.isRemove()) {
+					break;
+				}
 			}
 		}
 	}
@@ -49,14 +72,21 @@ public class EventHandler {
 		if (!cycleGameEventsListeners.isEmpty()) {
 			for (GameEventListener gEl : cycleGameEventsListeners) {
 				gEl.actionPerformed(event);
-				event.dispatch(gEl);
+				event.dispatch();
+				if (event.isRemove()) {
+					break;
+				}
 			}
 		}
 	}
 	
-	public void addKeyEventListener(KeyEventListener listener) {
-		if (!keyEventsListeners.contains(listener)) {
-			keyEventsListeners.add(listener);
+	public void addKeyEventListener(KeyEventListener listener, byte switchType) {
+		if (switchType == KeyEvent.PRESSED) {
+			if (!keyPressedEventsListeners.contains(listener)) {
+				keyPressedEventsListeners.add(listener);
+			}
+		} else if (!keyReleasedEventsListeners.contains(listener)) {
+			keyReleasedEventsListeners.add(listener);
 		}
 	}
 	

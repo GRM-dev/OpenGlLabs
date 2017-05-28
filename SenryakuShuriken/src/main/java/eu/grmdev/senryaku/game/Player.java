@@ -56,7 +56,7 @@ public class Player extends Entity {
 					}
 				}
 			}
-		});
+		}, KeyEvent.PRESSED);
 	}
 	
 	protected boolean canMove(int rx, int rz) {

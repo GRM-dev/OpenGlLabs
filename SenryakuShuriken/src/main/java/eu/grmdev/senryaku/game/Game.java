@@ -9,10 +9,10 @@ import java.util.List;
 import org.joml.*;
 
 import eu.grmdev.senryaku.Config;
-import eu.grmdev.senryaku.Main;
 import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
+import eu.grmdev.senryaku.core.events.KeyEvent;
 import eu.grmdev.senryaku.core.handlers.*;
 import eu.grmdev.senryaku.game.hud.Hud;
 import eu.grmdev.senryaku.graphic.*;
@@ -132,12 +132,11 @@ public class Game implements IGame {
 	
 	private void assignGlobalListeners(EventHandler eHandler) {
 		eHandler.addKeyEventListener(event -> {
-			{
-				if (event.getKey() == GLFW_KEY_ESCAPE) {
-					Main.closeApp();
-				}
+			if (event.getKey() == GLFW_KEY_ESCAPE) {
+				hud.setMenuActive(true);
+				event.setConsumed(true);
 			}
-		});
+		}, KeyEvent.RELEASED);
 		eHandler.addTickGameEventListener(event -> {
 			Window window = event.getWindow();
 			if (window.isKeyPressed(GLFW_KEY_PAGE_UP)) {

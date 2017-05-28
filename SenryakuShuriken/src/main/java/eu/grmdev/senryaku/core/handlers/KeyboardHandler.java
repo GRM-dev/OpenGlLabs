@@ -28,7 +28,7 @@ public class KeyboardHandler extends GLFWKeyCallback {
 		keys[key] = isDown;
 		if (isDown) {
 			if (!wasDown) {
-				KeyEvent event = new KeyEvent(key, action);
+				KeyEvent event = new KeyEvent(key, action, KeyEvent.PRESSED);
 				eHandler.dispatchKeyEvent(event);
 				synchronized (pressedKeys) {
 					pressedKeys.add(key);
@@ -38,8 +38,11 @@ public class KeyboardHandler extends GLFWKeyCallback {
 			if (wasDown) {
 				synchronized (pressedKeys) {
 					pressedKeys.remove(new Integer(key));
-					KeyEvent event = new KeyEvent(key, action);
-					eHandler.dispatchHudKeyEvent(event);
+					KeyEvent event = new KeyEvent(key, action, KeyEvent.RELEASED);
+					eHandler.dispatchKeyEvent(event);
+					if (!event.isRemove()) {
+						eHandler.dispatchHudKeyEvent(event);
+					}
 				}
 			}
 		}
@@ -59,8 +62,11 @@ public class KeyboardHandler extends GLFWKeyCallback {
 		synchronized (pressedKeys) {
 			if (!pressedKeys.isEmpty()) {
 				for (int key : pressedKeys) {
-					KeyEvent event = new KeyEvent(key, GLFW_REPEAT, true);
+					KeyEvent event = new KeyEvent(key, GLFW_REPEAT, true, KeyEvent.PRESSED);
 					eHandler.dispatchKeyEvent(event);
+					if (event.isRemove()) {
+						continue;
+					}
 					eHandler.dispatchHudKeyEvent(event);
 				}
 			}

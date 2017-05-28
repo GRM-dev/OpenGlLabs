@@ -28,7 +28,7 @@ public class Hud {
 	private @Getter MouseHandler mouseHandler;
 	private @Getter EventHandler eventHandler;
 	private @Setter @Getter boolean showEndLevelScreen;
-	private @Getter boolean menuActive;
+	private @Getter @Setter boolean menuActive;
 	private ByteBuffer fontBuffer;
 	private NVGColor color;
 	private int counter = 0;
@@ -62,6 +62,7 @@ public class Hud {
 				case GLFW_KEY_ESCAPE :
 					if (menuActive) {
 						menuActive = false;
+						event.setConsumed(true);
 					}
 					break;
 			}
@@ -157,5 +158,6 @@ public class Hud {
 		if (nvg != 0) {
 			nvgDelete(nvg);
 		}
+		menuActive = false;
 	}
 }
