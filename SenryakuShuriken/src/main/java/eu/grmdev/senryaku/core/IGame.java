@@ -19,9 +19,10 @@ public interface IGame {
 	 * {@link #initRender(Window)}
 	 * 
 	 * @param eh
+	 * @param mouseHandler
 	 * @throws Exception
 	 */
-	void initLogic(EventHandler eh) throws Exception;
+	void initLogic(EventHandler eh, MouseHandler mHandler) throws Exception;
 	
 	void input(Window window, MouseHandler mouseInput);
 	
@@ -32,4 +33,6 @@ public interface IGame {
 	Entity getPlayer();
 	
 	void destroy();
+	
+	boolean isPaused();
 }

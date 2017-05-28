@@ -14,6 +14,7 @@ import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
 import eu.grmdev.senryaku.core.handlers.*;
+import eu.grmdev.senryaku.game.hud.Hud;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
@@ -59,17 +60,18 @@ public class Game implements IGame {
 		setupWorld();
 		setupLights();
 		setupCameraParams();
-		setupHUD(window);
+		hud.initRender(window);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLogic(EventHandler eh) throws Exception {
+	public void initLogic(EventHandler eh, MouseHandler mh) throws Exception {
 		assignGlobalListeners(eh);
 		player.init(eh);
 		levelManager.goTo(1);
+		hud.initLogic(eh, mh);
 	}
 	
 	private Entity[] setupStartEntities() throws Exception {
@@ -128,10 +130,6 @@ public class Game implements IGame {
 		
 	}
 	
-	private void setupHUD(Window window) throws Exception {
-		hud.init(window);
-	}
-	
 	private void assignGlobalListeners(EventHandler eHandler) {
 		eHandler.addKeyEventListener(event -> {
 			{
@@ -159,20 +157,14 @@ public class Game implements IGame {
 	
 	@Override
 	public void input(Window window, MouseHandler mouseInput) {
-		// if (window.isKeyPressed(GLFW_KEY_W)) {
-		// sceneChanged = true;
-		// cameraInc.z -= 0.1;
-		// } else if (window.isKeyPressed(GLFW_KEY_S)) {
-		// sceneChanged = true;
-		// cameraInc.z += 0.1;
-		// }
-		// if (window.isKeyPressed(GLFW_KEY_A)) {
-		// sceneChanged = true;
-		// cameraInc.x -= 0.1;
-		// } else if (window.isKeyPressed(GLFW_KEY_D)) {
-		// sceneChanged = true;
-		// cameraInc.x += 0.1;
-		// }
+		while (isPaused()) {
+			try {
+				Thread.sleep(10);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@Override
@@ -220,5 +212,10 @@ public class Game implements IGame {
 	@Override
 	public Entity getPlayer() {
 		return player;
+	}
+	
+	@Override
+	public boolean isPaused() {
+		return hud.isMenuActive();
 	}
 }

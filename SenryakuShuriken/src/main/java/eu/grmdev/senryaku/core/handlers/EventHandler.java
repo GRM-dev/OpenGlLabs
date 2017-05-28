@@ -3,6 +3,7 @@ package eu.grmdev.senryaku.core.handlers;
 import java.util.LinkedList;
 import java.util.List;
 
+import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.events.GameEvent;
 import eu.grmdev.senryaku.core.events.KeyEvent;
 import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
@@ -10,12 +11,26 @@ import eu.grmdev.senryaku.core.events.listeners.KeyEventListener;
 
 public class EventHandler {
 	private List<KeyEventListener> keyEventsListeners = new LinkedList<>();
+	private List<KeyEventListener> hudKeyEventsListeners = new LinkedList<>();
 	private List<GameEventListener> tickGameEventsListeners = new LinkedList<>();
 	private List<GameEventListener> cycleGameEventsListeners = new LinkedList<>();
+	private IGame game;
+	
+	public EventHandler(IGame game) {
+		this.game = game;
+	}
 	
 	public synchronized void dispatchKeyEvent(KeyEvent event) {
-		if (!keyEventsListeners.isEmpty()) {
+		if (!game.isPaused() && !keyEventsListeners.isEmpty()) {
 			for (KeyEventListener gEl : keyEventsListeners) {
+				gEl.actionPerformed(event);
+			}
+		}
+	}
+	
+	public synchronized void dispatchHudKeyEvent(KeyEvent event) {
+		if (game.isPaused() && !hudKeyEventsListeners.isEmpty()) {
+			for (KeyEventListener gEl : hudKeyEventsListeners) {
 				gEl.actionPerformed(event);
 			}
 		}
@@ -42,6 +57,12 @@ public class EventHandler {
 	public void addKeyEventListener(KeyEventListener listener) {
 		if (!keyEventsListeners.contains(listener)) {
 			keyEventsListeners.add(listener);
+		}
+	}
+	
+	public void addHudKeyEventListener(KeyEventListener listener) {
+		if (!hudKeyEventsListeners.contains(listener)) {
+			hudKeyEventsListeners.add(listener);
 		}
 	}
 	

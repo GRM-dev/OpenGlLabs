@@ -30,7 +30,7 @@ public class LogicThread extends Thread {
 		this.window = window;
 		setName("GAME_LOGIC_LOOP_THREAD");
 		mouseHandler = new MouseHandler();
-		eHandler = new EventHandler();
+		eHandler = new EventHandler(game);
 		keyHandler = new KeyboardHandler(eHandler);
 	}
 	
@@ -52,7 +52,7 @@ public class LogicThread extends Thread {
 			}
 		}
 		try {
-			game.initLogic(eHandler);
+			game.initLogic(eHandler, mouseHandler);
 			tickLoopEvent = new GameEvent(window) {};
 			cycleLoopEvent = new GameEvent(window) {};
 			eHandler.addCycleGameEventListener(event -> {

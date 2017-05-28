@@ -11,6 +11,7 @@ import eu.grmdev.senryaku.core.handlers.EventHandler;
 import eu.grmdev.senryaku.core.handlers.LevelManager;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.core.map.GameMap;
+import eu.grmdev.senryaku.game.hud.Hud;
 import eu.grmdev.senryaku.graphic.Camera;
 import eu.grmdev.senryaku.graphic.Mesh;
 
