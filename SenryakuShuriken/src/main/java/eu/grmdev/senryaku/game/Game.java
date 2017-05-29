@@ -14,6 +14,7 @@ import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
 import eu.grmdev.senryaku.core.events.KeyEvent;
 import eu.grmdev.senryaku.core.handlers.*;
+import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.game.hud.Hud;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
@@ -70,8 +71,8 @@ public class Game implements IGame {
 	public void initLogic(EventHandler eh, MouseHandler mh) throws Exception {
 		assignGlobalListeners(eh);
 		player.init(eh);
-		levelManager.goTo(1);
 		hud.initLogic(eh, mh);
+		levelManager.goTo(1);
 	}
 	
 	private Entity[] setupStartEntities() throws Exception {
@@ -79,13 +80,10 @@ public class Game implements IGame {
 		player = new Player(camera, levelManager, hud);
 		entities.add(player);
 		
-		// String fileName =
-		// Utils.loadResourceURL("models/cube/cube.obj").getFile();
-		// File file = new File(fileName);
-		// Mesh[] houseMesh = StaticMeshesLoader.load(file.getAbsolutePath(),
-		// "/models/cube");
-		// Entity cube = new Entity(houseMesh);
-		// entities.add(cube);
+		Mesh[] mesh = StaticMeshesLoader.load("models/entities/portal.obj", "/models/entities");
+		Entity portal = new Entity(mesh, 0.05f);
+		levelManager.setPortal(portal);
+		entities.add(portal);
 		
 		return entities.toArray(new Entity[0]);
 	}

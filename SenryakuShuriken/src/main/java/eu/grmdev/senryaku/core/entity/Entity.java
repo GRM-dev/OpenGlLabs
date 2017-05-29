@@ -42,7 +42,13 @@ public class Entity {
 		this.meshes = meshes;
 	}
 	
+	public Entity(Mesh[] meshes, float scale) {
+		this(meshes);
+		this.scale = scale;
+	}
+	
 	public final void setPosition(float x, float y, float z) {
+		tAnimation.reset();
 		this.position.x = x;
 		this.position.y = y;
 		this.position.z = z;

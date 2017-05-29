@@ -30,7 +30,6 @@ public class EventHandler {
 					if (event.isRemove()) {
 						break;
 					}
-					
 				}
 			} else if (!keyReleasedEventsListeners.isEmpty()) {
 				for (KeyEventListener gEl : keyReleasedEventsListeners) {

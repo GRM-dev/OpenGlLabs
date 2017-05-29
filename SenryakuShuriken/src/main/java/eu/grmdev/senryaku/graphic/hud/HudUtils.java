@@ -68,5 +68,4 @@ public class HudUtils {
 		renderText(nvg, text, x + 80, y + 10, size, Config.FONT_NAME, DEFAULT_ALIGNMENT, rgba(textColor, bgColor));
 		
 	}
-	
 }
