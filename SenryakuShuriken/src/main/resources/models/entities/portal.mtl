@@ -1,5 +1,5 @@
 # Blender MTL File: 'portal.blend'
-# Material Count: 4
+# Material Count: 5
 
 newmtl Material.002
 Ns 96.078431
@@ -21,6 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Kd tex\\TexturesCom_MetalGalvanized0020_S.jpg
 
 newmtl Material.004
 Ns 96.078431
@@ -33,10 +34,23 @@ d 1.000000
 illum 2
 map_Kd tex\metal003.jpg
 
-newmtl None
-Ns 0
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
+newmtl Material.005
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.258115 0.433037 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd tex\\TexturesCom_MetalBare0201_9_S.jpg
+
+newmtl Material.007
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.243134 0.279922 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.243134 0.279923 0.640000
+Ni 1.000000
+d 1.000000
 illum 2
