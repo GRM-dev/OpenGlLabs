@@ -10,7 +10,7 @@ public class Main {
 	private static IGame game;
 	private static FxGui gui;
 	private static boolean running;
-	private static boolean DEBUG = !false;
+	public static final boolean DEBUG = !false;
 	private static Config c;
 	
 	public static void main(String[] args) {

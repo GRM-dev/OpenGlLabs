@@ -48,11 +48,12 @@ public class Entity {
 	}
 	
 	public final void setPosition(float x, float y, float z) {
-		tAnimation.reset();
-		this.position.x = x;
-		this.position.y = y;
-		this.position.z = z;
-		tAnimation.reset();
+		synchronized (position) {
+			this.position.x = x;
+			this.position.y = y;
+			this.position.z = z;
+			tAnimation.reset();
+		}
 	}
 	
 	public final void setRotation(Quaternionf q) {

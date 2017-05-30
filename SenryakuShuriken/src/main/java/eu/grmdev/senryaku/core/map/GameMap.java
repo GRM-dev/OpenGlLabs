@@ -12,8 +12,8 @@ import lombok.Getter;
 
 public class GameMap {
 	private @Getter Terrain terrain;
-	private final int level;
-	private String title;
+	private final @Getter int level;
+	private @Getter String title;
 	private int columns;
 	private int rows;
 	private @Getter Vector2i startPos;
@@ -93,5 +93,9 @@ public class GameMap {
 			finished = true;
 		}
 		return finished;
+	}
+	
+	public void reset() {
+		finished = false;
 	}
 }

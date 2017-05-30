@@ -9,7 +9,7 @@ import org.lwjgl.nanovg.NVGColor;
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.events.GameEvent;
 import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
-import eu.grmdev.senryaku.game.hud.HudObj;
+import eu.grmdev.senryaku.game.hud.HudObjs;
 
 public class HudUtils {
 	public static final int LEFT_TOP_ALIGNMENT = NVG_ALIGN_LEFT | NVG_ALIGN_TOP;
@@ -50,7 +50,7 @@ public class HudUtils {
 		return pos.x > x && pos.x < x + w && pos.y > y && pos.y < y + h;
 	}
 	
-	public static boolean isHoveringOn(HudObj o, Vector2d currentPos) {
+	public static boolean isHoveringOn(HudObjs o, Vector2d currentPos) {
 		return isHoveringOn(o.getX(), o.getY(), o.getW(), o.getH(), currentPos);
 	}
 	
@@ -71,5 +71,13 @@ public class HudUtils {
 		drawRectangle(nvg, x, y, width, heigth, bgColor);
 		renderText(nvg, text, x + width / 2, y + heigth / 2, size, Config.FONT_NAME, textAlignment, rgba(textColor, bgColor));
 		
+	}
+	
+	public static NVGColor BUTTON_BG_COLOR(NVGColor color) {
+		return HudUtils.rgba(0x1f, 0x2c, 0x1c, 255, color);
+	}
+	
+	public static void fadeScreen(long nvg, int w, int h, NVGColor color) {
+		drawRectangle(nvg, 0, 0, w, h, HudUtils.rgba(0xCC, 0xCC, 0xCC, 0x55, color));
 	}
 }

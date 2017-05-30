@@ -23,10 +23,13 @@ public class MenuHud {
 		this.hud = hud;
 		this.nvg = hud.getNvg();
 		this.color = NVGColor.create();
-		resumeListener = event -> hud.setMenuActive(false);
+		resumeListener = event -> {
+			hud.setMenuActive(false);
+		};
 		restartListener = event -> {
 			LevelManager.getInstance().restartLevel();
 			resumeListener.actionPerformed(null);
+			hud.setShowEndLevelScreen(false);
 		};
 		exitListener = event -> Main.closeApp();
 	}
@@ -34,12 +37,12 @@ public class MenuHud {
 	public void render() {
 		int cx = hud.getWindow().getWidth() / 2;
 		int cy = hud.getWindow().getHeight() / 2;
-		int w = HudObj.MENU_WINDOW.getX();
-		int h = HudObj.MENU_WINDOW.getY();
+		int w = HudObjs.MENU_WINDOW.getX();
+		int h = HudObjs.MENU_WINDOW.getY();
 		int leftMargin = cx - w / 2;
 		int topMargin = cy - h / 2;
-		HudObj mcb = HudObj.MENU_CLOSE_BUTTON;
-		HudUtils.drawRectangle(nvg, 0, 0, hud.getWindow().getWidth(), hud.getWindow().getHeight(), HudUtils.rgba(0xCC, 0xCC, 0xCC, 0x55, color));
+		HudObjs mcb = HudObjs.MENU_MAIN_BUTTON;
+		HudUtils.fadeScreen(nvg, hud.getWindow().getWidth(), hud.getWindow().getHeight(), color);
 		renderMenuWindow(cx, cy, w, h, leftMargin, topMargin);
 		drawButtons(cx, cy, w, h, leftMargin, topMargin, mcb);
 	}
@@ -50,17 +53,14 @@ public class MenuHud {
 		HudUtils.renderText(nvg, "MENU", cx - 70, topMargin, 60f, Config.FONT_NAME, NVG_ALIGN_LEFT | NVG_ALIGN_TOP, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 	}
 	
-	private void drawButtons(int cx, int cy, int windowWidth, int windowHeight, int leftMargin, int topMargin, HudObj mcb) {
+	private void drawButtons(int cx, int cy, int windowWidth, int windowHeight, int leftMargin, int topMargin, HudObjs mcb) {
 		drawButton("Resume Game", cx - mcb.getX() / 2, topMargin + mcb.getY(), mcb.getX(), mcb.getY(), 45f, resumeListener);
 		drawButton("Restart Level", cx - mcb.getX() / 2, topMargin + mcb.getY() * 2 + 10, mcb.getX(), mcb.getY(), 45f, restartListener);
 		drawButton("Exit Game", cx - mcb.getX() / 2, topMargin + mcb.getY() * 3 + 20, mcb.getX(), mcb.getY(), 45f, exitListener);
 	}
 	
 	private void drawButton(String text, int x, int y, int w, int h, float size, GameEventListener action) {
-		HudUtils.drawButton(nvg, text, x, y, w, h, size, HudUtils.CENTER_MID_ALIGNMENT, new Vector4i(0xe6, 0xea, 0xed, 255), BUTTON_BG_COLOR(), action, hud.getMouseHandler().getCurrentPos(), hud.getMouseHandler().isLeftButtonPressed());
+		HudUtils.drawButton(nvg, text, x, y, w, h, size, HudUtils.CENTER_MID_ALIGNMENT, new Vector4i(0xe6, 0xea, 0xed, 255), HudUtils.BUTTON_BG_COLOR(color), action, hud.getMouseHandler().getCurrentPos(), hud.getMouseHandler().isLeftButtonPressed());
 	}
 	
-	private NVGColor BUTTON_BG_COLOR() {
-		return HudUtils.rgba(0x1f, 0x2c, 0x1c, 255, color);
-	}
 }

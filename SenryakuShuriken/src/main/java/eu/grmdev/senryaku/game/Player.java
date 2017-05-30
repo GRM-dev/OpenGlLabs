@@ -73,6 +73,13 @@ public class Player extends Entity {
 		levelManager.incCounter();
 	}
 	
+	public void animate(float interval) {
+		tAnimation.animate(interval);
+		camera.setPosition(tAnimation.getPosition().x, camera.getPosition().y, tAnimation.getPosition().z);
+		checkCollsions(tAnimation.getDestPosition());
+		checkEnd(tAnimation.getDestPosition());
+	}
+
 	private void checkCollsions(Vector3f pos) {
 		// TODO Auto-generated method stub
 		
@@ -83,12 +90,5 @@ public class Player extends Entity {
 		if (map.checkEnd(pos)) {
 			hud.setShowEndLevelScreen(true);
 		}
-	}
-	
-	public void animate(float interval) {
-		tAnimation.animate(interval);
-		camera.setPosition(tAnimation.getPosition().x, camera.getPosition().y, tAnimation.getPosition().z);
-		checkCollsions(tAnimation.getDestPosition());
-		checkEnd(tAnimation.getDestPosition());
 	}
 }

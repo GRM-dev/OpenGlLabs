@@ -27,6 +27,7 @@ public class LevelManager {
 	public void goTo(int i) throws Exception {
 		if (maps.containsKey(i)) {
 			currentMap = maps.get(i);
+			currentMap.reset();
 		} else {
 			currentMap = new GameMap(i);
 			maps.put(i, currentMap);
@@ -40,8 +41,8 @@ public class LevelManager {
 	
 	public void restartLevel() {
 		try {
+			currentMap.reset();
 			setStartEndObjectsPositions(currentMap.getStartPos(), currentMap.getEndPos());
-			stepCounter = 0;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -51,5 +52,11 @@ public class LevelManager {
 	private void setStartEndObjectsPositions(Vector2i start, Vector2i end) throws Exception {
 		player.setPosition(start.x, Player.PLAYER_DEF_Y_POS, start.y);
 		portal.setPosition(end.x, Player.PLAYER_DEF_Y_POS, end.y);
+		stepCounter = 0;
+	}
+	
+	public void goToNextLevel() throws Exception {
+		int i = currentMap.getLevel();
+		goTo(i);
 	}
 }

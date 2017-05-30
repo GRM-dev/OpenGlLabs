@@ -8,6 +8,7 @@ import java.util.*;
 import org.joml.*;
 
 import eu.grmdev.senryaku.Config;
+import eu.grmdev.senryaku.Main;
 import eu.grmdev.senryaku.core.Scene;
 import eu.grmdev.senryaku.core.SceneLight;
 import eu.grmdev.senryaku.core.entity.Entity;
@@ -113,8 +114,10 @@ public class Renderer {
 		renderScene(window, camera, scene, levelManager);
 		renderSkyBox(window, camera, scene);
 		
-		renderAxes(window, camera);
-		renderCrossHair(window);
+		if (Main.DEBUG) {
+			renderAxes(window, camera);
+			renderCrossHair(window);
+		}
 	}
 	
 	private void clear() {

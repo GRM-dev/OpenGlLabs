@@ -10,9 +10,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.joml.Vector4i;
 import org.lwjgl.nanovg.NVGColor;
 
 import eu.grmdev.senryaku.Config;
+import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
 import eu.grmdev.senryaku.core.handlers.*;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.Window;
@@ -32,6 +34,8 @@ public class Hud {
 	private NVGColor color;
 	private final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	private boolean initialized;
+	private GameEventListener nextLevelListener;
+	private GameEventListener openMenuListener;
 	
 	public void initLogic(EventHandler eh, MouseHandler mh) throws Exception {
 		eventHandler = eh;
@@ -65,6 +69,18 @@ public class Hud {
 					break;
 			}
 		});
+		nextLevelListener = event -> {
+			try {
+				LevelManager.getInstance().goToNextLevel();
+				setShowEndLevelScreen(false);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		};
+		openMenuListener = event -> {
+			menuActive = true;
+		};
 	}
 	
 	public void render() {
@@ -79,13 +95,12 @@ public class Hud {
 		HudUtils.drawRectangle(nvg, 0, window.getHeight() - 60, window.getWidth(), 60, MAIN_COLOR_BRIGHTER());
 		
 		renderMenuButton();
-		renderScore();
-		renderClock();
+		nvgBeginPath(nvg);
+		renderTopHudInfo();
 		
-		if (showEndLevelScreen) {
+		if (showEndLevelScreen && !menuActive) {
 			renderEndLevelScreen();
 		}
-		
 		if (menuActive) {
 			menuHud.render();
 		}
@@ -104,7 +119,7 @@ public class Hud {
 	
 	private void checkClicks() {
 		if (mouseHandler.isLeftButtonPressed()) {
-			if (!menuActive && HudUtils.isHoveringOn(HudObj.MENU_BUTTON, mouseHandler.getCurrentPos())) {
+			if (!menuActive && !showEndLevelScreen && HudUtils.isHoveringOn(HudObjs.MENU_BUTTON, mouseHandler.getCurrentPos())) {
 				menuActive = true;
 			}
 		}
@@ -112,13 +127,13 @@ public class Hud {
 	
 	private void renderMenuButton() {
 		nvgBeginPath(nvg);
-		HudObj mb = HudObj.MENU_BUTTON;
+		HudObjs mb = HudObjs.MENU_BUTTON;
 		nvgRoundedRect(nvg, mb.getX(), mb.getY(), mb.getW(), mb.getH(), mb.getRounding());
 		nvgFillColor(nvg, HudUtils.rgba(0x99, 0x78, 0x5f, 200, color));
 		nvgFill(nvg);
 		
-		boolean hover = HudUtils.isHoveringOn(mb, mouseHandler.getCurrentPos());
-		if (hover && !isMenuActive()) {
+		boolean active = HudUtils.isHoveringOn(mb, mouseHandler.getCurrentPos()) && !isMenuActive() && !isShowEndLevelScreen();
+		if (active) {
 			nvgFillColor(nvg, HudUtils.rgba(0x00, 0x00, 0x00, 0xff, color));
 		} else {
 			nvgFillColor(nvg, HudUtils.rgba(0xfd, 0xe1, 0xab, 0xff, color));
@@ -126,24 +141,37 @@ public class Hud {
 		HudUtils.renderText(nvg, "Menu", mb.getX() + 30, mb.getY() + 1, 25.0f, Config.FONT_NAME, NVG_ALIGN_CENTER | NVG_ALIGN_TOP, color);
 	}
 	
-	private void renderScore() {
-		nvgBeginPath(nvg);
+	private void renderTopHudInfo() {
+		LevelManager lm = LevelManager.getInstance();
+		if (lm == null || lm.getCurrentMap() == null) { return; }
 		nvgFillColor(nvg, HudUtils.rgba(0xe6, 0xea, 0xed, 0xff, color));
-		HudUtils.renderText(nvg, "Moves: " + LevelManager.getInstance().getStepCounter(), 150, 8, 30.0f, Config.FONT_NAME, NVG_ALIGN_CENTER | NVG_ALIGN_TOP, color);
-	}
-	
-	private void renderClock() {
-		HudUtils.renderText(nvg, dateFormat.format(new Date()), window.getWidth() - 150, 5, 40.0f, Config.FONT_NAME, NVG_ALIGN_LEFT | NVG_ALIGN_TOP, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		String text = "Moves: " + lm.getStepCounter() + "      Map title: '" + lm.getCurrentMap().getTitle() + "', lvl: " + lm.getCurrentMap().getLevel();
+		HudUtils.renderText(nvg, text, 80, 8, 30.0f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, color);
+		HudUtils.renderText(nvg, dateFormat.format(new Date()), window.getWidth() - 150, 5, 40.0f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 	}
 	
 	private void renderEndLevelScreen() {
 		int cx = window.getWidth() / 2;
 		int cy = window.getHeight() / 2;
-		int sx = HudObj.LEVEL_COMPLETE_WINDOW.getX();
-		int sy = HudObj.LEVEL_COMPLETE_WINDOW.getY();
-		HudUtils.drawRectangle(nvg, cx - sx / 2 - 10, cy - sy / 2 - 10, sx + 20, sy + 20, MAIN_COLOR_BRIGHTER());
-		HudUtils.drawRectangle(nvg, cx - sx / 2, cy - sy / 2, sx, sy, MAIN_COLOR_DARKER());
-		HudUtils.renderText(nvg, "Level Complete!", cx - sx / 3, cy - sy / 3, 60f, Config.FONT_NAME, NVG_ALIGN_LEFT | NVG_ALIGN_TOP, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		int sx = HudObjs.LEVEL_COMPLETE_WINDOW.getX();
+		int sy = HudObjs.LEVEL_COMPLETE_WINDOW.getY();
+		int leftMargin = cx - sx / 2;
+		int topMargin = cy - sy / 2;
+		HudUtils.fadeScreen(nvg, window.getWidth(), window.getHeight(), color);
+		HudUtils.drawRectangle(nvg, leftMargin - 10, topMargin - 10, sx + 20, sy + 20, MAIN_COLOR_BRIGHTER());
+		HudUtils.drawRectangle(nvg, leftMargin, topMargin, sx, sy, MAIN_COLOR_DARKER());
+		int firstTextX = cx - sx / 3;
+		int firstTextY = topMargin + 5;
+		HudUtils.renderText(nvg, "Level Complete!", firstTextX, firstTextY, 60f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		HudUtils.renderText(nvg, "You scored:", leftMargin + 5, firstTextY + 70, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		HudUtils.renderText(nvg, "Best score:", leftMargin + 5, firstTextY + 110, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		HudUtils.renderText(nvg, LevelManager.getInstance().getStepCounter() + " moves", cx + 60, firstTextY + 70, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		HudUtils.renderText(nvg, "NaN" + " moves", cx + 60, firstTextY + 110, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		
+		HudUtils.drawButton(nvg, "Next Level", leftMargin + 5, cy + sy / 2 - 80, 240, 80, 40f, HudUtils.CENTER_MID_ALIGNMENT, new Vector4i(0xe6, 0xea, 0xed, 255), HudUtils.BUTTON_BG_COLOR(color), nextLevelListener, mouseHandler.getCurrentPos(),
+			mouseHandler.isLeftButtonPressed() && !menuActive);
+		HudUtils.drawButton(nvg, "Open Menu", leftMargin + 255, cy + sy / 2 - 80, 240, 80, 40f, HudUtils.CENTER_MID_ALIGNMENT, new Vector4i(0xe6, 0xea, 0xed, 255), HudUtils.BUTTON_BG_COLOR(color), openMenuListener, mouseHandler.getCurrentPos(),
+			mouseHandler.isLeftButtonPressed() && !menuActive);
 	}
 	
 	public void destroy() {

@@ -37,12 +37,14 @@ public class TranslateAnimation {
 	}
 	
 	public void animate(float interval) {
-		if (moveCounter < tps) {
-			position.x += v.x * interval * 0.02f;
-			position.z += v.z * interval * 0.02f;
-			moveCounter++;
-		} else {
-			position.set(destPosition);
+		synchronized (position) {
+			if (moveCounter < tps) {
+				position.x += v.x * interval * 0.02f;
+				position.z += v.z * interval * 0.02f;
+				moveCounter++;
+			} else {
+				position.set(destPosition);
+			}
 		}
 	}
 }
