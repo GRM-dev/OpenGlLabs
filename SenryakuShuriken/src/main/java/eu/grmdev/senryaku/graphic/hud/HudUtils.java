@@ -12,8 +12,8 @@ import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
 import eu.grmdev.senryaku.game.hud.HudObj;
 
 public class HudUtils {
-	
-	private static final int DEFAULT_ALIGNMENT = NVG_ALIGN_LEFT | NVG_ALIGN_TOP;
+	public static final int LEFT_TOP_ALIGNMENT = NVG_ALIGN_LEFT | NVG_ALIGN_TOP;
+	public static final int CENTER_MID_ALIGNMENT = NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE;
 	
 	public static NVGColor rgba(int r, int g, int b, int a, NVGColor color) {
 		color.r(r / 255.0f);
@@ -55,6 +55,10 @@ public class HudUtils {
 	}
 	
 	public static void drawButton(long nvg, String text, int x, int y, int width, int heigth, float size, Vector4i textColor, NVGColor bgColor, GameEventListener action, Vector2d currentPos, boolean clicked) {
+		drawButton(nvg, text, x, y, width, heigth, size, LEFT_TOP_ALIGNMENT, textColor, bgColor, action, currentPos, clicked);
+	}
+	
+	public static void drawButton(long nvg, String text, int x, int y, int width, int heigth, float size, int textAlignment, Vector4i textColor, NVGColor bgColor, GameEventListener action, Vector2d currentPos, boolean clicked) {
 		if (isHoveringOn(x, y, width, heigth, currentPos)) {
 			rgbai(new Vector4i(-20, 0, 0, 0), bgColor);
 			if (clicked) {
@@ -65,7 +69,7 @@ public class HudUtils {
 			rgbai(new Vector4i(20, 0, 0, 0), bgColor);
 		}
 		drawRectangle(nvg, x, y, width, heigth, bgColor);
-		renderText(nvg, text, x + 80, y + 10, size, Config.FONT_NAME, DEFAULT_ALIGNMENT, rgba(textColor, bgColor));
+		renderText(nvg, text, x + width / 2, y + heigth / 2, size, Config.FONT_NAME, textAlignment, rgba(textColor, bgColor));
 		
 	}
 }

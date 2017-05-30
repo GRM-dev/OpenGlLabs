@@ -70,7 +70,7 @@ public class Player extends Entity {
 		tAnimation.move(rx, rz);
 		checkCollsions(tAnimation.getDestPosition());
 		checkEnd(tAnimation.getDestPosition());
-		hud.incCounter();
+		levelManager.incCounter();
 	}
 	
 	private void checkCollsions(Vector3f pos) {

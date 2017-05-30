@@ -16,8 +16,11 @@ public class LevelManager {
 	private Map<Integer, GameMap> maps;
 	private @Setter Player player;
 	private @Setter Entity portal;
+	private static @Getter LevelManager instance;
+	private @Getter int stepCounter = 0;
 	
 	public LevelManager() {
+		instance = this;
 		maps = new HashMap<>();
 	}
 	
@@ -29,6 +32,20 @@ public class LevelManager {
 			maps.put(i, currentMap);
 		}
 		setStartEndObjectsPositions(currentMap.getStartPos(), currentMap.getEndPos());
+	}
+	
+	public void incCounter() {
+		stepCounter++;
+	}
+	
+	public void restartLevel() {
+		try {
+			setStartEndObjectsPositions(currentMap.getStartPos(), currentMap.getEndPos());
+			stepCounter = 0;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void setStartEndObjectsPositions(Vector2i start, Vector2i end) throws Exception {

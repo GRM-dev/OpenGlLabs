@@ -13,8 +13,7 @@ import java.util.Date;
 import org.lwjgl.nanovg.NVGColor;
 
 import eu.grmdev.senryaku.Config;
-import eu.grmdev.senryaku.core.handlers.EventHandler;
-import eu.grmdev.senryaku.core.handlers.MouseHandler;
+import eu.grmdev.senryaku.core.handlers.*;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.Window;
 import eu.grmdev.senryaku.graphic.hud.HudUtils;
@@ -31,7 +30,6 @@ public class Hud {
 	private @Getter @Setter boolean menuActive;
 	private ByteBuffer fontBuffer;
 	private NVGColor color;
-	private int counter = 0;
 	private final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	private boolean initialized;
 	
@@ -120,7 +118,7 @@ public class Hud {
 		nvgFill(nvg);
 		
 		boolean hover = HudUtils.isHoveringOn(mb, mouseHandler.getCurrentPos());
-		if (hover) {
+		if (hover && !isMenuActive()) {
 			nvgFillColor(nvg, HudUtils.rgba(0x00, 0x00, 0x00, 0xff, color));
 		} else {
 			nvgFillColor(nvg, HudUtils.rgba(0xfd, 0xe1, 0xab, 0xff, color));
@@ -131,7 +129,7 @@ public class Hud {
 	private void renderScore() {
 		nvgBeginPath(nvg);
 		nvgFillColor(nvg, HudUtils.rgba(0xe6, 0xea, 0xed, 0xff, color));
-		HudUtils.renderText(nvg, "Moves: " + String.format("%02d", counter), 150, 8, 30.0f, Config.FONT_NAME, NVG_ALIGN_CENTER | NVG_ALIGN_TOP, color);
+		HudUtils.renderText(nvg, "Moves: " + LevelManager.getInstance().getStepCounter(), 150, 8, 30.0f, Config.FONT_NAME, NVG_ALIGN_CENTER | NVG_ALIGN_TOP, color);
 	}
 	
 	private void renderClock() {
@@ -146,12 +144,6 @@ public class Hud {
 		HudUtils.drawRectangle(nvg, cx - sx / 2 - 10, cy - sy / 2 - 10, sx + 20, sy + 20, MAIN_COLOR_BRIGHTER());
 		HudUtils.drawRectangle(nvg, cx - sx / 2, cy - sy / 2, sx, sy, MAIN_COLOR_DARKER());
 		HudUtils.renderText(nvg, "Level Complete!", cx - sx / 3, cy - sy / 3, 60f, Config.FONT_NAME, NVG_ALIGN_LEFT | NVG_ALIGN_TOP, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
-	}
-	
-	public void incCounter() {
-		if (counter < 99) {
-			counter++;
-		}
 	}
 	
 	public void destroy() {
