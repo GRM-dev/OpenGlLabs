@@ -25,6 +25,7 @@ public final class Config {
 	public static final int SHADOW_MAP_WIDTH = (int) Math.pow(65, 2);
 	public static final int SHADOW_MAP_HEIGHT = SHADOW_MAP_WIDTH;
 	public static final boolean FOG_ENABLED = false;
+	public static final String SAVE_FILE_NAME = "save.dat";
 	
 	public Config() {
 		opts = new Window.WindowOptions();

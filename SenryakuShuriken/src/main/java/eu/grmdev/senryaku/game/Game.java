@@ -27,7 +27,7 @@ public class Game implements IGame {
 	private Scene scene;
 	private final Hud hud;
 	private final Camera camera;
-	private @Getter final LevelManager levelManager;
+	private final LevelManager levelManager;
 	private float lightAngleInc;
 	private float lightAngle;
 	private Entity[] entities;
@@ -72,6 +72,7 @@ public class Game implements IGame {
 		assignGlobalListeners(eh);
 		player.init(eh);
 		hud.initLogic(eh, mh);
+		GameSave.init();
 		levelManager.goTo(1);
 	}
 	
@@ -204,6 +205,8 @@ public class Game implements IGame {
 		hud.destroy();
 		renderer.cleanup();
 		scene.destroy();
+		levelManager.save();
+		GameSave.saveToFile();
 	}
 	
 	@Override

@@ -69,17 +69,17 @@ public class Player extends Entity {
 	private void move(int rx, int rz) {
 		tAnimation.move(rx, rz);
 		checkCollsions(tAnimation.getDestPosition());
-		checkEnd(tAnimation.getDestPosition());
-		levelManager.incCounter();
+		checkEnd(position);
+		levelManager.getCurrentMap().incCounter();
 	}
 	
 	public void animate(float interval) {
 		tAnimation.animate(interval);
 		camera.setPosition(tAnimation.getPosition().x, camera.getPosition().y, tAnimation.getPosition().z);
 		checkCollsions(tAnimation.getDestPosition());
-		checkEnd(tAnimation.getDestPosition());
+		checkEnd(position);
 	}
-
+	
 	private void checkCollsions(Vector3f pos) {
 		// TODO Auto-generated method stub
 		

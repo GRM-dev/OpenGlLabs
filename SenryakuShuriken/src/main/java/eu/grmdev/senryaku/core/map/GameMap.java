@@ -8,7 +8,9 @@ import org.joml.Vector2i;
 import org.joml.Vector3f;
 
 import eu.grmdev.senryaku.core.misc.Utils;
+import eu.grmdev.senryaku.game.GameSave;
 import lombok.Getter;
+import lombok.Setter;
 
 public class GameMap {
 	private @Getter Terrain terrain;
@@ -21,6 +23,8 @@ public class GameMap {
 	private @Getter boolean initialized;
 	private String backgroundTextureFile;
 	private boolean finished;
+	private @Getter @Setter int stepCounter = 0;
+	private @Getter int score = 0;
 	
 	public GameMap(int level) throws Exception {
 		this.level = level;
@@ -89,13 +93,24 @@ public class GameMap {
 	
 	public synchronized boolean checkEnd(Vector3f pos) {
 		if (endPos.x == pos.x && endPos.y == pos.z && !finished) {
-			System.out.println("Finished");
+			score = stepCounter;
 			finished = true;
+			GameSave.save(level, this);
 		}
 		return finished;
 	}
 	
+	public void incCounter() {
+		stepCounter++;
+	}
+	
 	public void reset() {
 		finished = false;
+	}
+	
+	public int getBestScore() {
+		int bs = GameSave.getScore(level);
+		if (bs == 0 || score < bs) { return score; }
+		return bs;
 	}
 }

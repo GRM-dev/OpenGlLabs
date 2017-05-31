@@ -145,7 +145,7 @@ public class Hud {
 		LevelManager lm = LevelManager.getInstance();
 		if (lm == null || lm.getCurrentMap() == null) { return; }
 		nvgFillColor(nvg, HudUtils.rgba(0xe6, 0xea, 0xed, 0xff, color));
-		String text = "Moves: " + lm.getStepCounter() + "      Map title: '" + lm.getCurrentMap().getTitle() + "', lvl: " + lm.getCurrentMap().getLevel();
+		String text = "Moves: " + lm.getCurrentMap().getStepCounter() + "      Map title: '" + lm.getCurrentMap().getTitle() + "', lvl: " + lm.getCurrentMap().getLevel();
 		HudUtils.renderText(nvg, text, 80, 8, 30.0f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, color);
 		HudUtils.renderText(nvg, dateFormat.format(new Date()), window.getWidth() - 150, 5, 40.0f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 	}
@@ -165,8 +165,11 @@ public class Hud {
 		HudUtils.renderText(nvg, "Level Complete!", firstTextX, firstTextY, 60f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 		HudUtils.renderText(nvg, "You scored:", leftMargin + 5, firstTextY + 70, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 		HudUtils.renderText(nvg, "Best score:", leftMargin + 5, firstTextY + 110, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
-		HudUtils.renderText(nvg, LevelManager.getInstance().getStepCounter() + " moves", cx + 60, firstTextY + 70, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
-		HudUtils.renderText(nvg, "NaN" + " moves", cx + 60, firstTextY + 110, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		int score = LevelManager.getInstance().getCurrentMap().getScore();
+		int bScore = LevelManager.getInstance().getCurrentMap().getBestScore();
+		bScore = bScore == 0 ? score : bScore;
+		HudUtils.renderText(nvg, score + " moves", cx + 60, firstTextY + 70, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		HudUtils.renderText(nvg, bScore + " moves", cx + 60, firstTextY + 110, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 		
 		HudUtils.drawButton(nvg, "Next Level", leftMargin + 5, cy + sy / 2 - 80, 240, 80, 40f, HudUtils.CENTER_MID_ALIGNMENT, new Vector4i(0xe6, 0xea, 0xed, 255), HudUtils.BUTTON_BG_COLOR(color), nextLevelListener, mouseHandler.getCurrentPos(),
 			mouseHandler.isLeftButtonPressed() && !menuActive);
