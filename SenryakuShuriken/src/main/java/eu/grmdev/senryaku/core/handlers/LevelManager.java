@@ -6,6 +6,7 @@ import org.joml.Vector2i;
 
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.map.GameMap;
+import eu.grmdev.senryaku.core.map.GameMapFactory;
 import eu.grmdev.senryaku.game.GameSave;
 import eu.grmdev.senryaku.game.Player;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class LevelManager {
 			currentMap = maps.get(i);
 			currentMap.reset();
 		} else {
-			currentMap = new GameMap(i);
+			currentMap = GameMapFactory.create(i);
 			maps.put(i, currentMap);
 		}
 		setStartEndObjectsPositions(currentMap.getStartPos(), currentMap.getEndPos());
@@ -52,7 +53,7 @@ public class LevelManager {
 	
 	public void goToNextLevel() throws Exception {
 		int i = currentMap.getLevel();
-		goTo(i);
+		goTo(++i);
 	}
 	
 	public void save() {
