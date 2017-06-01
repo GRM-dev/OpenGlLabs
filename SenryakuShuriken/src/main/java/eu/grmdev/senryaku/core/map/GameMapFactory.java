@@ -29,10 +29,10 @@ public class GameMapFactory {
 	}
 
 	private static List<String> readFile(int level) throws IOException {
-		List<String> fileLines = Utils.readAllLines("/maps/map_" + level + ".smap");
+		List<String> fileLines = Utils.readAllLines(getFileName(level));
 		return fileLines;
 	}
-	
+
 	private static void parseHeader(List<String> fileLines) {
 		String[] header = fileLines.get(0).split("\\|");
 		int[] positions = new int[]{Integer.parseInt(header[0]), Integer.parseInt(header[1]), Integer.parseInt(header[2]), Integer.parseInt(header[3])};
@@ -70,5 +70,13 @@ public class GameMapFactory {
 		}
 		tiles = Utils.transpose(tiles);
 		return tiles;
+	}
+
+	public static boolean exist(int level) {
+				return Utils.existsResourceFile(getFileName(level));
+	}
+
+	private static String getFileName(int level) {
+		return "/maps/map_" + level + ".smap";
 	}
 }

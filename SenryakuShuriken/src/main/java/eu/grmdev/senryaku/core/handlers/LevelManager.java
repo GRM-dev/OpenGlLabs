@@ -62,4 +62,9 @@ public class LevelManager {
 			GameSave.save(level, maps.get(level));
 		}
 	}
+	
+	public boolean nextMapExist(){
+		int i=currentMap.getLevel();
+		return GameMapFactory.exist(i+1);
+	}
 }

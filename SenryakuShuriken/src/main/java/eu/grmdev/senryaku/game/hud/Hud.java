@@ -15,7 +15,9 @@ import org.lwjgl.nanovg.NVGColor;
 
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
-import eu.grmdev.senryaku.core.handlers.*;
+import eu.grmdev.senryaku.core.handlers.EventHandler;
+import eu.grmdev.senryaku.core.handlers.LevelManager;
+import eu.grmdev.senryaku.core.handlers.MouseHandler;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.Window;
 import eu.grmdev.senryaku.graphic.hud.HudUtils;
@@ -165,14 +167,17 @@ public class Hud {
 		HudUtils.renderText(nvg, "Level Complete!", firstTextX, firstTextY, 60f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 		HudUtils.renderText(nvg, "You scored:", leftMargin + 5, firstTextY + 70, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 		HudUtils.renderText(nvg, "Best score:", leftMargin + 5, firstTextY + 110, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
-		int score = LevelManager.getInstance().getCurrentMap().getScore();
-		int bScore = LevelManager.getInstance().getCurrentMap().getBestScore();
+		LevelManager lm = LevelManager.getInstance();
+		int score = lm.getCurrentMap().getScore();
+		int bScore = lm.getCurrentMap().getBestScore();
 		bScore = bScore == 0 ? score : bScore;
 		HudUtils.renderText(nvg, score + " moves", cx + 60, firstTextY + 70, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 		HudUtils.renderText(nvg, bScore + " moves", cx + 60, firstTextY + 110, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
-		
-		HudUtils.drawButton(nvg, "Next Level", leftMargin + 5, cy + sy / 2 - 80, 240, 80, 40f, HudUtils.CENTER_MID_ALIGNMENT, new Vector4i(0xe6, 0xea, 0xed, 255), HudUtils.BUTTON_BG_COLOR(color), nextLevelListener, mouseHandler.getCurrentPos(),
-			mouseHandler.isLeftButtonPressed() && !menuActive);
+			
+		if(lm.nextMapExist()){
+			HudUtils.drawButton(nvg, "Next Level", leftMargin + 5, cy + sy / 2 - 80, 240, 80, 40f, HudUtils.CENTER_MID_ALIGNMENT, new Vector4i(0xe6, 0xea, 0xed, 255), HudUtils.BUTTON_BG_COLOR(color), nextLevelListener, mouseHandler.getCurrentPos(),
+				mouseHandler.isLeftButtonPressed() && !menuActive);
+			}
 		HudUtils.drawButton(nvg, "Open Menu", leftMargin + 255, cy + sy / 2 - 80, 240, 80, 40f, HudUtils.CENTER_MID_ALIGNMENT, new Vector4i(0xe6, 0xea, 0xed, 255), HudUtils.BUTTON_BG_COLOR(color), openMenuListener, mouseHandler.getCurrentPos(),
 			mouseHandler.isLeftButtonPressed() && !menuActive);
 	}
