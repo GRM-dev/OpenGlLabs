@@ -20,7 +20,7 @@ public class TranslateAnimation {
 		this.v = new Vector3f();
 	}
 	
-	public void move(int rx, int rz) {
+	public void move(float rx, float rz) {
 		destPosition.x += rx;
 		destPosition.z += rz;
 		recalc();

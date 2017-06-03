@@ -3,6 +3,7 @@ package eu.grmdev.senryaku.core.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.Mesh;
 import eu.grmdev.senryaku.graphic.material.FontTexture;
@@ -16,8 +17,8 @@ public class TextItem extends Entity {
 	@Getter
 	private String text;
 	
-	public TextItem(String text, FontTexture fontTexture) throws Exception {
-		super();
+	public TextItem(String text, FontTexture fontTexture, IGame game) throws Exception {
+		super(game);
 		this.text = text;
 		this.fontTexture = fontTexture;
 		setMesh(buildMesh());

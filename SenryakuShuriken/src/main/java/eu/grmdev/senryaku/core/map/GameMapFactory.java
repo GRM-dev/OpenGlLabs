@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.joml.Vector2i;
 
+import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.misc.Utils;
 
 public class GameMapFactory {
@@ -17,22 +18,22 @@ public class GameMapFactory {
 	private static Vector2i startPos;
 	private static Vector2i endPos;
 	
-	public static GameMap create(int level) throws Exception {
+	public static GameMap create(int level, IGame game) throws Exception {
 		System.out.println("Loading map level " + level);
 		List<String> fileLines = readFile(level);
 		parseHeader(fileLines);
 		
 		Tile[][] tiles = getTiles(fileLines);
-		terrain = new Terrain(tiles, backgroundTextureFile);
+		terrain = new Terrain(tiles, backgroundTextureFile, game);
 		GameMap gm = new GameMap(level, title, rows, columns, terrain, startPos, endPos);
 		return gm;
 	}
-
+	
 	private static List<String> readFile(int level) throws IOException {
 		List<String> fileLines = Utils.readAllLines(getFileName(level));
 		return fileLines;
 	}
-
+	
 	private static void parseHeader(List<String> fileLines) {
 		String[] header = fileLines.get(0).split("\\|");
 		int[] positions = new int[]{Integer.parseInt(header[0]), Integer.parseInt(header[1]), Integer.parseInt(header[2]), Integer.parseInt(header[3])};
@@ -42,7 +43,7 @@ public class GameMapFactory {
 		backgroundTextureFile = "/textures/" + header[5].trim().toLowerCase() + ".png";
 		fileLines.remove(0);
 	}
-
+	
 	private static Tile[][] getTiles(List<String> fileLines) {
 		HashMap<Integer, HashMap<Integer, Tile>> data = new HashMap<>();
 		for (int i = 0; i < fileLines.size(); i++) {
@@ -71,11 +72,11 @@ public class GameMapFactory {
 		tiles = Utils.transpose(tiles);
 		return tiles;
 	}
-
+	
 	public static boolean exist(int level) {
-				return Utils.existsResourceFile(getFileName(level));
+		return Utils.existsResourceFile(getFileName(level));
 	}
-
+	
 	private static String getFileName(int level) {
 		return "/maps/map_" + level + ".smap";
 	}

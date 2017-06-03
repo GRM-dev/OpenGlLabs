@@ -173,7 +173,6 @@ public class Mesh {
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, normalMap.getId());
 		}
-		
 		glBindVertexArray(getVaoId());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

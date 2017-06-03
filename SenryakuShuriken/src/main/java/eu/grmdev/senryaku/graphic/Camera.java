@@ -4,12 +4,14 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Camera {
 	private @Getter final Vector3f position;
 	private @Getter final Vector3f offset;
 	private @Getter final Vector3f rotation;
 	private @Getter Matrix4f viewMatrix;
+	private @Getter @Setter Window window;
 	
 	public Camera() {
 		this(new Vector3f(), new Vector3f());

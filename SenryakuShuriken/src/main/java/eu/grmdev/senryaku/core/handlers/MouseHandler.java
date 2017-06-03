@@ -2,14 +2,11 @@ package eu.grmdev.senryaku.core.handlers;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-import java.text.NumberFormat;
-
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 
 import eu.grmdev.senryaku.core.IGame;
-import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.events.MouseEvent;
 import eu.grmdev.senryaku.graphic.Window;
 import lombok.Getter;
@@ -44,14 +41,17 @@ public class MouseHandler implements GLFWMouseButtonCallbackI {
 		glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered) -> {
 			inWindow = entered;
 		});
-		eHandler.addMouseEventListener(event -> {
-			if (event.getKey() == MouseEvent.LEFT_KEY && event.getAction() == MouseEvent.PRESSED) {
-				Entity entity = detector.selectClosestEntity(game.getEntities(), this.window, currentPos, this.window.getCamera());
-				if (entity != null) {
-					System.out.println(entity.getPosition().toString(NumberFormat.getIntegerInstance()));
-				}
-			}
-		});
+		// eHandler.addMouseEventListener(event -> {
+		// if (event.getKey() == MouseEvent.LEFT_KEY && event.getAction() ==
+		// MouseEvent.PRESSED) {
+		// Entity entity =
+		// detector.selectTile(LevelManager.getInstance().getCurrentMap(), window,
+		// currentPos, this.window.getCamera());
+		// if (entity != null) {
+		// System.out.println(entity.getPosition().toString(NumberFormat.getIntegerInstance()));
+		// }
+		// }
+		// });
 	}
 	
 	@Override
@@ -89,7 +89,7 @@ public class MouseHandler implements GLFWMouseButtonCallbackI {
 	}
 	
 	private void createEvent(byte key, byte action) {
-		MouseEvent event = new MouseEvent(key, action, currentPos);
+		MouseEvent event = new MouseEvent(key, action, currentPos, game, detector);
 		eHandler.dispatchMouseEvent(event);
 	}
 	

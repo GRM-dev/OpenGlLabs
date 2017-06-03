@@ -1,11 +1,12 @@
 package eu.grmdev.senryaku.core.handlers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.joml.*;
 
 import eu.grmdev.senryaku.core.entity.Entity;
-import eu.grmdev.senryaku.core.map.LevelManager;
+import eu.grmdev.senryaku.core.map.GameMap;
 import eu.grmdev.senryaku.graphic.Camera;
 import eu.grmdev.senryaku.graphic.Window;
 
@@ -26,8 +27,9 @@ public class MouseBoxSelectionDetector extends CameraBoxSelectionDetector {
 		tmpVec = new Vector4f();
 	}
 	
-	public Entity selectClosestEntity(List<Entity> entities, Window window, Vector2d mousePos, Camera camera) {
-		Entity[][] entities2 = LevelManager.getInstance().getCurrentMap().getTerrain().getEntitiesByPos();
+	public Entity selectTile(GameMap map, Window window, Vector2d mousePos, Camera camera) {
+		Entity[][] entities2 = map.getTerrain().getEntitiesByPos();
+		List<Entity> entities = new ArrayList<>();
 		if (entities2 != null) {
 			for (int i = 0; i < entities2.length; i++) {
 				Entity[] entities3 = entities2[i];
@@ -40,7 +42,13 @@ public class MouseBoxSelectionDetector extends CameraBoxSelectionDetector {
 					}
 				}
 			}
+			setMouseDir(window, mousePos, camera);
+			return selectClosestEntity(entities, camera.getOffsetPosition(), mouseDir);
 		}
+		return null;
+	}
+	
+	public Entity selectClosestEntity(List<Entity> entities, Window window, Vector2d mousePos, Camera camera) {
 		setMouseDir(window, mousePos, camera);
 		return selectClosestEntity(entities, camera.getOffsetPosition(), mouseDir);
 	}
@@ -72,5 +80,10 @@ public class MouseBoxSelectionDetector extends CameraBoxSelectionDetector {
 		tmpVec.mul(invViewMatrix);
 		
 		mouseDir.set(tmpVec.x, tmpVec.y, tmpVec.z);
+	}
+	
+	public Vector3f getClickDestination(Window window, Vector2d mousePos, Camera camera) {
+		setMouseDir(window, mousePos, camera);
+		return mouseDir;
 	}
 }

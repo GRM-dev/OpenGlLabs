@@ -35,7 +35,7 @@ public class GameMap {
 		initialized = true;
 	}
 	
-	public boolean canMoveTo(float x, float playerDefYPos, float z) {
+	public boolean canMoveTo(float x, float y, float z) {
 		if (finished) { return false; }
 		Tile tile = getTerrain().getTile(x, z);
 		if (tile == null) { return false; }

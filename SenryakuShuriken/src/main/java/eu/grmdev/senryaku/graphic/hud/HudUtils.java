@@ -7,7 +7,6 @@ import org.joml.Vector4i;
 import org.lwjgl.nanovg.NVGColor;
 
 import eu.grmdev.senryaku.Config;
-import eu.grmdev.senryaku.core.events.GameEvent;
 import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
 import eu.grmdev.senryaku.game.hud.HudObjs;
 
@@ -62,8 +61,7 @@ public class HudUtils {
 		if (isHoveringOn(x, y, width, heigth, currentPos)) {
 			rgbai(new Vector4i(-20, 0, 0, 0), bgColor);
 			if (clicked) {
-				GameEvent event = new GameEvent(false, null) {};
-				action.actionPerformed(event);
+				action.actionPerformed(null);
 			}
 		} else {
 			rgbai(new Vector4i(20, 0, 0, 0), bgColor);

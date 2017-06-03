@@ -8,6 +8,7 @@ import eu.grmdev.senryaku.graphic.Window;
 public final class Config {
 	public final Window.WindowOptions opts;
 	public final boolean vSync = true;
+	public static final float PLAYER_DEF_Y_POS = 0.5f;
 	public static final String IMAGE_FORMAT = "png";
 	public static final String FONT_NAME = "BOLD";
 	public static final int TARGET_UPS = 20;

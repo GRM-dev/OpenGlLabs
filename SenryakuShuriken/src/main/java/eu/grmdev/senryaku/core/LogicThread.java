@@ -31,7 +31,7 @@ public class LogicThread extends Thread {
 		setName("GAME_LOGIC_LOOP_THREAD");
 		eHandler = new EventHandler(game);
 		mouseHandler = new MouseHandler(game, eHandler);
-		keyHandler = new KeyboardHandler(eHandler);
+		keyHandler = new KeyboardHandler(eHandler, game);
 	}
 	
 	public void init() {
@@ -54,8 +54,8 @@ public class LogicThread extends Thread {
 		}
 		try {
 			game.initLogic(eHandler, mouseHandler);
-			tickLoopEvent = new GameEvent(window) {};
-			cycleLoopEvent = new GameEvent(window) {};
+			tickLoopEvent = new GameEvent(window, game) {};
+			cycleLoopEvent = new GameEvent(window, game) {};
 			eHandler.addCycleGameEventListener(event -> {
 				System.out.println("TPS: " + lastTickCounter);
 			});

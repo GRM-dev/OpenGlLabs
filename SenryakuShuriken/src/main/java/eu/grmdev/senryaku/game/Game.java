@@ -3,15 +3,13 @@ package eu.grmdev.senryaku.game;
 import static org.lwjgl.glfw.GLFW.*;
 
 import java.lang.Math;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.joml.*;
 
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.*;
-import eu.grmdev.senryaku.core.entity.Entity;
-import eu.grmdev.senryaku.core.entity.SkyBox;
+import eu.grmdev.senryaku.core.entity.*;
 import eu.grmdev.senryaku.core.events.KeyEvent;
 import eu.grmdev.senryaku.core.handlers.EventHandler;
 import eu.grmdev.senryaku.core.handlers.MouseHandler;
@@ -26,23 +24,24 @@ import lombok.Getter;
 public class Game implements IGame {
 	private @Getter final Vector3f cameraInc;
 	private final Renderer renderer;
-	private Scene scene;
+	private @Getter Scene scene;
 	private final Hud hud;
 	private final @Getter Camera camera;
 	private final LevelManager levelManager;
 	private float lightAngleInc;
 	private float lightAngle;
-	private @Getter List<Entity> entities;
+	private @Getter List<Movable> movable;
 	private Player player;
 	
 	public Game() throws Exception {
 		renderer = new Renderer();
 		camera = new Camera();
-		levelManager = new LevelManager();
-		cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
+		levelManager = new LevelManager(this);
 		scene = new Scene();
 		hud = new Hud();
+		movable = new ArrayList<>();
 		
+		cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
 		lightAngle = 90;
 		lightAngleInc = 0;
 	}
@@ -53,8 +52,9 @@ public class Game implements IGame {
 	@Override
 	public void initRender(Window window) throws Exception {
 		renderer.init(window);
+		camera.setWindow(window);
 		
-		entities = setupStartEntities();
+		List<Entity> entities = setupStartEntities();
 		scene.setEntities(entities.toArray(new Entity[0]));
 		
 		scene.setRenderShadows(Config.SHADOWS_ENABLED);
@@ -81,11 +81,11 @@ public class Game implements IGame {
 	
 	private List<Entity> setupStartEntities() throws Exception {
 		List<Entity> entities = new ArrayList<>();
-		player = new Player(camera, levelManager, hud);
+		player = new Player(levelManager, hud, this);
 		entities.add(player);
 		
 		Mesh[] mesh = StaticMeshesLoader.load("models/entities/portal.obj", "/models/entities");
-		Entity portal = new Entity(mesh, 0.05f);
+		Entity portal = new Entity(mesh, 0.05f, this);
 		levelManager.setPortal(portal);
 		entities.add(portal);
 		
@@ -99,7 +99,7 @@ public class Game implements IGame {
 	 */
 	private void setupWorld() throws Exception {
 		float skyBoxScale = 100.0f;
-		SkyBox skyBox = new SkyBox("models/skybox.obj", new Vector4f(0.65f, 0.65f, 0.65f, 1.0f));
+		SkyBox skyBox = new SkyBox("models/skybox.obj", new Vector4f(0.65f, 0.65f, 0.65f, 1.0f), this);
 		skyBox.setScale(skyBoxScale);
 		scene.setSkyBox(skyBox);
 	}
@@ -173,6 +173,14 @@ public class Game implements IGame {
 			camera.moveRotation(rotVec.x * Config.MOUSE_SENSITIVITY, rotVec.y * Config.MOUSE_SENSITIVITY, 0);
 		}
 		player.animate(interval);
+		for (Iterator<Movable> it = movable.iterator(); it.hasNext();) {
+			Movable m = it.next();
+			m.animate(interval);
+			if (m.canDie()) {
+				m.die();
+				it.remove();
+			}
+		}
 		camera.movePosition(cameraInc.x * Config.CAMERA_POS_STEP, cameraInc.y * Config.CAMERA_POS_STEP, cameraInc.z * Config.CAMERA_POS_STEP);
 		cameraInc.set(0, 0, 0);
 		lightAngle += lightAngleInc;
@@ -208,6 +216,19 @@ public class Game implements IGame {
 		scene.destroy();
 		levelManager.save();
 		GameSave.saveToFile();
+	}
+	
+	@Override
+	public void addEntity(Entity e) {
+		scene.addEntity(e);
+		if (e instanceof Movable) {
+			movable.add((Movable) e);
+		}
+	}
+	
+	@Override
+	public void removeEntity(Entity entity) {
+		scene.removeEntity(entity);
 	}
 	
 	@Override

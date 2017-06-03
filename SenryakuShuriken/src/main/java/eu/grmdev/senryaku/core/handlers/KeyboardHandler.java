@@ -7,15 +7,18 @@ import java.util.List;
 
 import org.lwjgl.glfw.GLFWKeyCallback;
 
+import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.events.KeyEvent;
 
 public class KeyboardHandler extends GLFWKeyCallback {
 	private static boolean[] keys = new boolean[65536];
 	private static List<Integer> pressedKeys = new LinkedList<>();
 	private EventHandler eHandler;
+	private IGame game;
 	
-	public KeyboardHandler(EventHandler eHandler) {
+	public KeyboardHandler(EventHandler eHandler, IGame game) {
 		this.eHandler = eHandler;
+		this.game = game;
 	}
 	
 	/**
@@ -28,7 +31,7 @@ public class KeyboardHandler extends GLFWKeyCallback {
 		keys[key] = isDown;
 		if (isDown) {
 			if (!wasDown) {
-				KeyEvent event = new KeyEvent(key, KeyEvent.PRESSED);
+				KeyEvent event = new KeyEvent(key, KeyEvent.PRESSED, game);
 				eHandler.dispatchKeyEvent(event);
 				synchronized (pressedKeys) {
 					pressedKeys.add(key);
@@ -38,7 +41,7 @@ public class KeyboardHandler extends GLFWKeyCallback {
 			if (wasDown) {
 				synchronized (pressedKeys) {
 					pressedKeys.remove(new Integer(key));
-					KeyEvent event = new KeyEvent(key, KeyEvent.RELEASED);
+					KeyEvent event = new KeyEvent(key, KeyEvent.RELEASED, game);
 					eHandler.dispatchKeyEvent(event);
 					if (!event.isRemove()) {
 						eHandler.dispatchHudKeyEvent(event);
@@ -62,7 +65,7 @@ public class KeyboardHandler extends GLFWKeyCallback {
 		synchronized (pressedKeys) {
 			if (!pressedKeys.isEmpty()) {
 				for (int key : pressedKeys) {
-					KeyEvent event = new KeyEvent(key, KeyEvent.REPEAT, true);
+					KeyEvent event = new KeyEvent(key, KeyEvent.REPEAT, true, game);
 					eHandler.dispatchKeyEvent(event);
 					if (event.isRemove()) {
 						continue;

@@ -4,6 +4,8 @@ import java.util.*;
 
 import org.joml.Vector2i;
 
+import eu.grmdev.senryaku.Config;
+import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.game.GameSave;
 import eu.grmdev.senryaku.game.Player;
@@ -16,8 +18,10 @@ public class LevelManager {
 	private @Setter Player player;
 	private @Setter Entity portal;
 	private static @Getter LevelManager instance;
+	private IGame game;
 	
-	public LevelManager() {
+	public LevelManager(IGame game) {
+		this.game = game;
 		instance = this;
 		maps = new HashMap<>();
 	}
@@ -27,7 +31,7 @@ public class LevelManager {
 			currentMap = maps.get(i);
 			currentMap.reset();
 		} else {
-			currentMap = GameMapFactory.create(i);
+			currentMap = GameMapFactory.create(i, game);
 			maps.put(i, currentMap);
 		}
 		setStartEndObjectsPositions(currentMap.getStartPos(), currentMap.getEndPos());
@@ -44,8 +48,8 @@ public class LevelManager {
 	}
 	
 	private void setStartEndObjectsPositions(Vector2i start, Vector2i end) throws Exception {
-		player.setPosition(start.x, Player.PLAYER_DEF_Y_POS, start.y);
-		portal.setPosition(end.x, Player.PLAYER_DEF_Y_POS, end.y);
+		player.setPosition(start.x, Config.PLAYER_DEF_Y_POS, start.y);
+		portal.setPosition(end.x, Config.PLAYER_DEF_Y_POS, end.y);
 		currentMap.setStepCounter(0);
 	}
 	
@@ -61,8 +65,8 @@ public class LevelManager {
 		}
 	}
 	
-	public boolean nextMapExist(){
-		int i=currentMap.getLevel();
-		return GameMapFactory.exist(i+1);
+	public boolean nextMapExist() {
+		int i = currentMap.getLevel();
+		return GameMapFactory.exist(i + 1);
 	}
 }

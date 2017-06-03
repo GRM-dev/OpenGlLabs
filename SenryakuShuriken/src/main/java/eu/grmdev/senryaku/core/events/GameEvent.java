@@ -4,6 +4,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 import java.util.function.Function;
 
+import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.graphic.Window;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,15 +16,17 @@ public abstract class GameEvent {
 	private Function<GameEvent, Boolean> repeatingCondition;
 	private @Getter double creationTime;
 	private @Getter Window window;
+	private @Getter IGame game;
 	
-	protected GameEvent(Window window) {
-		this(true, null);
+	protected GameEvent(Window window, IGame game) {
+		this(true, null, game);
 		this.window = window;
 	}
 	
-	protected GameEvent(boolean repeatable, Function<GameEvent, Boolean> repeatingCondition) {
+	protected GameEvent(boolean repeatable, Function<GameEvent, Boolean> repeatingCondition, IGame game) {
 		this.repeatable = repeatable;
 		this.repeatingCondition = repeatingCondition;
+		this.game = game;
 		this.creationTime = glfwGetTime();
 	}
 	

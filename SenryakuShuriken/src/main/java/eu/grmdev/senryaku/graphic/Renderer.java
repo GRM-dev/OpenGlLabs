@@ -245,7 +245,6 @@ public class Renderer {
 		HashMap<Mesh, List<Entity>> mapMeshes = scene.getEntityMeshes();
 		for (Mesh mesh : mapMeshes.keySet()) {
 			sceneShaderProgram.setUniformMat("material", mesh.getMaterial());
-			
 			Texture text = mesh.getMaterial().getTexture();
 			if (text != null) {
 				sceneShaderProgram.setUniformi("numCols", text.getNumCols());
@@ -254,9 +253,9 @@ public class Renderer {
 			
 			shadowRenderer.bindTextures(GL_TEXTURE2);
 			
-			mesh.renderList(mapMeshes.get(mesh), (Entity gameItem) -> {
-				sceneShaderProgram.setUniformf("selectedNonInstanced", gameItem.isSelected() ? 1.0f : 0.0f);
-				Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
+			mesh.renderList(mapMeshes.get(mesh), (Entity entity) -> {
+				sceneShaderProgram.setUniformf("selectedNonInstanced", entity.isSelected() ? 1.0f : 0.0f);
+				Matrix4f modelMatrix = transformation.buildModelMatrix(entity);
 				sceneShaderProgram.setUniform("modelNonInstancedMatrix", modelMatrix);
 			});
 		}
@@ -308,7 +307,7 @@ public class Renderer {
 			sceneShaderProgram.setUniformPl("pointLights", currPointLight, i);
 		}
 		
-		// Process Spot Ligths
+		// Spot Ligths
 		SpotLight[] spotLightList = sceneLight.getSpotLightList();
 		numLights = spotLightList != null ? spotLightList.length : 0;
 		for (int i = 0; i < numLights; i++) {

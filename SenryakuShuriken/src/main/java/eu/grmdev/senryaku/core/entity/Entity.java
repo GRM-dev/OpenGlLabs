@@ -1,12 +1,14 @@
 package eu.grmdev.senryaku.core.entity;
 
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
+
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.graphic.Mesh;
 import eu.grmdev.senryaku.graphic.TranslateAnimation;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 public class Entity {
 	private @Getter @Setter boolean selected;
@@ -19,31 +21,35 @@ public class Entity {
 	private @Getter @Setter boolean disableFrustumCulling;
 	private @Getter @Setter boolean insideFrustum;
 	protected TranslateAnimation tAnimation;
+	private @Getter double creationTime;
+	private @Getter(value = AccessLevel.PROTECTED) IGame game;
 	
-	public Entity() {
+	public Entity(IGame game) {
+		this.game = game;
 		selected = false;
 		position = new Vector3f(0, 0, 0);
 		renderOffset = new Vector3f(0, 0, 0);
 		rotation = new Quaternionf();
 		tAnimation = new TranslateAnimation(position);
+		creationTime = glfwGetTime();
 		scale = 1;
 		textPos = 0;
 		insideFrustum = true;
 		disableFrustumCulling = false;
 	}
 	
-	public Entity(Mesh mesh) {
-		this();
+	public Entity(Mesh mesh, IGame game) {
+		this(game);
 		this.meshes = new Mesh[]{mesh};
 	}
 	
-	public Entity(Mesh[] meshes) {
-		this();
+	public Entity(Mesh[] meshes, IGame game) {
+		this(game);
 		this.meshes = meshes;
 	}
 	
-	public Entity(Mesh[] meshes, float scale) {
-		this(meshes);
+	public Entity(Mesh[] meshes, float scale, IGame game) {
+		this(meshes, game);
 		this.scale = scale;
 	}
 	
@@ -54,6 +60,10 @@ public class Entity {
 			this.position.z = z;
 			tAnimation.reset();
 		}
+	}
+	
+	public final void setPosition(Vector3f v) {
+		setPosition(v.x, v.y, v.z);
 	}
 	
 	public final void setRotation(Quaternionf q) {

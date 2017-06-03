@@ -117,6 +117,12 @@ public class EventHandler {
 		}
 	}
 	
+	public void removeMouseEventListener(MouseEventListener listener) {
+		if (mouseEventsListeners.contains(listener)) {
+			mouseEventsListeners.remove(listener);
+		}
+	}
+	
 	public void addTickGameEventListener(GameEventListener listener) {
 		if (!tickGameEventsListeners.contains(listener)) {
 			tickGameEventsListeners.add(listener);

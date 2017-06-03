@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.joml.Vector3f;
 
+import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.Mesh;
@@ -126,8 +127,8 @@ public class Terrain extends Entity {
 	private @Getter Tile[][] tiles;
 	private float tileScale = 1.0f;
 	
-	public Terrain(Tile[][] tiles, String textureFile) throws Exception {
-		super();
+	public Terrain(Tile[][] tiles, String textureFile, IGame game) throws Exception {
+		super(game);
 		this.tiles = tiles;
 		this.textureFile = textureFile;
 		this.terrainSize = new int[]{tiles.length, tiles[0].length};
@@ -143,7 +144,7 @@ public class Terrain extends Entity {
 				float xDisplacement = row * tileScale;
 				float zDisplacement = col * tileScale;
 				Mesh mesh = tiles[row][col].getMesh();
-				Entity terrainBlock = new Entity(mesh);
+				Entity terrainBlock = new Entity(mesh, getGame());
 				terrainBlock.setScale(tileScale);
 				terrainBlock.setPosition(xDisplacement, 0, zDisplacement);
 				if (!entitiesByMesh.containsKey(mesh)) {
@@ -186,8 +187,8 @@ public class Terrain extends Entity {
 	}
 	
 	public Tile getTile(float x, float z) {
-		int xi = (int) Math.ceil(x);
-		int zi = (int) Math.ceil(z);
+		int xi = Math.round(x);
+		int zi = Math.round(z);
 		return getTile(xi, zi);
 	}
 }

@@ -1,10 +1,9 @@
 package eu.grmdev.senryaku.core;
 
-import java.util.List;
-
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.handlers.EventHandler;
 import eu.grmdev.senryaku.core.handlers.MouseHandler;
+import eu.grmdev.senryaku.game.Game;
 import eu.grmdev.senryaku.graphic.Camera;
 import eu.grmdev.senryaku.graphic.Window;
 
@@ -37,9 +36,27 @@ public interface IGame {
 	
 	void destroy();
 	
+	/**
+	 * When {@link Game} is paused return true.
+	 * Pause is when menu or other screen is active.
+	 * 
+	 * @return true wheng ame is paused
+	 */
 	boolean isPaused();
 	
 	Camera getCamera();
 	
-	List<Entity> getEntities();
+	/**
+	 * Adds entity to scene
+	 * 
+	 * @param entity
+	 */
+	void addEntity(Entity entity);
+	
+	/**
+	 * Remove entity from scene
+	 * 
+	 * @param entity
+	 */
+	void removeEntity(Entity entity);
 }
