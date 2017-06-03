@@ -13,8 +13,10 @@ import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
 import eu.grmdev.senryaku.core.events.KeyEvent;
-import eu.grmdev.senryaku.core.handlers.*;
+import eu.grmdev.senryaku.core.handlers.EventHandler;
+import eu.grmdev.senryaku.core.handlers.MouseHandler;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
+import eu.grmdev.senryaku.core.map.LevelManager;
 import eu.grmdev.senryaku.game.hud.Hud;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
@@ -26,11 +28,11 @@ public class Game implements IGame {
 	private final Renderer renderer;
 	private Scene scene;
 	private final Hud hud;
-	private final Camera camera;
+	private final @Getter Camera camera;
 	private final LevelManager levelManager;
 	private float lightAngleInc;
 	private float lightAngle;
-	private Entity[] entities;
+	private @Getter List<Entity> entities;
 	private Player player;
 	
 	public Game() throws Exception {
@@ -40,6 +42,7 @@ public class Game implements IGame {
 		cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
 		scene = new Scene();
 		hud = new Hud();
+		
 		lightAngle = 90;
 		lightAngleInc = 0;
 	}
@@ -52,7 +55,7 @@ public class Game implements IGame {
 		renderer.init(window);
 		
 		entities = setupStartEntities();
-		scene.setEntities(entities);
+		scene.setEntities(entities.toArray(new Entity[0]));
 		
 		scene.setRenderShadows(Config.SHADOWS_ENABLED);
 		Vector3f fogColour = new Vector3f(0.5f, 0.5f, 0.5f);
@@ -76,7 +79,7 @@ public class Game implements IGame {
 		levelManager.goTo(1);
 	}
 	
-	private Entity[] setupStartEntities() throws Exception {
+	private List<Entity> setupStartEntities() throws Exception {
 		List<Entity> entities = new ArrayList<>();
 		player = new Player(camera, levelManager, hud);
 		entities.add(player);
@@ -86,7 +89,7 @@ public class Game implements IGame {
 		levelManager.setPortal(portal);
 		entities.add(portal);
 		
-		return entities.toArray(new Entity[0]);
+		return entities;
 	}
 	
 	/**
@@ -99,7 +102,6 @@ public class Game implements IGame {
 		SkyBox skyBox = new SkyBox("models/skybox.obj", new Vector4f(0.65f, 0.65f, 0.65f, 1.0f));
 		skyBox.setScale(skyBoxScale);
 		scene.setSkyBox(skyBox);
-		
 	}
 	
 	/**
@@ -126,7 +128,6 @@ public class Game implements IGame {
 		camera.getRotation().x = 65.0f;
 		camera.getOffset().z = 3f;
 		camera.getOffset().x = 0.3f;
-		
 	}
 	
 	private void assignGlobalListeners(EventHandler eHandler) {

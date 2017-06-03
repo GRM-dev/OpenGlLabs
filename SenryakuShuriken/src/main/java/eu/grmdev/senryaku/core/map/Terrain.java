@@ -18,40 +18,67 @@ public class Terrain extends Entity {
 	// @formatter:off
 	public static final float[] VERTICES=new float[]{
 		// V0
-      -0.5f, -0.5f, 0.5f,
-      // V1
-      0.5f, -0.5f, 0.5f,
-      // V2
-      0.5f, 0.5f, 0.5f,
-      // V3
       -0.5f, 0.5f, 0.5f,
+      // V1
+      -0.5f, -0.5f, 0.5f,
+      // V2
+      0.5f, -0.5f, 0.5f,
+      // V3
+      0.5f, 0.5f, 0.5f,
       // V4
-      -0.5f, -0.5f, -0.5f,
-      // V5
-      0.5f, -0.5f, -0.5f,
-      // V6
-      0.5f, 0.5f, -0.5f,
-      // V7
       -0.5f, 0.5f, -0.5f,
+      // V5
+      0.5f, 0.5f, -0.5f,
+      // V6
+      -0.5f, -0.5f, -0.5f,
+      // V7
+      0.5f, -0.5f, -0.5f,
+      
+      //top face
+      // V8: V4 repeated
+      -0.5f, 0.5f, -0.5f,
+      // V9: V5 repeated
+      0.5f, 0.5f, -0.5f,
+      // V10: V0 repeated
+      -0.5f, 0.5f, 0.5f,
+      // V11: V3 repeated
+      0.5f, 0.5f, 0.5f,
+
+      //right face
+      // V12: V3 repeated
+      0.5f, 0.5f, 0.5f,
+      // V13: V2 repeated
+      0.5f, -0.5f, 0.5f,
+
+      //left face
+      // V14: V0 repeated
+      -0.5f, 0.5f, 0.5f,
+      // V15: V1 repeated
+      -0.5f, -0.5f, 0.5f,
+
+      //bottom face
+      // V16: V6 repeated
+      -0.5f, -0.5f, -0.5f,
+      // V17: V7 repeated
+      0.5f, -0.5f, -0.5f,
+      // V18: V1 repeated
+      -0.5f, -0.5f, 0.5f,
+      // V19: V2 repeated
+      0.5f, -0.5f, 0.5f,
 	};
 	public static final int[] INDICES=new int[]{
-		0, 1, 2,
-		2, 3, 0,
-		// top
-		1, 5, 6,
-		6, 2, 1,
-		// back
-		7, 6, 5,
-		5, 4, 7,
-		// bottom
-		4, 0, 3,
-		3, 7, 4,
-		// left
-		4, 5, 1,
-		1, 0, 4,
-		// right
-		3, 2, 6,
-		6, 7, 3,
+		// Front face
+      0, 1, 3, 3, 1, 2,
+      // Top Face
+      8, 10, 11, 9, 8, 11,
+      // Right face
+      12, 13, 7, 5, 12, 7,
+      // Left face
+      14, 15, 6, 4, 14, 6,
+      // Bottom face
+      16, 18, 19, 17, 16, 19,
+      // Back face
+      4, 6, 7, 5, 4, 7,
 	};
 	public static final float[] COLORS=new float[]{
 		0.5f, 0.0f, 0.0f,
@@ -74,21 +101,25 @@ public class Terrain extends Entity {
       0.0f, 0.5f,
       0.5f, 0.5f,
       
+      // top face
       0.0f, 0.5f,
       0.5f, 0.5f,
       0.0f, 1.0f,
       0.5f, 1.0f,
 
+      // right face
       0.0f, 0.0f,
       0.0f, 0.5f,
 
+      // left face
       0.5f, 0.0f,
       0.5f, 0.5f,
-      
+
+      // bottom face
       0.5f, 0.0f,
       1.0f, 0.0f,
       0.5f, 0.5f,
-      1.0f, 0.5f,	    
+      1.0f, 0.5f,
 	};
 	private String textureFile;
 // @formatter:on	
@@ -150,7 +181,7 @@ public class Terrain extends Entity {
 	}
 	
 	public Tile getTile(int x, int z) {
-		if (x < 0 || z < 0 || x > terrainSize[0] || z > terrainSize[1]) { return null; }
+		if (x < 0 || z < 0 || x > terrainSize[0] - 1 || z > terrainSize[1] - 1) { return null; }
 		return tiles[x][z];
 	}
 	

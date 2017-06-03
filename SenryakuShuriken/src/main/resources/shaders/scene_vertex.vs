@@ -73,7 +73,6 @@ void main()
     vec4 mvPos = modelViewMatrix * initPos;
     gl_Position = projectionMatrix * mvPos;
 
-    // Support for texture atlas, update texture coordinates
     float x = (texCoord.x / numCols + texOffset.x);
     float y = (texCoord.y / numRows + texOffset.y);
     outTexCoord = vec2(x, y);

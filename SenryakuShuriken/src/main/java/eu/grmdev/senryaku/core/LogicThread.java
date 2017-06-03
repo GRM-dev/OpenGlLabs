@@ -1,6 +1,6 @@
 package eu.grmdev.senryaku.core;
 
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.*;
 
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.events.GameEvent;
@@ -29,14 +29,15 @@ public class LogicThread extends Thread {
 		this.game = game;
 		this.window = window;
 		setName("GAME_LOGIC_LOOP_THREAD");
-		mouseHandler = new MouseHandler();
 		eHandler = new EventHandler(game);
+		mouseHandler = new MouseHandler(game, eHandler);
 		keyHandler = new KeyboardHandler(eHandler);
 	}
 	
 	public void init() {
 		mouseHandler.init(window);
 		glfwSetKeyCallback(window.getWindowHandle(), keyHandler);
+		glfwSetMouseButtonCallback(window.getWindowHandle(), mouseHandler);
 		isReady = true;
 	}
 	

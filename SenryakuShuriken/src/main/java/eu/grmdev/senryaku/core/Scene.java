@@ -14,6 +14,7 @@ import lombok.Setter;
 public class Scene {
 	private @Getter final HashMap<Mesh, List<Entity>> entityMeshes;
 	private @Getter final HashMap<InstancedMesh, List<Entity>> gameInstancedMeshes;
+	private @Getter Set<Entity> entities;
 	private @Getter @Setter SkyBox skyBox;
 	private @Getter @Setter SceneLight sceneLight;
 	private @Getter @Setter Fog fog;
@@ -29,8 +30,10 @@ public class Scene {
 	
 	public void setEntities(Entity[] entities) {
 		if (entities == null || entities.length == 0) { return; }
+		this.entities = new HashSet<>();
 		for (int i = 0; i < entities.length; i++) {
 			Entity entity = entities[i];
+			this.entities.add(entity);
 			Mesh[] meshes = entity.getMeshes();
 			for (Mesh mesh : meshes) {
 				boolean instancedMesh = mesh instanceof InstancedMesh;

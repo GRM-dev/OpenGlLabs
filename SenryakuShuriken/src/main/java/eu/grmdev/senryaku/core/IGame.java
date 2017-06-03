@@ -1,8 +1,11 @@
 package eu.grmdev.senryaku.core;
 
+import java.util.List;
+
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.handlers.EventHandler;
 import eu.grmdev.senryaku.core.handlers.MouseHandler;
+import eu.grmdev.senryaku.graphic.Camera;
 import eu.grmdev.senryaku.graphic.Window;
 
 public interface IGame {
@@ -35,4 +38,8 @@ public interface IGame {
 	void destroy();
 	
 	boolean isPaused();
+	
+	Camera getCamera();
+	
+	List<Entity> getEntities();
 }

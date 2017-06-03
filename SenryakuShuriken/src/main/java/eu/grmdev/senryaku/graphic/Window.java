@@ -24,21 +24,19 @@ import lombok.Setter;
 
 public class Window {
 	private @Getter final String title;
-	private @Getter int width;
-	private @Getter int height;
 	private @Getter long windowHandle;
 	private @Getter @Setter boolean resized;
 	private @Getter @Setter boolean vSync;
 	private @Getter final WindowOptions windowOptions;
 	private @Getter final Matrix4f projectionMatrix;
+	private @Getter Camera camera;
 	
-	public Window(String title, boolean vSync, WindowOptions opts) {
+	public Window(String title, boolean vSync, WindowOptions opts, Camera camera) {
 		this.title = title;
-		this.width = opts.width;
-		this.height = opts.height;
-		this.vSync = vSync;
-		this.resized = false;
 		this.windowOptions = opts;
+		this.vSync = vSync;
+		this.camera = camera;
+		this.resized = false;
 		this.projectionMatrix = new Matrix4f();
 	}
 	
@@ -84,7 +82,7 @@ public class Window {
 	 */
 	private void centerWindow() {
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		glfwSetWindowPos(windowHandle, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+		glfwSetWindowPos(windowHandle, (vidmode.width() - windowOptions.width) / 2, (vidmode.height() - windowOptions.height) / 2);
 	}
 	
 	/**
@@ -120,8 +118,8 @@ public class Window {
 	 */
 	private void setupWindowCallbacks() {
 		glfwSetFramebufferSizeCallback(windowHandle, (window, width, height) -> {
-			this.width = width;
-			this.height = height;
+			windowOptions.width = width;
+			windowOptions.height = height;
 			this.setResized(true);
 		});
 		glfwSetWindowCloseCallback(windowHandle, new GLFWWindowCloseCallback() {
@@ -149,9 +147,9 @@ public class Window {
 			glfwWindowHint(GLFW_SAMPLES, 4);
 		}
 		
-		if (width == 0 || height == 0) {
-			width = 100;
-			height = 100;
+		if (windowOptions.width == 0 || windowOptions.height == 0) {
+			windowOptions.width = 100;
+			windowOptions.height = 100;
 		}
 		int max;
 		if (windowOptions.maximized) {
@@ -161,7 +159,7 @@ public class Window {
 		}
 		glfwWindowHint(GLFW_MAXIMIZED, max);
 		
-		windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
+		windowHandle = glfwCreateWindow(windowOptions.width, windowOptions.height, title, NULL, NULL);
 		if (windowHandle == NULL) { throw new RuntimeException("Failed to create the GLFW window"); }
 	}
 	
@@ -185,7 +183,7 @@ public class Window {
 	}
 	
 	public Matrix4f updateProjectionMatrix() {
-		float aspectRatio = (float) width / (float) height;
+		float aspectRatio = (float) windowOptions.width / (float) windowOptions.height;
 		return projectionMatrix.setPerspective(Config.FOV, aspectRatio, Config.Z_NEAR, Config.Z_FAR);
 	}
 	
@@ -206,6 +204,14 @@ public class Window {
 		return glfwWindowShouldClose(windowHandle);
 	}
 	
+	public int getWidth() {
+		return windowOptions.width;
+	}
+	
+	public int getHeight() {
+		return windowOptions.height;
+	}
+	
 	public static class WindowOptions {
 		public int width;
 		public int height;
@@ -217,4 +223,5 @@ public class Window {
 		public boolean frustumCulling;
 		public boolean maximized;
 	}
+	
 }

@@ -8,7 +8,7 @@ import org.lwjgl.nanovg.NVGColor;
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.Main;
 import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
-import eu.grmdev.senryaku.core.handlers.LevelManager;
+import eu.grmdev.senryaku.core.map.LevelManager;
 import eu.grmdev.senryaku.graphic.hud.HudUtils;
 
 public class MenuHud {

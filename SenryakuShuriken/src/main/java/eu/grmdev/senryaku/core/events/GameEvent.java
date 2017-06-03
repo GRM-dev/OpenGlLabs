@@ -35,9 +35,6 @@ public abstract class GameEvent {
 		if (repeatable && repeatingCondition != null && !repeatingCondition.apply(this)) {
 			repeatable = false;
 		}
-		if (!repeatable) {
-			consumed = true;
-		}
 	}
 	
 	public void reset() {

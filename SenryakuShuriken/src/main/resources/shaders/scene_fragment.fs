@@ -100,11 +100,11 @@ vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, ve
     vec4 diffuseColour = vec4(0, 0, 0, 0);
     vec4 specColour = vec4(0, 0, 0, 0);
 
-    // Diffuse Light
+    // Diffuse
     float diffuseFactor = max(dot(normal, to_light_dir), 0.0);
     diffuseColour = diffuseC * vec4(light_colour, 1.0) * light_intensity * diffuseFactor;
 
-    // Specular Light
+    // Specular
     vec3 camera_direction = normalize(-position);
     vec3 from_light_dir = -to_light_dir;
     vec3 reflected_light = normalize(reflect(from_light_dir , normal));
@@ -121,7 +121,7 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal)
     vec3 to_light_dir  = normalize(light_direction);
     vec4 light_colour = calcLightColour(light.colour, light.intensity, position, to_light_dir, normal);
 
-    // Apply Attenuation
+    // Attenuation
     float distance = length(light_direction);
     float attenuationInv = light.att.constant + light.att.linear * distance +
         light.att.exponent * distance * distance;
@@ -181,7 +181,6 @@ float calcShadow(vec4 position, int idx)
     }
 
     vec3 projCoords = position.xyz;
-    // Transform from screen coordinates to texture coordinates
     projCoords = projCoords * 0.5 + 0.5;
     float bias = 0.005;
 

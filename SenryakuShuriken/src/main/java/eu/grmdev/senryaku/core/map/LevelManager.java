@@ -1,12 +1,10 @@
-package eu.grmdev.senryaku.core.handlers;
+package eu.grmdev.senryaku.core.map;
 
 import java.util.*;
 
 import org.joml.Vector2i;
 
 import eu.grmdev.senryaku.core.entity.Entity;
-import eu.grmdev.senryaku.core.map.GameMap;
-import eu.grmdev.senryaku.core.map.GameMapFactory;
 import eu.grmdev.senryaku.game.GameSave;
 import eu.grmdev.senryaku.game.Player;
 import lombok.Getter;

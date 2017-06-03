@@ -55,4 +55,10 @@ public class Camera {
 		rotation.y = y;
 		rotation.z = z;
 	}
+	
+	public Vector3f getOffsetPosition() {
+		Vector3f v = new Vector3f();
+		position.add(offset, v);
+		return v;
+	}
 }

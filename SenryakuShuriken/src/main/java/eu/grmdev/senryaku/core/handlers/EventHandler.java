@@ -4,15 +4,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import eu.grmdev.senryaku.core.IGame;
-import eu.grmdev.senryaku.core.events.GameEvent;
-import eu.grmdev.senryaku.core.events.KeyEvent;
-import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
-import eu.grmdev.senryaku.core.events.listeners.KeyEventListener;
+import eu.grmdev.senryaku.core.events.*;
+import eu.grmdev.senryaku.core.events.listeners.*;
 
 public class EventHandler {
 	private List<KeyEventListener> keyPressedEventsListeners = new LinkedList<>();
 	private List<KeyEventListener> keyReleasedEventsListeners = new LinkedList<>();
 	private List<KeyEventListener> hudKeyEventsListeners = new LinkedList<>();
+	private List<MouseEventListener> mouseEventsListeners = new LinkedList<>();
 	private List<GameEventListener> tickGameEventsListeners = new LinkedList<>();
 	private List<GameEventListener> cycleGameEventsListeners = new LinkedList<>();
 	private IGame game;
@@ -23,7 +22,7 @@ public class EventHandler {
 	
 	public synchronized void dispatchKeyEvent(KeyEvent event) {
 		if (!game.isPaused()) {
-			if (event.getKeyType() == KeyEvent.PRESSED && !keyPressedEventsListeners.isEmpty()) {
+			if ((event.getAction() == KeyEvent.PRESSED || event.getAction() == KeyEvent.REPEAT) && !keyPressedEventsListeners.isEmpty()) {
 				for (KeyEventListener gEl : keyPressedEventsListeners) {
 					gEl.actionPerformed(event);
 					event.dispatch();
@@ -43,6 +42,20 @@ public class EventHandler {
 		}
 	}
 	
+	public synchronized void dispatchMouseEvent(MouseEvent event) {
+		if (!game.isPaused()) {
+			if (!mouseEventsListeners.isEmpty()) {
+				for (MouseEventListener gEl : mouseEventsListeners) {
+					gEl.actionPerformed(event);
+					event.dispatch();
+					if (event.isRemove()) {
+						break;
+					}
+				}
+			}
+		}
+	}
+	
 	public synchronized void dispatchHudKeyEvent(KeyEvent event) {
 		if (game.isPaused() && !hudKeyEventsListeners.isEmpty()) {
 			for (KeyEventListener gEl : hudKeyEventsListeners) {
@@ -52,6 +65,7 @@ public class EventHandler {
 					break;
 				}
 			}
+			event.setConsumed(true);
 		}
 	}
 	
@@ -64,6 +78,7 @@ public class EventHandler {
 					break;
 				}
 			}
+			event.setConsumed(true);
 		}
 	}
 	
@@ -76,6 +91,7 @@ public class EventHandler {
 					break;
 				}
 			}
+			event.setConsumed(true);
 		}
 	}
 	
@@ -92,6 +108,12 @@ public class EventHandler {
 	public void addHudKeyEventListener(KeyEventListener listener) {
 		if (!hudKeyEventsListeners.contains(listener)) {
 			hudKeyEventsListeners.add(listener);
+		}
+	}
+	
+	public void addMouseEventListener(MouseEventListener listener) {
+		if (!mouseEventsListeners.contains(listener)) {
+			mouseEventsListeners.add(listener);
 		}
 	}
 	

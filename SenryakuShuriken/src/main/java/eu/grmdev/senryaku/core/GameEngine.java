@@ -23,7 +23,7 @@ public class GameEngine implements Runnable {
 		this.title = windowTitle;
 		this.game = game;
 		timer = new Timer();
-		window = new Window(windowTitle, vSync, opts);
+		window = new Window(windowTitle, vSync, opts, game.getCamera());
 		renderThread = new Thread(this, "GAME_RENDER_LOOP_THREAD");
 		logicThread = new LogicThread(game, window);
 	}

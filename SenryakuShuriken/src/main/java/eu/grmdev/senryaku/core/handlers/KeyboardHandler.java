@@ -1,6 +1,6 @@
 package eu.grmdev.senryaku.core.handlers;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class KeyboardHandler extends GLFWKeyCallback {
 		keys[key] = isDown;
 		if (isDown) {
 			if (!wasDown) {
-				KeyEvent event = new KeyEvent(key, action, KeyEvent.PRESSED);
+				KeyEvent event = new KeyEvent(key, KeyEvent.PRESSED);
 				eHandler.dispatchKeyEvent(event);
 				synchronized (pressedKeys) {
 					pressedKeys.add(key);
@@ -38,7 +38,7 @@ public class KeyboardHandler extends GLFWKeyCallback {
 			if (wasDown) {
 				synchronized (pressedKeys) {
 					pressedKeys.remove(new Integer(key));
-					KeyEvent event = new KeyEvent(key, action, KeyEvent.RELEASED);
+					KeyEvent event = new KeyEvent(key, KeyEvent.RELEASED);
 					eHandler.dispatchKeyEvent(event);
 					if (!event.isRemove()) {
 						eHandler.dispatchHudKeyEvent(event);
@@ -62,7 +62,7 @@ public class KeyboardHandler extends GLFWKeyCallback {
 		synchronized (pressedKeys) {
 			if (!pressedKeys.isEmpty()) {
 				for (int key : pressedKeys) {
-					KeyEvent event = new KeyEvent(key, GLFW_REPEAT, true, KeyEvent.PRESSED);
+					KeyEvent event = new KeyEvent(key, KeyEvent.REPEAT, true);
 					eHandler.dispatchKeyEvent(event);
 					if (event.isRemove()) {
 						continue;
