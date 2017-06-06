@@ -27,6 +27,11 @@ public final class Config {
 	public static final int SHADOW_MAP_HEIGHT = SHADOW_MAP_WIDTH;
 	public static final boolean FOG_ENABLED = false;
 	public static final String SAVE_FILE_NAME = "save.dat";
+	public static final int START_LEVEL = 1;
+	public static final boolean SHOW_DEBUG_INFO = false;
+	public static float CAMERA_OFFSET_X = 0.3f;
+	public static float CAMERA_OFFSET_Y = 0f;
+	public static float CAMERA_OFFSET_Z = 3f;
 	
 	public Config() {
 		opts = new Window.WindowOptions();

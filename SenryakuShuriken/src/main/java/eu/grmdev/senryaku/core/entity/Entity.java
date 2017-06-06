@@ -17,6 +17,7 @@ public class Entity {
 	protected @Getter final Vector3f renderOffset;
 	protected @Getter @Setter float scale;
 	private @Getter final Quaternionf rotation;
+	protected @Getter Direction direction;
 	private @Getter @Setter int textPos;
 	private @Getter @Setter boolean disableFrustumCulling;
 	private @Getter @Setter boolean insideFrustum;
@@ -30,6 +31,7 @@ public class Entity {
 		position = new Vector3f(0, 0, 0);
 		renderOffset = new Vector3f(0, 0, 0);
 		rotation = new Quaternionf();
+		direction = Direction.DOWN;
 		tAnimation = new TranslateAnimation(position);
 		creationTime = glfwGetTime();
 		scale = 1;

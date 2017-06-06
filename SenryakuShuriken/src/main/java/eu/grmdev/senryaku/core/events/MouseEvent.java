@@ -41,6 +41,7 @@ public class MouseEvent extends GameEvent {
 	}
 	
 	public Vector3f getClickDestination() {
-		return detector.getClickDestination(getGame().getCamera().getWindow(), pos, getGame().getCamera());
+		Vector3f clickDestination = detector.getClickDestination(getGame().getCamera().getWindow(), pos, getGame().getCamera());
+		return clickDestination;
 	}
 }

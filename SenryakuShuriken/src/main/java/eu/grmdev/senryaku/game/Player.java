@@ -6,8 +6,7 @@ import org.joml.Vector3f;
 
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.IGame;
-import eu.grmdev.senryaku.core.entity.Entity;
-import eu.grmdev.senryaku.core.entity.Movable;
+import eu.grmdev.senryaku.core.entity.*;
 import eu.grmdev.senryaku.core.entity.throwable.Projectile;
 import eu.grmdev.senryaku.core.entity.throwable.Projectiles;
 import eu.grmdev.senryaku.core.events.KeyEvent;
@@ -27,6 +26,8 @@ public class Player extends Entity implements Movable {
 	private LevelManager levelManager;
 	private Hud hud;
 	private EventHandler eh;
+	private Vector3f cRot;
+	private static float offset = -0.15f;
 	
 	public Player(LevelManager levelManager, Hud hud, IGame game) throws Exception {
 		super(game);
@@ -36,9 +37,9 @@ public class Player extends Entity implements Movable {
 		Mesh[] mesh = StaticMeshesLoader.load("models/player/ninja.obj", "/models/player");
 		this.meshes = mesh;
 		setScale(0.5f);
-		getRenderOffset().x = -0.15f;
-		getRenderOffset().z = -0.15f;
+		applyRenderOffset();
 		this.levelManager.setPlayer(this);
+		cRot = new Vector3f(0, 0, 1);
 	}
 	
 	@Override
@@ -75,10 +76,10 @@ public class Player extends Entity implements Movable {
 				if (!getGame().isPaused() && event.isLeftButtonClicked() && (event.getCreationTime() - (lastFired + cooldown) > 0)) {
 					lastFired = event.getCreationTime();
 					try {
-						Vector3f dir = event.getClickDestination();// new
-																					// Vector3f(0.1f,
-																					// 0f, 0f);
+						Vector3f dir = event.getClickDestination();
 						Projectile s = new Projectile(Projectiles.SHURIKEN, getPosition(), dir, getGame());
+						// System.out.println("_" + getPosition());
+						// System.out.println(">" + dir);
 						s.getRot().z = 0.5f;
 						s.init(eh);
 						getGame().addEntity(s);
@@ -93,7 +94,7 @@ public class Player extends Entity implements Movable {
 	}
 	
 	@Override
-	public boolean canMove(float rx, float rz) {
+	public synchronized boolean canMove(float rx, float rz) {
 		GameMap map = levelManager.getCurrentMap();
 		float x = (float) Math.floor(tAnimation.getDestPosition().x + rx);
 		float z = (float) Math.floor(tAnimation.getDestPosition().z + rz);
@@ -101,10 +102,33 @@ public class Player extends Entity implements Movable {
 	}
 	
 	@Override
-	public void move(float rx, float rz) {
+	public synchronized void move(float rx, float rz) {
 		tAnimation.move(rx, rz);
+		if (cRot.x != rx || cRot.z != rz) {
+			Direction d = Direction.getDirInvY(rx, rz);
+			float angle = direction.angle(d);
+			getRotation().rotateLocalY(angle);
+			cRot.x = rx;
+			cRot.z = rz;
+			direction = d;
+			applyRenderOffset();
+		}
 		checkEnd(position);
 		levelManager.getCurrentMap().incCounter();
+	}
+	
+	private void applyRenderOffset() {
+		if (direction == Direction.DOWN) {
+			getRenderOffset().x = offset;
+		} else if (direction == Direction.RIGHT) {
+			getRenderOffset().z = -offset;
+		} else if (direction == Direction.LEFT) {
+			getRenderOffset().x = -offset;
+			getRenderOffset().z = offset;
+		} else {
+			getRenderOffset().x = -offset;
+			getRenderOffset().z = -offset;
+		}
 	}
 	
 	/*

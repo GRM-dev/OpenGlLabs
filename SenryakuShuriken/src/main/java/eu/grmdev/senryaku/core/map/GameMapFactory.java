@@ -8,6 +8,7 @@ import org.joml.Vector2i;
 
 import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.misc.Utils;
+import eu.grmdev.senryaku.core.misc.VectorUtils;
 
 public class GameMapFactory {
 	private static int rows;
@@ -69,7 +70,7 @@ public class GameMapFactory {
 				tiles[i][j] = row.containsKey(j) ? row.get(j) : Tile.EMPTY;
 			}
 		}
-		tiles = Utils.transpose(tiles);
+		tiles = VectorUtils.transpose(tiles);
 		return tiles;
 	}
 	

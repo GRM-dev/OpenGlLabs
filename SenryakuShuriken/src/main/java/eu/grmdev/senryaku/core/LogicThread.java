@@ -56,9 +56,11 @@ public class LogicThread extends Thread {
 			game.initLogic(eHandler, mouseHandler);
 			tickLoopEvent = new GameEvent(window, game) {};
 			cycleLoopEvent = new GameEvent(window, game) {};
-			eHandler.addCycleGameEventListener(event -> {
-				System.out.println("TPS: " + lastTickCounter);
-			});
+			if (Config.SHOW_DEBUG_INFO) {
+				eHandler.addCycleGameEventListener(event -> {
+					System.out.println("TPS: " + lastTickCounter);
+				});
+			}
 			System.out.println("Start Logic Thread");
 			startTickTime = System.currentTimeMillis();
 			startCycleTime = startTickTime;

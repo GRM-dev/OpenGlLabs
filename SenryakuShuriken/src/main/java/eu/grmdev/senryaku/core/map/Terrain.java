@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 
 import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.entity.Entity;
-import eu.grmdev.senryaku.core.misc.Utils;
+import eu.grmdev.senryaku.core.misc.VectorUtils;
 import eu.grmdev.senryaku.graphic.Mesh;
 import eu.grmdev.senryaku.graphic.material.Material;
 import eu.grmdev.senryaku.graphic.material.Texture;
@@ -141,12 +141,14 @@ public class Terrain extends Entity {
 		
 		for (int row = 0; row < terrainSize[0]; row++) {
 			for (int col = 0; col < terrainSize[1]; col++) {
+				Tile tile = tiles[row][col];
 				float xDisplacement = row * tileScale;
 				float zDisplacement = col * tileScale;
-				Mesh mesh = tiles[row][col].getMesh();
+				float yDisplacement = tile.getHeight();
+				Mesh mesh = tile.getMesh();
 				Entity terrainBlock = new Entity(mesh, getGame());
 				terrainBlock.setScale(tileScale);
-				terrainBlock.setPosition(xDisplacement, 0, zDisplacement);
+				terrainBlock.setPosition(xDisplacement, yDisplacement, zDisplacement);
 				if (!entitiesByMesh.containsKey(mesh)) {
 					entitiesByMesh.put(mesh, new ArrayList<>());
 				}
@@ -157,7 +159,7 @@ public class Terrain extends Entity {
 	}
 	
 	private void createBackgroundMesh() throws Exception {
-		Mesh mesh = new Mesh(VERTICES, TEX_COORDS, Utils.calcNormals(VERTICES, INDICES), INDICES);
+		Mesh mesh = new Mesh(VERTICES, TEX_COORDS, VectorUtils.calcNormals(VERTICES, INDICES), INDICES);
 		Texture texture = new Texture(textureFile);
 		Material material = new Material(texture);
 		mesh.setMaterial(material);

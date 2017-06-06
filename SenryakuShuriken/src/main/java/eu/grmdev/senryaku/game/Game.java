@@ -76,7 +76,7 @@ public class Game implements IGame {
 		player.init(eh);
 		hud.initLogic(eh, mh);
 		GameSave.init();
-		levelManager.goTo(1);
+		levelManager.goTo(Config.START_LEVEL);
 	}
 	
 	private List<Entity> setupStartEntities() throws Exception {
@@ -126,8 +126,9 @@ public class Game implements IGame {
 	private void setupCameraParams() {
 		camera.setPosition(0.0f, 7.0f, 3.0f);
 		camera.getRotation().x = 65.0f;
-		camera.getOffset().z = 3f;
-		camera.getOffset().x = 0.3f;
+		camera.getOffset().z = Config.CAMERA_OFFSET_X;
+		camera.getOffset().z = Config.CAMERA_OFFSET_Y;
+		camera.getOffset().z = Config.CAMERA_OFFSET_Z;
 	}
 	
 	private void assignGlobalListeners(EventHandler eHandler) {

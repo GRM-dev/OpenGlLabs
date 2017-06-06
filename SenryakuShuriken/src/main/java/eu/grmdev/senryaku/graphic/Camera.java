@@ -25,7 +25,8 @@ public class Camera {
 	}
 	
 	public Matrix4f updateViewMatrix() {
-		return Transformation.updateGenericViewMatrix(position, offset, rotation, viewMatrix);
+		Matrix4f vm = Transformation.updateGenericViewMatrix(position, offset, rotation, viewMatrix);
+		return vm;
 	}
 	
 	public void movePosition(float offsetX, float offsetY, float offsetZ) {

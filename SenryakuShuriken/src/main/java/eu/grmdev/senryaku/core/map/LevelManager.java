@@ -26,6 +26,13 @@ public class LevelManager {
 		maps = new HashMap<>();
 	}
 	
+	/**
+	 * Changes map to map_'i' index
+	 * 
+	 * @param i
+	 *           map index
+	 * @throws Exception
+	 */
 	public void goTo(int i) throws Exception {
 		if (maps.containsKey(i)) {
 			currentMap = maps.get(i);

@@ -145,13 +145,12 @@ public class Renderer {
 		
 		try {
 			renderGameMap(window, camera, levelManager.getCurrentMap());
+			renderNonInstancedMeshes(scene);
+			renderInstancedMeshes(scene, viewMatrix);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		renderNonInstancedMeshes(scene);
-		renderInstancedMeshes(scene, viewMatrix);
 		
 		sceneShaderProgram.unbind();
 	}

@@ -3,24 +3,26 @@ package eu.grmdev.senryaku.core.map;
 import java.io.FileNotFoundException;
 
 import eu.grmdev.senryaku.Config;
-import eu.grmdev.senryaku.core.misc.Utils;
+import eu.grmdev.senryaku.core.misc.VectorUtils;
 import eu.grmdev.senryaku.graphic.Mesh;
 import eu.grmdev.senryaku.graphic.material.Material;
 import eu.grmdev.senryaku.graphic.material.Texture;
 import lombok.Getter;
 
 public enum Tile {
-	EMPTY("tile_def",false) ,
-	FLOOR("tile_c",true) ,
-	WALL("tile_a",false);
+	EMPTY("tile_def",false,0f) ,
+	FLOOR("tile_c",true,0f) ,
+	WALL("tile_a",false,1f);
 	
 	private @Getter String textureFile;
 	private @Getter boolean passable;
+	private @Getter float height;
 	private Mesh mesh;
 	
-	private Tile(String textureFile, boolean passable) {
+	private Tile(String textureFile, boolean passable, float height) {
 		this.textureFile = textureFile;
 		this.passable = passable;
+		this.height = height;
 	}
 	
 	public static Tile value(int i) {
@@ -30,7 +32,7 @@ public enum Tile {
 	public Mesh getMesh() throws Exception {
 		if (mesh == null) {
 			try {
-				mesh = new Mesh(Terrain.VERTICES, Terrain.TEX_COORDS, Utils.calcNormals(Terrain.VERTICES, Terrain.INDICES), Terrain.INDICES);
+				mesh = new Mesh(Terrain.VERTICES, Terrain.TEX_COORDS, VectorUtils.calcNormals(Terrain.VERTICES, Terrain.INDICES), Terrain.INDICES);
 				Texture texture = new Texture("/textures/" + textureFile + ".png");
 				Material material = new Material(texture);
 				mesh.setMaterial(material);

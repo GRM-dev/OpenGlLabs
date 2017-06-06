@@ -142,7 +142,8 @@ public class Mesh {
 	
 	public void renderList(List<Entity> entities, Consumer<Entity> consumer) {
 		initRender();
-		for (Entity entity : entities) {
+		for (Iterator<Entity> it = entities.iterator(); it.hasNext();) {
+			Entity entity = it.next();
 			if (entity.isInsideFrustum()) {
 				consumer.accept(entity);
 				glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
