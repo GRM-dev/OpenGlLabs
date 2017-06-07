@@ -54,7 +54,12 @@ public class GameMapFactory {
 				char c = arg[j].trim().charAt(0);
 				int ci = Integer.parseInt(c + "");
 				Tile t = Tile.value(ci);
-				row.put(j, t);
+				if (t == null) {
+					System.err.println("ERROR!: Wrong Tile at (" + i + ", " + j + ") with value [" + c + "]");
+					row.put(j, Tile.EMPTY);
+				} else {
+					row.put(j, t);
+				}
 			}
 			data.put(i, row);
 		}

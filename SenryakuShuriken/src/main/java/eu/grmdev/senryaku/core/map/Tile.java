@@ -10,26 +10,32 @@ import eu.grmdev.senryaku.graphic.material.Texture;
 import lombok.Getter;
 
 public enum Tile {
-	EMPTY(0,"def",true,0f) ,
-	FLOOR(1,"floor",true,0f) ,
-	GRASS(3,"grass",true,0f) ,
-	WALL(2,"wall",false,1f);
+	EMPTY(0,"def",true,0f,false) ,
+	FLOOR(1,"floor2",true,0f,true) ,
+	GRASS(3,"grass",true,0f,true) ,
+	WALL(2,"wall",false,1f,false) ,
+	CONE(4,"cone",false,0f,false);
 	
 	private @Getter int id;
 	private @Getter String textureFile;
 	private @Getter boolean passable;
+	private @Getter boolean throwable;
 	private @Getter float height;
 	private Mesh mesh;
 	
-	private Tile(int id, String textureFile, boolean passable, float height) {
+	private Tile(int id, String textureFile, boolean throwable, float height, boolean passable) {
 		this.id = id;
 		this.textureFile = textureFile;
+		this.throwable = throwable;
 		this.passable = passable;
 		this.height = height;
 	}
 	
-	public static Tile value(int i) {
-		return values()[i];
+	public static Tile value(int id) {
+		for (Tile t : values()) {
+			if (t.id == id) { return t; }
+		}
+		return null;
 	}
 	
 	public Mesh getMesh() throws Exception {

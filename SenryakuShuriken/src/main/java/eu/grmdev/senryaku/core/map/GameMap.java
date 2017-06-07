@@ -35,18 +35,19 @@ public class GameMap {
 		initialized = true;
 	}
 	
-	public boolean canMoveTo(float x, float y, float z) {
+	public boolean canPassTo(float x, float y, float z) {
 		if (finished) { return false; }
 		Tile tile = getTerrain().getTile(x, z);
-		if (tile == null) {
-			System.out.println("v [" + x + " " + y + " " + z + "]");
-			return false;
-		}
+		if (tile == null) { return false; }
 		boolean r = tile.isPassable();
-		if (!r) {
-			System.out.println("v [" + x + " " + y + " " + z + "]");
-			System.out.println(tile);
-		}
+		return r;
+	}
+	
+	public boolean canThrowTo(float x, float y, float z) {
+		if (finished) { return false; }
+		Tile tile = getTerrain().getTile(x, z);
+		if (tile == null) { return false; }
+		boolean r = tile.isThrowable();
 		return r;
 	}
 	

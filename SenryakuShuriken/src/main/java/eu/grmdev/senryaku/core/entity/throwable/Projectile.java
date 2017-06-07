@@ -80,7 +80,7 @@ public class Projectile extends Entity implements Movable {
 		if (z > -0.7f && z < 0.0f) {
 			z = 0;
 		}
-		collided = !map.canMoveTo(x, Config.PLAYER_DEF_Y_POS, z);
+		collided = !map.canThrowTo(x, Config.PLAYER_DEF_Y_POS, z);
 	}
 	
 	@Override
