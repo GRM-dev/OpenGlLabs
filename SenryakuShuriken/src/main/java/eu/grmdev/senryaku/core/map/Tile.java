@@ -10,16 +10,19 @@ import eu.grmdev.senryaku.graphic.material.Texture;
 import lombok.Getter;
 
 public enum Tile {
-	EMPTY("tile_def",false,0f) ,
-	FLOOR("tile_c",true,0f) ,
-	WALL("tile_a",false,1f);
+	EMPTY(0,"def",true,0f) ,
+	FLOOR(1,"floor",true,0f) ,
+	GRASS(3,"grass",true,0f) ,
+	WALL(2,"wall",false,1f);
 	
+	private @Getter int id;
 	private @Getter String textureFile;
 	private @Getter boolean passable;
 	private @Getter float height;
 	private Mesh mesh;
 	
-	private Tile(String textureFile, boolean passable, float height) {
+	private Tile(int id, String textureFile, boolean passable, float height) {
+		this.id = id;
 		this.textureFile = textureFile;
 		this.passable = passable;
 		this.height = height;
@@ -33,7 +36,7 @@ public enum Tile {
 		if (mesh == null) {
 			try {
 				mesh = new Mesh(Terrain.VERTICES, Terrain.TEX_COORDS, VectorUtils.calcNormals(Terrain.VERTICES, Terrain.INDICES), Terrain.INDICES);
-				Texture texture = new Texture("/textures/" + textureFile + ".png");
+				Texture texture = new Texture("/textures/tile_" + textureFile + ".png");
 				Material material = new Material(texture);
 				mesh.setMaterial(material);
 			}

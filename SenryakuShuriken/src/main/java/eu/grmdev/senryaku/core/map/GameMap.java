@@ -38,8 +38,16 @@ public class GameMap {
 	public boolean canMoveTo(float x, float y, float z) {
 		if (finished) { return false; }
 		Tile tile = getTerrain().getTile(x, z);
-		if (tile == null) { return false; }
-		return tile.isPassable();
+		if (tile == null) {
+			System.out.println("v [" + x + " " + y + " " + z + "]");
+			return false;
+		}
+		boolean r = tile.isPassable();
+		if (!r) {
+			System.out.println("v [" + x + " " + y + " " + z + "]");
+			System.out.println(tile);
+		}
+		return r;
 	}
 	
 	public synchronized boolean checkEnd(Vector3f pos) {

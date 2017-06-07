@@ -3,7 +3,9 @@ package eu.grmdev.senryaku.graphic;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.joml.*;
 
@@ -241,7 +243,7 @@ public class Renderer {
 	private void renderNonInstancedMeshes(Scene scene) {
 		sceneShaderProgram.setUniformi("isInstanced", 0);
 		
-		HashMap<Mesh, List<Entity>> mapMeshes = scene.getEntityMeshes();
+		ConcurrentHashMap<Mesh, List<Entity>> mapMeshes = scene.getEntityMeshes();
 		for (Mesh mesh : mapMeshes.keySet()) {
 			sceneShaderProgram.setUniformMat("material", mesh.getMaterial());
 			Texture text = mesh.getMaterial().getTexture();
@@ -263,7 +265,7 @@ public class Renderer {
 	private void renderInstancedMeshes(Scene scene, Matrix4f viewMatrix) {
 		sceneShaderProgram.setUniformi("isInstanced", 1);
 		
-		HashMap<InstancedMesh, List<Entity>> mapMeshes = scene.getGameInstancedMeshes();
+		ConcurrentHashMap<InstancedMesh, List<Entity>> mapMeshes = scene.getGameInstancedMeshes();
 		for (InstancedMesh mesh : mapMeshes.keySet()) {
 			Texture text = mesh.getMaterial().getTexture();
 			if (text != null) {

@@ -8,6 +8,7 @@ import lombok.Setter;
 
 public class TranslateAnimation {
 	private @Getter Vector3f position;
+	private @Getter Vector3f nextPosition;
 	private @Getter Vector3f destPosition;
 	private Vector3f v;
 	private int moveCounter = 0;
@@ -18,6 +19,7 @@ public class TranslateAnimation {
 		this.position = position;
 		this.destPosition = new Vector3f(position);
 		this.v = new Vector3f();
+		this.nextPosition = new Vector3f(position);
 	}
 	
 	public void move(float rx, float rz) {
@@ -28,6 +30,7 @@ public class TranslateAnimation {
 	
 	public void reset() {
 		destPosition.set(position);
+		nextPosition.set(position);
 	}
 	
 	private void recalc() {
@@ -39,8 +42,9 @@ public class TranslateAnimation {
 	public void animate(float interval) {
 		synchronized (position) {
 			if (moveCounter < tps) {
-				position.x += v.x * interval * 0.02f;
-				position.z += v.z * interval * 0.02f;
+				position.set(nextPosition);
+				nextPosition.x += v.x * interval * 0.02f;
+				nextPosition.z += v.z * interval * 0.02f;
 				moveCounter++;
 			} else {
 				position.set(destPosition);

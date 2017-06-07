@@ -26,6 +26,7 @@ public class KeyboardHandler extends GLFWKeyCallback {
 	 */
 	@Override
 	public void invoke(long window, int key, int scancode, int action, int mods) {
+		if (key == -1) { return; }
 		boolean isDown = action != GLFW_RELEASE;
 		boolean wasDown = isKeyDown(key);
 		keys[key] = isDown;

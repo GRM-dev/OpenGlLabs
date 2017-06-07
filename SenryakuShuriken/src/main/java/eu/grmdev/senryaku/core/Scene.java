@@ -1,6 +1,7 @@
 package eu.grmdev.senryaku.core;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
@@ -12,8 +13,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class Scene {
-	private @Getter final HashMap<Mesh, List<Entity>> entityMeshes;
-	private @Getter final HashMap<InstancedMesh, List<Entity>> gameInstancedMeshes;
+	private @Getter final ConcurrentHashMap<Mesh, List<Entity>> entityMeshes;
+	private @Getter final ConcurrentHashMap<InstancedMesh, List<Entity>> gameInstancedMeshes;
 	private @Getter @Setter SkyBox skyBox;
 	private @Getter @Setter SceneLight sceneLight;
 	private @Getter @Setter Fog fog;
@@ -21,8 +22,8 @@ public class Scene {
 	private @Getter @Setter boolean renderShadows;
 	
 	public Scene() {
-		entityMeshes = new HashMap<>();
-		gameInstancedMeshes = new HashMap<>();
+		entityMeshes = new ConcurrentHashMap<>();
+		gameInstancedMeshes = new ConcurrentHashMap<>();
 		fog = Fog.NOFOG;
 		renderShadows = true;
 	}
@@ -41,7 +42,7 @@ public class Scene {
 			boolean instancedMesh = mesh instanceof InstancedMesh;
 			List<Entity> list = instancedMesh ? gameInstancedMeshes.get(mesh) : entityMeshes.get(mesh);
 			if (list == null) {
-				list = new ArrayList<>();
+				list = Collections.synchronizedList(new ArrayList<>());
 				if (instancedMesh) {
 					gameInstancedMeshes.put((InstancedMesh) mesh, list);
 				} else {

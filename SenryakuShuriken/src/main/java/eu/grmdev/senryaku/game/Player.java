@@ -77,7 +77,7 @@ public class Player extends Entity implements Movable {
 					lastFired = event.getCreationTime();
 					try {
 						Vector3f dir = event.getClickDestination();
-						Projectile s = new Projectile(Projectiles.SHURIKEN, getPosition(), dir, getGame());
+						Projectile s = new Projectile(Projectiles.SHURIKEN, getPosition(), dir, getGame(), eh);
 						// System.out.println("_" + getPosition());
 						// System.out.println(">" + dir);
 						s.getRot().z = 0.5f;

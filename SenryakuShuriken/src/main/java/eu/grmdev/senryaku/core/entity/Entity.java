@@ -57,9 +57,7 @@ public class Entity {
 	
 	public final void setPosition(float x, float y, float z) {
 		synchronized (position) {
-			this.position.x = x;
-			this.position.y = y;
-			this.position.z = z;
+			this.position.set(x, y, z);
 			tAnimation.reset();
 		}
 	}
