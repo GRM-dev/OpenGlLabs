@@ -18,7 +18,7 @@ public class ShadowBuffer {
 	
 	public ShadowBuffer() throws Exception {
 		depthMapFBO = glGenFramebuffers();
-		depthMapTexture = new ArrTexture(Config.NUM_SHADOW_CASCADES, Config.SHADOW_MAP_WIDTH, Config.SHADOW_MAP_HEIGHT, GL_DEPTH_COMPONENT);
+		depthMapTexture = new ArrTexture(Config.NUM_SHADOW_CASCADES.<Integer> get(), Config.SHADOW_MAP_WIDTH.<Integer> get(), Config.SHADOW_MAP_HEIGHT.<Integer> get(), GL_DEPTH_COMPONENT);
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapTexture.getIds()[0], 0);
@@ -32,7 +32,7 @@ public class ShadowBuffer {
 	}
 	
 	public void bindTextures(int start) {
-		for (int i = 0; i < Config.NUM_SHADOW_CASCADES; i++) {
+		for (int i = 0; i < Config.NUM_SHADOW_CASCADES.<Integer> get(); i++) {
 			glActiveTexture(start + i);
 			glBindTexture(GL_TEXTURE_2D, depthMapTexture.getIds()[i]);
 		}

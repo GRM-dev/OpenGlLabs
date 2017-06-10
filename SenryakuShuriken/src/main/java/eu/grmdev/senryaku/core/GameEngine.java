@@ -18,12 +18,12 @@ public class GameEngine implements Runnable {
 	private String title;
 	private LogicThread logicThread;
 	
-	public GameEngine(String windowTitle, boolean vSync, Window.WindowOptions opts, IGame game) throws Exception {
+	public GameEngine(String windowTitle, Window.WindowOptions opts, IGame game) throws Exception {
 		GameEngine.instance = this;
 		this.title = windowTitle;
 		this.game = game;
 		timer = new Timer();
-		window = new Window(windowTitle, vSync, opts, game.getCamera());
+		window = new Window(windowTitle, opts, game.getCamera());
 		renderThread = new Thread(this, "GAME_RENDER_LOOP_THREAD");
 		logicThread = new LogicThread(game, window);
 	}
@@ -80,7 +80,7 @@ public class GameEngine implements Runnable {
 	}
 	
 	private void sync() {
-		float loopSlot = 1f / Config.TARGET_FPS;
+		float loopSlot = 1f / Config.TARGET_FPS.<Integer> get();
 		double endTime = timer.getLastLoopTime() + loopSlot;
 		while (timer.getTime() < endTime) {
 			try {

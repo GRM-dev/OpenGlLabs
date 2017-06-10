@@ -62,9 +62,9 @@ public class Game implements IGame {
 		List<Entity> entities = setupStartEntities();
 		scene.setEntities(entities.toArray(new Entity[0]));
 		
-		scene.setRenderShadows(Config.SHADOWS_ENABLED);
+		scene.setRenderShadows(Config.SHADOWS_ENABLED.<Boolean> get());
 		Vector3f fogColour = new Vector3f(0.5f, 0.5f, 0.5f);
-		scene.setFog(new Fog(Config.FOG_ENABLED, fogColour, 0.02f));
+		scene.setFog(new Fog(Config.FOG_ENABLED.<Boolean> get(), fogColour, 0.02f));
 		
 		setupWorld();
 		setupLights();
@@ -81,7 +81,7 @@ public class Game implements IGame {
 		player.init(eh);
 		hud.initLogic(eh, mh);
 		GameSave.init();
-		levelManager.goTo(Config.START_LEVEL);
+		levelManager.goTo(Config.START_LEVEL.<Integer> get());
 	}
 	
 	private List<Entity> setupStartEntities() throws Exception {
@@ -141,9 +141,9 @@ public class Game implements IGame {
 	private void setupCameraParams() {
 		camera.setPosition(0.0f, 7.0f, 3.0f);
 		camera.getRotation().x = 65.0f;
-		camera.getOffset().z = Config.CAMERA_OFFSET_X;
-		camera.getOffset().z = Config.CAMERA_OFFSET_Y;
-		camera.getOffset().z = Config.CAMERA_OFFSET_Z;
+		camera.getOffset().z = Config.CAMERA_OFFSET_X.<Float> get();
+		camera.getOffset().z = Config.CAMERA_OFFSET_Y.<Float> get();
+		camera.getOffset().z = Config.CAMERA_OFFSET_Z.<Float> get();
 	}
 	
 	private void assignGlobalListeners(EventHandler eHandler) {
@@ -224,7 +224,8 @@ public class Game implements IGame {
 	public void update(float interval, MouseHandler mouse, Window window) {
 		if (mouse.isRightButtonPressed()) {
 			Vector2f rotVec = mouse.getDisplVec();
-			camera.moveRotation(rotVec.x * Config.MOUSE_SENSITIVITY, rotVec.y * Config.MOUSE_SENSITIVITY, 0);
+			Float mouseSens = Config.MOUSE_SENSITIVITY.<Float> get();
+			camera.moveRotation(rotVec.x * mouseSens, rotVec.y * mouseSens, 0);
 		}
 		player.animate(interval);
 		for (Iterator<Movable> it = movable.iterator(); it.hasNext();) {
@@ -235,7 +236,8 @@ public class Game implements IGame {
 				it.remove();
 			}
 		}
-		camera.movePosition(cameraInc.x * Config.CAMERA_POS_STEP, cameraInc.y * Config.CAMERA_POS_STEP, cameraInc.z * Config.CAMERA_POS_STEP);
+		Float camPosStep = Config.CAMERA_POS_STEP.<Float> get();
+		camera.movePosition(cameraInc.x * camPosStep, cameraInc.y * camPosStep, cameraInc.z * camPosStep);
 		cameraInc.set(0, 0, 0);
 		camera.updateViewMatrix();
 	}

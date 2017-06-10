@@ -55,8 +55,8 @@ public class LevelManager {
 	}
 	
 	private void setStartEndObjectsPositions(Vector2i start, Vector2i end) throws Exception {
-		player.setPosition(start.x, Config.PLAYER_DEF_Y_POS, start.y);
-		portal.setPosition(end.x, Config.PLAYER_DEF_Y_POS, end.y);
+		player.setPosition(start.x, Config.PLAYER_DEF_Y_POS.<Float> get(), start.y);
+		portal.setPosition(end.x, Config.PLAYER_DEF_Y_POS.<Float> get(), end.y);
 		currentMap.setStepCounter(0);
 	}
 	

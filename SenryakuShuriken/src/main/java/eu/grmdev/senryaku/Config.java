@@ -1,47 +1,92 @@
 package eu.grmdev.senryaku;
 
-import eu.grmdev.senryaku.graphic.Window;
-
 /**
  * Static final config values for game
  */
-public final class Config {
-	public final Window.WindowOptions opts;
-	public final boolean vSync = true;
-	public static final float PLAYER_DEF_Y_POS = 0.5f;
-	public static final String IMAGE_FORMAT = "png";
-	public static final String FONT_NAME = "BOLD";
-	public static final int TARGET_UPS = 20;
-	public static final int TARGET_FPS = 60;
-	public static final int MAX_SPOT_LIGHTS = 5;
-	public static final int MAX_POINT_LIGHTS = 5;
-	public static final float Z_FAR = 1000.f;
-	public static final float Z_NEAR = 0.01f;
-	public static final float FOV = (float) Math.toRadians(60.0f);
-	public static final boolean SHADOWS_ENABLED = true;
-	public final static float CAMERA_POS_STEP = 0.7f;
-	public final static float MOUSE_SENSITIVITY = 0.2f;
-	public static final int NUM_SHADOW_CASCADES = 3;
-	public static final float[] SHADOW_CASCADE_SPLITS = new float[]{Z_FAR / 20.0f, Z_FAR / 10.0f, Z_FAR};
-	public static final int SHADOW_MAP_WIDTH = (int) Math.pow(65, 2);
-	public static final int SHADOW_MAP_HEIGHT = SHADOW_MAP_WIDTH;
-	public static final boolean FOG_ENABLED = false;
-	public static final String SAVE_FILE_NAME = "save.dat";
-	public static final int START_LEVEL = 3;
-	public static final boolean SHOW_DEBUG_INFO = false;
-	public static float CAMERA_OFFSET_X = 0.3f;
-	public static float CAMERA_OFFSET_Y = 0f;
-	public static float CAMERA_OFFSET_Z = 3f;
+public enum Config {
+	PLAYER_DEF_Y_POS(0.5f) ,
+	IMAGE_FORMAT("png") ,
+	FONT_NAME("BOLD") ,
+	TARGET_UPS(20) ,
+	TARGET_FPS(60) ,
+	MAX_SPOT_LIGHTS(5) ,
+	MAX_POINT_LIGHTS(5) ,
+	Z_FAR(1000.f) ,
+	Z_NEAR(0.01f) ,
+	FOV((float) Math.toRadians(60.0f)) ,
+	SHADOWS_ENABLED(true) ,
+	CAMERA_POS_STEP(0.7f) ,
+	MOUSE_SENSITIVITY(0.2f) ,
+	NUM_SHADOW_CASCADES(3) ,
+	SHADOW_CASCADE_SPLITS(Z_FAR.<Float> get() / 20.0f,Z_FAR.<Float> get() / 10.0f,Z_FAR.<Float> get()) ,
+	SHADOW_MAP_WIDTH((int) Math.pow(65, 2)) ,
+	SHADOW_MAP_HEIGHT(SHADOW_MAP_WIDTH.<Integer> get()) ,
+	FOG_ENABLED(false) ,
+	SAVE_FILE_NAME("save.dat") ,
+	START_LEVEL(3) ,
+	SHOW_DEBUG_INFO(false) ,
+	CAMERA_OFFSET_X(0.3f) ,
+	CAMERA_OFFSET_Y(0f) ,
+	CAMERA_OFFSET_Z(3f);
 	
-	public Config() {
-		opts = new Window.WindowOptions();
-		opts.cullFace = false;
-		opts.showFps = true;
-		opts.compatibleProfile = true;
-		opts.antialiasing = true;
-		opts.frustumCulling = false;
-		opts.maximized = false;
-		opts.width = 800;
-		opts.height = 600;
+	private Float f;
+	private Boolean b;
+	private Integer i;
+	private String s;
+	private float[] va;
+	private byte type = 0;
+	/*
+	 * byte fT=1;
+	 * byte faT=2;
+	 * byte sT=3;
+	 * byte bT=4;
+	 * byte iT=5;
+	 */
+	
+	private Config(float f) {
+		this.f = f;
+		type = 1;
+	}
+	
+	private Config(boolean b) {
+		this.b = b;
+		type = 4;
+	}
+	
+	private Config(int i) {
+		this.i = i;
+		type = 5;
+	}
+	
+	private Config(String s) {
+		this.s = s;
+		type = 3;
+	}
+	
+	private Config(float... va) {
+		this.va = va;
+		type = 2;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T get() {
+		switch (type) {
+			case 1 :
+				return (T) f;
+			case 2 :
+				return (T) getArray();
+			case 3 :
+				return (T) s;
+			case 4 :
+				return (T) b;
+			case 5 :
+				return (T) i;
+			default :
+				throw new ClassCastException("Type for " + name() + " is not valid.");
+		}
+	}
+	
+	public float[] getArray() {
+		return va;
 	}
 }

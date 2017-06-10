@@ -13,7 +13,7 @@ public class TranslateAnimation {
 	private Vector3f v;
 	private int moveCounter = 0;
 	private @Getter @Setter float speed = 0.5f;
-	private int tps = Config.TARGET_UPS / 2;
+	private int tps = Config.TARGET_UPS.<Integer> get() / 2;
 	
 	public TranslateAnimation(Vector3f position) {
 		this.position = position;

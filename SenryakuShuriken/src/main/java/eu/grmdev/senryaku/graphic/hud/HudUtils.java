@@ -67,7 +67,7 @@ public class HudUtils {
 			rgbai(new Vector4i(20, 0, 0, 0), bgColor);
 		}
 		drawRectangle(nvg, x, y, width, heigth, bgColor);
-		renderText(nvg, text, x + width / 2, y + heigth / 2, size, Config.FONT_NAME, textAlignment, rgba(textColor, bgColor));
+		renderText(nvg, text, x + width / 2, y + heigth / 2, size, Config.FONT_NAME.<String> get(), textAlignment, rgba(textColor, bgColor));
 		
 	}
 	

@@ -50,7 +50,7 @@ public class MenuHud {
 	private void renderMenuWindow(int cx, int cy, int w, int h, int leftMargin, int topMargin) {
 		HudUtils.drawRectangle(nvg, leftMargin - 10, topMargin - 10, w + 20, h + 20, hud.MAIN_COLOR_BRIGHTER());
 		HudUtils.drawRectangle(nvg, leftMargin, topMargin, w, h, hud.MAIN_COLOR_DARKER());
-		HudUtils.renderText(nvg, "MENU", cx - 70, topMargin, 60f, Config.FONT_NAME, NVG_ALIGN_LEFT | NVG_ALIGN_TOP, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		HudUtils.renderText(nvg, "MENU", cx - 70, topMargin, 60f, Config.FONT_NAME.<String> get(), NVG_ALIGN_LEFT | NVG_ALIGN_TOP, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 	}
 	
 	private void drawButtons(int cx, int cy, int windowWidth, int windowHeight, int leftMargin, int topMargin, HudObjs mcb) {

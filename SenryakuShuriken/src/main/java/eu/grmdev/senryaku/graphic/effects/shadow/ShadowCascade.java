@@ -40,7 +40,7 @@ public class ShadowCascade {
 	
 	public void update(Window window, Matrix4f viewMatrix, DirectionalLight light) {
 		float aspectRatio = (float) window.getWidth() / (float) window.getHeight();
-		projViewMatrix.setPerspective(Config.FOV, aspectRatio, zNear, zFar);
+		projViewMatrix.setPerspective(Config.FOV.<Float> get(), aspectRatio, zNear, zFar);
 		projViewMatrix.mul(viewMatrix);
 		// Calculate frustum corners in world space matrix
 		float maxZ = Float.MIN_VALUE;

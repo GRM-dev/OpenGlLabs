@@ -34,11 +34,11 @@ public class ShadowRenderer {
 		
 		setupDepthShader();
 		
-		float zNear = Config.Z_NEAR;
-		for (int i = 0; i < Config.NUM_SHADOW_CASCADES; i++) {
-			ShadowCascade shadowCascade = new ShadowCascade(zNear, Config.SHADOW_CASCADE_SPLITS[i]);
+		float zNear = Config.Z_NEAR.<Float> get();
+		for (int i = 0; i < Config.NUM_SHADOW_CASCADES.<Integer> get(); i++) {
+			ShadowCascade shadowCascade = new ShadowCascade(zNear, Config.SHADOW_CASCADE_SPLITS.getArray()[i]);
 			shadowCascades.add(shadowCascade);
-			zNear = Config.SHADOW_CASCADE_SPLITS[i];
+			zNear = Config.SHADOW_CASCADE_SPLITS.getArray()[i];
 		}
 	}
 	
@@ -63,7 +63,7 @@ public class ShadowRenderer {
 		SceneLight sceneLight = scene.getSceneLight();
 		DirectionalLight directionalLight = sceneLight != null ? sceneLight.getDirectionalLight() : null;
 		if (directionalLight == null) { return; }
-		for (int i = 0; i < Config.NUM_SHADOW_CASCADES; i++) {
+		for (int i = 0; i < Config.NUM_SHADOW_CASCADES.<Integer> get(); i++) {
 			ShadowCascade shadowCascade = shadowCascades.get(i);
 			shadowCascade.update(window, viewMatrix, directionalLight);
 		}
@@ -73,12 +73,12 @@ public class ShadowRenderer {
 		update(window, camera.getViewMatrix(), scene);
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, shadowBuffer.getDepthMapFBO());
-		glViewport(0, 0, Config.SHADOW_MAP_WIDTH, Config.SHADOW_MAP_HEIGHT);
+		glViewport(0, 0, Config.SHADOW_MAP_WIDTH.<Integer> get(), Config.SHADOW_MAP_HEIGHT.<Integer> get());
 		glClear(GL_DEPTH_BUFFER_BIT);
 		
 		depthShaderProgram.bind();
 		
-		for (int i = 0; i < Config.NUM_SHADOW_CASCADES; i++) {
+		for (int i = 0; i < Config.NUM_SHADOW_CASCADES.<Integer> get(); i++) {
 			ShadowCascade shadowCascade = shadowCascades.get(i);
 			
 			depthShaderProgram.setUniform("orthoProjectionMatrix", shadowCascade.getOrthoProjMatrix());

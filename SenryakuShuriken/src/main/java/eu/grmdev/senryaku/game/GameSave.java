@@ -45,7 +45,7 @@ public class GameSave implements Serializable {
 	
 	private static File getFile() throws IOException {
 		if (file == null) {
-			file = new File(Config.SAVE_FILE_NAME);
+			file = new File(Config.SAVE_FILE_NAME.<String> get());
 			if (!file.exists()) {
 				file.createNewFile();
 			}

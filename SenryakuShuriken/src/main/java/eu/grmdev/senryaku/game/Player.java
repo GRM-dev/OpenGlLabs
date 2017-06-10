@@ -98,7 +98,7 @@ public class Player extends Entity implements Movable {
 		GameMap map = levelManager.getCurrentMap();
 		float x = (float) Math.floor(tAnimation.getDestPosition().x + rx);
 		float z = (float) Math.floor(tAnimation.getDestPosition().z + rz);
-		return map.canPassTo(x, Config.PLAYER_DEF_Y_POS, z);
+		return map.canPassTo(x, Config.PLAYER_DEF_Y_POS.<Float> get(), z);
 	}
 	
 	@Override

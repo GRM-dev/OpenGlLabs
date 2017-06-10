@@ -9,7 +9,7 @@ import eu.grmdev.senryaku.graphic.Window;
 
 public class LogicThread extends Thread {
 	private long startTickTime;
-	private float tps = Config.TARGET_UPS;
+	private float tps = Config.TARGET_UPS.<Integer> get();
 	private long tickTime = (long) (1000 / tps);
 	private long lastTickSpan;
 	private int tickCounter;
@@ -56,7 +56,7 @@ public class LogicThread extends Thread {
 			game.initLogic(eHandler, mouseHandler);
 			tickLoopEvent = new GameEvent(window, game) {};
 			cycleLoopEvent = new GameEvent(window, game) {};
-			if (Config.SHOW_DEBUG_INFO) {
+			if (Config.SHOW_DEBUG_INFO.<Boolean> get()) {
 				eHandler.addCycleGameEventListener(event -> {
 					System.out.println("TPS: " + lastTickCounter);
 				});

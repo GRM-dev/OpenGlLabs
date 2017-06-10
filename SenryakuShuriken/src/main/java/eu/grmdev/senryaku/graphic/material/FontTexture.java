@@ -77,7 +77,7 @@ public class FontTexture {
 		g2D.dispose();
 		
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-			ImageIO.write(img, Config.IMAGE_FORMAT, out);
+			ImageIO.write(img, Config.IMAGE_FORMAT.<String> get(), out);
 			out.flush();
 			texture = new Texture(ByteBuffer.wrap(out.toByteArray()));
 		}

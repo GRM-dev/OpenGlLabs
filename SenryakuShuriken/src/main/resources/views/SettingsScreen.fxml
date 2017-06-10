@@ -26,7 +26,7 @@
       <URL value="@/styles/dark_style.css" />
    </stylesheets>
    <bottom>
-      <HBox BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
                   <Button defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Apply" textAlignment="CENTER" />
                   <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Save" textAlignment="CENTER" />

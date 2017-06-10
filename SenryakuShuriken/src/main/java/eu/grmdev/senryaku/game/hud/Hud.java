@@ -52,7 +52,7 @@ public class Hud {
 		if (this.nvg == NULL) { throw new Exception("Cannot init nanovg"); }
 		
 		fontBuffer = Utils.ioResourceToByteBuffer("/fonts/OpenSans-Bold.ttf", true, 150 * 1024);
-		int font = nvgCreateFontMem(nvg, Config.FONT_NAME, fontBuffer, 0);
+		int font = nvgCreateFontMem(nvg, Config.FONT_NAME.<String> get(), fontBuffer, 0);
 		if (font == -1) { throw new Exception("Could not add font"); }
 		color = NVGColor.create();
 		
@@ -140,7 +140,7 @@ public class Hud {
 		} else {
 			nvgFillColor(nvg, HudUtils.rgba(0xfd, 0xe1, 0xab, 0xff, color));
 		}
-		HudUtils.renderText(nvg, "Menu", mb.getX() + 30, mb.getY() + 1, 25.0f, Config.FONT_NAME, NVG_ALIGN_CENTER | NVG_ALIGN_TOP, color);
+		HudUtils.renderText(nvg, "Menu", mb.getX() + 30, mb.getY() + 1, 25.0f, Config.FONT_NAME.<String> get(), NVG_ALIGN_CENTER | NVG_ALIGN_TOP, color);
 	}
 	
 	private void renderTopHudInfo() {
@@ -148,8 +148,8 @@ public class Hud {
 		if (lm == null || lm.getCurrentMap() == null) { return; }
 		nvgFillColor(nvg, HudUtils.rgba(0xe6, 0xea, 0xed, 0xff, color));
 		String text = "Moves: " + lm.getCurrentMap().getStepCounter() + "      Map title: '" + lm.getCurrentMap().getTitle() + "', lvl: " + lm.getCurrentMap().getLevel();
-		HudUtils.renderText(nvg, text, 80, 8, 30.0f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, color);
-		HudUtils.renderText(nvg, dateFormat.format(new Date()), window.getWidth() - 150, 5, 40.0f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		HudUtils.renderText(nvg, text, 80, 8, 30.0f, Config.FONT_NAME.<String> get(), HudUtils.LEFT_TOP_ALIGNMENT, color);
+		HudUtils.renderText(nvg, dateFormat.format(new Date()), window.getWidth() - 150, 5, 40.0f, Config.FONT_NAME.<String> get(), HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 	}
 	
 	private void renderEndLevelScreen() {
@@ -164,20 +164,21 @@ public class Hud {
 		HudUtils.drawRectangle(nvg, leftMargin, topMargin, sx, sy, MAIN_COLOR_DARKER());
 		int firstTextX = cx - sx / 3;
 		int firstTextY = topMargin + 5;
-		HudUtils.renderText(nvg, "Level Complete!", firstTextX, firstTextY, 60f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
-		HudUtils.renderText(nvg, "You scored:", leftMargin + 5, firstTextY + 70, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
-		HudUtils.renderText(nvg, "Best score:", leftMargin + 5, firstTextY + 110, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		String font = Config.FONT_NAME.<String> get();
+		HudUtils.renderText(nvg, "Level Complete!", firstTextX, firstTextY, 60f, font, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		HudUtils.renderText(nvg, "You scored:", leftMargin + 5, firstTextY + 70, 40f, font, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		HudUtils.renderText(nvg, "Best score:", leftMargin + 5, firstTextY + 110, 40f, font, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
 		LevelManager lm = LevelManager.getInstance();
 		int score = lm.getCurrentMap().getScore();
 		int bScore = lm.getCurrentMap().getBestScore();
 		bScore = bScore == 0 ? score : bScore;
-		HudUtils.renderText(nvg, score + " moves", cx + 60, firstTextY + 70, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
-		HudUtils.renderText(nvg, bScore + " moves", cx + 60, firstTextY + 110, 40f, Config.FONT_NAME, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
-			
-		if(lm.nextMapExist()){
+		HudUtils.renderText(nvg, score + " moves", cx + 60, firstTextY + 70, 40f, font, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		HudUtils.renderText(nvg, bScore + " moves", cx + 60, firstTextY + 110, 40f, font, HudUtils.LEFT_TOP_ALIGNMENT, HudUtils.rgba(0xe6, 0xea, 0xed, 255, color));
+		
+		if (lm.nextMapExist()) {
 			HudUtils.drawButton(nvg, "Next Level", leftMargin + 5, cy + sy / 2 - 80, 240, 80, 40f, HudUtils.CENTER_MID_ALIGNMENT, new Vector4i(0xe6, 0xea, 0xed, 255), HudUtils.BUTTON_BG_COLOR(color), nextLevelListener, mouseHandler.getCurrentPos(),
 				mouseHandler.isLeftButtonPressed() && !menuActive);
-			}
+		}
 		HudUtils.drawButton(nvg, "Open Menu", leftMargin + 255, cy + sy / 2 - 80, 240, 80, 40f, HudUtils.CENTER_MID_ALIGNMENT, new Vector4i(0xe6, 0xea, 0xed, 255), HudUtils.BUTTON_BG_COLOR(color), openMenuListener, mouseHandler.getCurrentPos(),
 			mouseHandler.isLeftButtonPressed() && !menuActive);
 	}

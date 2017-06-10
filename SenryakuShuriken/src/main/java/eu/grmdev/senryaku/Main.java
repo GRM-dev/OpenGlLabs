@@ -3,6 +3,7 @@ package eu.grmdev.senryaku;
 import eu.grmdev.senryaku.core.GameEngine;
 import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.game.Game;
+import eu.grmdev.senryaku.graphic.Window.WindowOptions;
 import eu.grmdev.senryaku.jfx.FxGui;
 
 public class Main {
@@ -11,10 +12,11 @@ public class Main {
 	private static FxGui gui;
 	private static boolean running;
 	public static final boolean DEBUG = !false;
-	private static Config c;
+	private static WindowOptions opts;
 	
 	public static void main(String[] args) {
-		c = new Config();
+		initWindowOptions();
+		
 		gui = new FxGui();
 		if (!DEBUG) {
 			gui.startup();
@@ -30,11 +32,24 @@ public class Main {
 		}
 	}
 	
+	private static void initWindowOptions() {
+		opts = new WindowOptions();
+		opts.cullFace = false;
+		opts.showFps = true;
+		opts.compatibleProfile = true;
+		opts.antialiasing = true;
+		opts.frustumCulling = false;
+		opts.maximized = false;
+		opts.width = 800;
+		opts.height = 600;
+		opts.vSync = true;
+	}
+	
 	public static synchronized void startGame() {
 		if (!running) {
 			running = true;
 			try {
-				gameEng = new GameEngine("Senryaku Shuriken", c.vSync, c.opts, game);
+				gameEng = new GameEngine("Senryaku Shuriken", opts, game);
 				gameEng.start();
 				gui.closeGui();
 			}

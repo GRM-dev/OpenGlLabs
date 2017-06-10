@@ -72,18 +72,18 @@ public class Renderer {
 		sceneShaderProgram.createMaterialUniform("material");
 		sceneShaderProgram.createUniform("specularPower");
 		sceneShaderProgram.createUniform("ambientLight");
-		sceneShaderProgram.createPointLightListUniform("pointLights", Config.MAX_POINT_LIGHTS);
-		sceneShaderProgram.createSpotLightListUniform("spotLights", Config.MAX_SPOT_LIGHTS);
+		sceneShaderProgram.createPointLightListUniform("pointLights", Config.MAX_POINT_LIGHTS.<Integer> get());
+		sceneShaderProgram.createSpotLightListUniform("spotLights", Config.MAX_SPOT_LIGHTS.<Integer> get());
 		sceneShaderProgram.createDirectionalLightUniform("directionalLight");
 		sceneShaderProgram.createFogUniform("fog");
 		
-		for (int i = 0; i < Config.NUM_SHADOW_CASCADES; i++) {
+		for (int i = 0; i < Config.NUM_SHADOW_CASCADES.<Integer> get(); i++) {
 			sceneShaderProgram.createUniform("shadowMap_" + i);
 		}
-		sceneShaderProgram.createUniform("orthoProjectionMatrix", Config.NUM_SHADOW_CASCADES);
+		sceneShaderProgram.createUniform("orthoProjectionMatrix", Config.NUM_SHADOW_CASCADES.<Integer> get());
 		sceneShaderProgram.createUniform("modelNonInstancedMatrix");
-		sceneShaderProgram.createUniform("lightViewMatrix", Config.NUM_SHADOW_CASCADES);
-		sceneShaderProgram.createUniform("cascadeFarPlanes", Config.NUM_SHADOW_CASCADES);
+		sceneShaderProgram.createUniform("lightViewMatrix", Config.NUM_SHADOW_CASCADES.<Integer> get());
+		sceneShaderProgram.createUniform("cascadeFarPlanes", Config.NUM_SHADOW_CASCADES.<Integer> get());
 		sceneShaderProgram.createUniform("renderShadow");
 		
 		sceneShaderProgram.createUniform("jointsMatrix");
@@ -133,10 +133,10 @@ public class Renderer {
 		sceneShaderProgram.setUniform("projectionMatrix", projectionMatrix);
 		
 		List<ShadowCascade> shadowCascades = shadowRenderer.getShadowCascades();
-		for (int i = 0; i < Config.NUM_SHADOW_CASCADES; i++) {
+		for (int i = 0; i < Config.NUM_SHADOW_CASCADES.<Integer> get(); i++) {
 			ShadowCascade shadowCascade = shadowCascades.get(i);
 			sceneShaderProgram.setUniformm4fi("orthoProjectionMatrix", shadowCascade.getOrthoProjMatrix(), i);
-			sceneShaderProgram.setUniformfi("cascadeFarPlanes", Config.SHADOW_CASCADE_SPLITS[i], i);
+			sceneShaderProgram.setUniformfi("cascadeFarPlanes", Config.SHADOW_CASCADE_SPLITS.getArray()[i], i);
 			sceneShaderProgram.setUniformm4fi("lightViewMatrix", shadowCascade.getLightViewMatrix(), i);
 		}
 		
@@ -162,7 +162,7 @@ public class Renderer {
 		sceneShaderProgram.setUniformi("texture_sampler", 0);
 		sceneShaderProgram.setUniformi("normalMap", 1);
 		int start = 2;
-		for (int i = 0; i < Config.NUM_SHADOW_CASCADES; i++) {
+		for (int i = 0; i < Config.NUM_SHADOW_CASCADES.<Integer> get(); i++) {
 			sceneShaderProgram.setUniformi("shadowMap_" + i, start + i);
 		}
 		sceneShaderProgram.setUniformi("renderShadow", scene.isRenderShadows() ? 1 : 0);

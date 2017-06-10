@@ -26,15 +26,13 @@ public class Window {
 	private @Getter final String title;
 	private @Getter long windowHandle;
 	private @Getter @Setter boolean resized;
-	private @Getter @Setter boolean vSync;
 	private @Getter final WindowOptions windowOptions;
 	private @Getter final Matrix4f projectionMatrix;
 	private @Getter Camera camera;
 	
-	public Window(String title, boolean vSync, WindowOptions opts, Camera camera) {
+	public Window(String title, WindowOptions opts, Camera camera) {
 		this.title = title;
 		this.windowOptions = opts;
-		this.vSync = vSync;
 		this.camera = camera;
 		this.resized = false;
 		this.projectionMatrix = new Matrix4f();
@@ -52,7 +50,7 @@ public class Window {
 		
 		glfwMakeContextCurrent(windowHandle);
 		
-		if (isVSync()) {
+		if (windowOptions.vSync) {
 			glfwSwapInterval(1);
 		}
 		
@@ -184,12 +182,12 @@ public class Window {
 	
 	public Matrix4f updateProjectionMatrix() {
 		float aspectRatio = (float) windowOptions.width / (float) windowOptions.height;
-		return projectionMatrix.setPerspective(Config.FOV, aspectRatio, Config.Z_NEAR, Config.Z_FAR);
+		return projectionMatrix.setPerspective(Config.FOV.<Float> get(), aspectRatio, Config.Z_NEAR.<Float> get(), Config.Z_FAR.<Float> get());
 	}
 	
 	public static Matrix4f updateProjectionMatrix(Matrix4f matrix, int width, int height) {
 		float aspectRatio = (float) width / (float) height;
-		return matrix.setPerspective(Config.FOV, aspectRatio, Config.Z_NEAR, Config.Z_FAR);
+		return matrix.setPerspective(Config.FOV.<Float> get(), aspectRatio, Config.Z_NEAR.<Float> get(), Config.Z_FAR.<Float> get());
 	}
 	
 	public void setClearColor(float r, float g, float b, float alpha) {
@@ -212,6 +210,10 @@ public class Window {
 		return windowOptions.height;
 	}
 	
+	public boolean isVSync() {
+		return windowOptions.vSync;
+	}
+	
 	public static class WindowOptions {
 		public int width;
 		public int height;
@@ -222,6 +224,7 @@ public class Window {
 		public boolean antialiasing;
 		public boolean frustumCulling;
 		public boolean maximized;
+		public boolean vSync;
 	}
 	
 }
