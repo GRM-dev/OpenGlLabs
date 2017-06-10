@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
+import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.misc.Utils;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -14,19 +15,22 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.Getter;
 
 public class FxGui extends Application {
-	
 	private Stage stage;
 	private Scene startScene;
+	private static @Getter FxGui instance;
+	private static IGame game;
 	
-	public void startup() {
-		new Thread(() -> launch(), "FxGui Startup Thread").start();
+	public static void init(IGame game) {
+		FxGui.game = game;
 	}
 	
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public synchronized void start(Stage primaryStage) throws Exception {
 		this.stage = primaryStage;
+		Thread.currentThread().setName("FxGui Startup Thread");
 		Platform.setImplicitExit(false);
 		setUserAgentStylesheet(STYLESHEET_MODENA);
 		try {
@@ -49,6 +53,11 @@ public class FxGui extends Application {
 			stage.initStyle(StageStyle.TRANSPARENT);
 			stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon.png")));
 			stage.show();
+			
+			instance = this;
+			synchronized (game) {
+				game.notifyAll();
+			}
 		}
 		catch (IOException ex) {
 			ex.printStackTrace();

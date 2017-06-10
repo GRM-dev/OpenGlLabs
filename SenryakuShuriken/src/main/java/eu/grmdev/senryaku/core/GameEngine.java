@@ -3,6 +3,7 @@ package eu.grmdev.senryaku.core;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 import eu.grmdev.senryaku.Config;
+import eu.grmdev.senryaku.core.map.Tile;
 import eu.grmdev.senryaku.core.misc.Timer;
 import eu.grmdev.senryaku.graphic.Window;
 import lombok.Getter;
@@ -10,13 +11,14 @@ import lombok.Getter;
 public class GameEngine implements Runnable {
 	private @Getter static GameEngine instance;
 	private final Window window;
-	private final Thread renderThread;
+	private Thread renderThread;
 	private final Timer timer;
 	private final IGame game;
 	private double lastFps;
 	private int fps;
 	private String title;
 	private LogicThread logicThread;
+	private boolean running;
 	
 	public GameEngine(String windowTitle, Window.WindowOptions opts, IGame game) throws Exception {
 		GameEngine.instance = this;
@@ -29,6 +31,10 @@ public class GameEngine implements Runnable {
 	}
 	
 	public void start() {
+		if (running) {
+			System.err.println("Already running!");
+			return;
+		}
 		renderThread.start();
 		logicThread.start();
 	}
@@ -38,7 +44,7 @@ public class GameEngine implements Runnable {
 		try {
 			System.out.println("Start Render Thread");
 			init();
-			logicThread.init();
+			logicThread.initRender();
 			renderLoop();
 			System.out.println("Stop Render Thread");
 		}
@@ -54,12 +60,11 @@ public class GameEngine implements Runnable {
 		window.init();
 		timer.init();
 		game.initRender(window);
-		lastFps = timer.getTime();
 		fps = 0;
 	}
 	
 	private void renderLoop() {
-		boolean running = true;
+		running = true;
 		while (running && !window.windowShouldClose()) {
 			render();
 			if (!window.isVSync()) {
@@ -69,11 +74,13 @@ public class GameEngine implements Runnable {
 	}
 	
 	private void render() {
-		if (window.getWindowOptions().showFps && timer.getLastLoopTime() - lastFps > 1) {
+		double dSub = timer.getLastLoopTime() - lastFps;
+		if (window.getWindowOptions().showFps && dSub > 0.99f) {
 			lastFps = timer.getLastLoopTime();
 			window.setWindowTitle(title + " - " + fps + " FPS");
 			fps = 0;
 		}
+		timer.getElapsedTime();
 		fps++;
 		game.render(window);
 		window.update();
@@ -97,5 +104,7 @@ public class GameEngine implements Runnable {
 	private void destroy() {
 		logicThread.setStop();
 		game.destroy();
+		GameEngine.instance = null;
+		Tile.destroy();
 	}
 }

@@ -14,6 +14,10 @@ import java.util.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.assimp.AIScene;
 
+import com.google.common.base.*;
+import com.google.common.collect.Lists;
+import com.google.common.primitives.Floats;
+
 public class Utils {
 	
 	public static String loadResourceContent(String fileName) throws Exception {
@@ -148,5 +152,19 @@ public class Utils {
 		buffer.flip();
 		newBuffer.put(buffer);
 		return newBuffer;
+	}
+	
+	public static float[] extractFloats(String input) {
+		Preconditions.checkNotNull(input);
+		input = input.trim();
+		if (input.startsWith("[") || input.startsWith("(") || input.startsWith("{")) {
+			input = input.substring(1).trim();
+		}
+		if (input.endsWith("]") || input.endsWith(")") || input.endsWith("}")) {
+			input = input.substring(0, input.length() - 2).trim();
+		}
+		ArrayList<String> list = Lists.newArrayList(Splitter.on(CharMatcher.anyOf(" ,;/")).omitEmptyStrings().split(input.trim()));
+		List<Float> transform = Lists.transform(list, input1 -> Float.valueOf(input1));
+		return Floats.toArray(transform);
 	}
 }

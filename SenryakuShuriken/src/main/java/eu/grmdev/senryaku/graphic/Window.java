@@ -124,7 +124,7 @@ public class Window {
 			
 			@Override
 			public void invoke(long window) {
-				Main.closeApp();
+				Main.closeApp(Config.CLOSE_GUI_ON_GAME_START.get());
 			}
 		});
 	}

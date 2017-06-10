@@ -31,7 +31,7 @@ public class MenuHud {
 			resumeListener.actionPerformed(null);
 			hud.setShowEndLevelScreen(false);
 		};
-		exitListener = event -> Main.closeApp();
+		exitListener = event -> Main.closeApp(Config.CLOSE_GUI_ON_GAME_START.get());
 	}
 	
 	public void render() {

@@ -8,6 +8,7 @@ import java.util.*;
 import org.joml.*;
 
 import eu.grmdev.senryaku.Config;
+import eu.grmdev.senryaku.Main;
 import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.*;
 import eu.grmdev.senryaku.core.events.KeyEvent;
@@ -202,7 +203,6 @@ public class Game implements IGame {
 				lightPos.x = ysValue * 4;
 				lightPos.z = zsValue * 4;
 				// lightPos.normalize();
-				System.out.println(lightPos);
 			}
 		};
 		eHandler.addTickGameEventListener(gameMainKeylistener);
@@ -258,6 +258,7 @@ public class Game implements IGame {
 		scene.destroy();
 		levelManager.save();
 		GameSave.saveToFile();
+		Main.setGameClosed();
 	}
 	
 	@Override

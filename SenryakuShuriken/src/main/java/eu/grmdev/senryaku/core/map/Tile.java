@@ -52,4 +52,10 @@ public enum Tile {
 		}
 		return mesh;
 	}
+	
+	public static void destroy() {
+		for (Tile t : values()) {
+			t.mesh = null;
+		}
+	}
 }

@@ -17,7 +17,9 @@ public class Timer {
 	public float getElapsedTime() {
 		double time = getTime();
 		float elapsedTime = (float) (time - lastLoopTime);
-		lastLoopTime = time;
+		if (elapsedTime > 1f) {
+			lastLoopTime = time;
+		}
 		return elapsedTime;
 	}
 	

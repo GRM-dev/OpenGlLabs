@@ -2,9 +2,11 @@ package eu.grmdev.senryaku;
 
 import eu.grmdev.senryaku.core.GameEngine;
 import eu.grmdev.senryaku.core.IGame;
+import eu.grmdev.senryaku.core.config.Configuration;
 import eu.grmdev.senryaku.game.Game;
 import eu.grmdev.senryaku.graphic.Window.WindowOptions;
 import eu.grmdev.senryaku.jfx.FxGui;
+import javafx.application.Application;
 
 public class Main {
 	private static GameEngine gameEng;
@@ -13,17 +15,28 @@ public class Main {
 	private static boolean running;
 	public static final boolean DEBUG = !false;
 	private static WindowOptions opts;
+	private static Configuration c;
 	
 	public static void main(String[] args) {
-		initWindowOptions();
-		
-		gui = new FxGui();
-		if (!DEBUG) {
-			gui.startup();
+		c = new Configuration("senryaku.conf");
+		if (!c.loadFromFile()) {
+			System.err.println("Config file was not loaded!");
 		}
+		initWindowOptions();
+		start();
+	}
+	
+	private static synchronized void start() {
 		try {
 			game = new Game();
+			FxGui.init(game);
+			new Thread(() -> Application.launch(FxGui.class)).start();;
 			if (DEBUG) {
+				while ((gui = FxGui.getInstance()) == null) {
+					synchronized (game) {
+						game.wait();
+					}
+				}
 				startGame();
 			}
 		}
@@ -45,13 +58,19 @@ public class Main {
 		opts.vSync = true;
 	}
 	
+	@SuppressWarnings("unused")
 	public static synchronized void startGame() {
 		if (!running) {
 			running = true;
+			
 			try {
+				game = new Game();
+				FxGui.init(game);
 				gameEng = new GameEngine("Senryaku Shuriken", opts, game);
 				gameEng.start();
-				gui.closeGui();
+				if (Config.CLOSE_GUI_ON_GAME_START.<Boolean> get() && !DEBUG) {
+					gui.closeGui();
+				}
 			}
 			catch (Exception ex) {
 				ex.printStackTrace();
@@ -60,11 +79,19 @@ public class Main {
 		}
 	}
 	
-	public static synchronized void closeApp() {
-		gui.closeGui();
+	public static synchronized void closeApp(boolean closeGui) {
+		if (closeGui) {
+			gui.closeGui();
+		}
+		synchronized (game) {
+			game.notifyAll();
+		}
 		if (running) {
 			running = false;
 			gameEng.stop();
+		}
+		if (!c.saveToFile()) {
+			System.err.println("Config file was not saved!");
 		}
 	}
 	

@@ -34,7 +34,7 @@ public class LogicThread extends Thread {
 		keyHandler = new KeyboardHandler(eHandler, game);
 	}
 	
-	public void init() {
+	public void initRender() {
 		mouseHandler.init(window);
 		glfwSetKeyCallback(window.getWindowHandle(), keyHandler);
 		glfwSetMouseButtonCallback(window.getWindowHandle(), mouseHandler);
@@ -43,6 +43,7 @@ public class LogicThread extends Thread {
 	
 	@Override
 	public void run() {
+		indicateStop = false;
 		while (!isReady) {
 			try {
 				if (shouldStop()) { return; }
@@ -68,6 +69,7 @@ public class LogicThread extends Thread {
 				loop();
 			}
 			tickLoopEvent.setConsumed(true);
+			cycleLoopEvent.setConsumed(true);
 			System.out.println("Stop Logic Thread");
 		}
 		catch (Exception ex) {

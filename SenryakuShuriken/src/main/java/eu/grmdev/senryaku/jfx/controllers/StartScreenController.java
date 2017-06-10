@@ -36,7 +36,6 @@ public class StartScreenController implements Initializable {
 	
 	private void close(ActionEvent event) {
 		System.out.println("Launcher: Close App");
-		Main.closeApp();
+		Main.closeApp(true);
 	}
-	
 }
