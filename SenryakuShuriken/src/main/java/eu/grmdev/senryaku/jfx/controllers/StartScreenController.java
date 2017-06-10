@@ -31,6 +31,7 @@ public class StartScreenController implements Initializable {
 	
 	private void settings(ActionEvent event) {
 		System.out.println("Launcher: Settings");
+		
 	}
 	
 	private void close(ActionEvent event) {

@@ -6,15 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class SpotLight {
-	@Getter
-	@Setter
-	private PointLight pointLight;
-	@Getter
-	@Setter
-	private Vector3f coneDirection;
-	@Getter
-	@Setter
-	private float cutOff;
+	private @Getter @Setter PointLight pointLight;
+	private @Getter @Setter Vector3f coneDirection;
+	private @Getter @Setter float cutOff;
 	
 	public SpotLight(PointLight pointLight, Vector3f coneDirection, float cutOffAngle) {
 		this.pointLight = pointLight;

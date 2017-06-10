@@ -191,8 +191,9 @@ public class Renderer {
 			skyBoxShaderProgram.setUniformv3f("ambientLight", scene.getSceneLight().getSkyBoxLight());
 			skyBoxShaderProgram.setUniformv4f("colour", mesh.getMaterial().getAmbientColor());
 			skyBoxShaderProgram.setUniformi("hasTexture", mesh.getMaterial().isTextured() ? 1 : 0);
-			
+			glDisable(GL_LIGHTING);
 			mesh.render();
+			glDisable(GL_LIGHTING);
 			
 			viewMatrix.m30(m30);
 			viewMatrix.m31(m31);
@@ -288,16 +289,13 @@ public class Renderer {
 	}
 	
 	private void renderLights(Matrix4f viewMatrix, SceneLight sceneLight) {
-		
 		sceneShaderProgram.setUniformv3f("ambientLight", sceneLight.getAmbientLight());
 		sceneShaderProgram.setUniformf("specularPower", specularPower);
 		
-		// Process Point Lights
+		// Point Lights
 		PointLight[] pointLightList = sceneLight.getPointLightList();
 		int numLights = pointLightList != null ? pointLightList.length : 0;
 		for (int i = 0; i < numLights; i++) {
-			// Get a copy of the point light object and transform its position to
-			// view coordinates
 			PointLight currPointLight = new PointLight(pointLightList[i]);
 			Vector3f lightPos = currPointLight.getPosition();
 			Vector4f aux = new Vector4f(lightPos, 1);
@@ -312,8 +310,6 @@ public class Renderer {
 		SpotLight[] spotLightList = sceneLight.getSpotLightList();
 		numLights = spotLightList != null ? spotLightList.length : 0;
 		for (int i = 0; i < numLights; i++) {
-			// Get a copy of the spot light object and transform its position and
-			// cone direction to view coordinates
 			SpotLight currSpotLight = new SpotLight(spotLightList[i]);
 			Vector4f dir = new Vector4f(currSpotLight.getConeDirection(), 0);
 			dir.mul(viewMatrix);
@@ -329,9 +325,8 @@ public class Renderer {
 			sceneShaderProgram.setUniformSli("spotLights", currSpotLight, i);
 		}
 		
-		// Get a copy of the directional light object and transform its position
-		// to view coordinates
-		DirectionalLight currDirLight = new DirectionalLight(sceneLight.getDirectionalLight());
+		DirectionalLight directionalLight = sceneLight.getDirectionalLight();
+		DirectionalLight currDirLight = new DirectionalLight(directionalLight);
 		Vector4f dir = new Vector4f(currDirLight.getDirection(), 0);
 		dir.mul(viewMatrix);
 		currDirLight.setDirection(new Vector3f(dir.x, dir.y, dir.z));

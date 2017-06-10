@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.leftAnchor="500.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+         <top>
+            <Label text="Senryaku Shuriken Settings" textAlignment="CENTER" BorderPane.alignment="CENTER">
+               <font>
+                  <Font name="Book Antiqua Bold" size="40.0" />
+               </font>
+               <BorderPane.margin>
+                  <Insets top="5.0" />
+               </BorderPane.margin>
+            </Label>
+         </top> 
+         <stylesheets>
+      <URL value="@/styles/custom.css" />
+      <URL value="@/styles/dark_style.css" />
+   </stylesheets>
+   <bottom>
+      <HBox BorderPane.alignment="CENTER">
+         <children>
+                  <Button defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Apply" textAlignment="CENTER" />
+                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Save" textAlignment="CENTER" />
+                  <Button cancelButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Close" textAlignment="CENTER" />
+         </children>
+      </HBox>
+   </bottom>
+   <center>
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+        </content>
+      </ScrollPane>
+   </center>
+   <right>
+      <ScrollPane BorderPane.alignment="CENTER" />
+   </right>
+      </BorderPane>

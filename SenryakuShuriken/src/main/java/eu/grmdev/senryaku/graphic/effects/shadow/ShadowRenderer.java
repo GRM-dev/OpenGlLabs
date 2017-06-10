@@ -9,7 +9,8 @@ import java.util.*;
 import org.joml.Matrix4f;
 
 import eu.grmdev.senryaku.Config;
-import eu.grmdev.senryaku.core.*;
+import eu.grmdev.senryaku.core.Scene;
+import eu.grmdev.senryaku.core.SceneLight;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.*;
@@ -61,6 +62,7 @@ public class ShadowRenderer {
 	private void update(Window window, Matrix4f viewMatrix, Scene scene) {
 		SceneLight sceneLight = scene.getSceneLight();
 		DirectionalLight directionalLight = sceneLight != null ? sceneLight.getDirectionalLight() : null;
+		if (directionalLight == null) { return; }
 		for (int i = 0; i < Config.NUM_SHADOW_CASCADES; i++) {
 			ShadowCascade shadowCascade = shadowCascades.get(i);
 			shadowCascade.update(window, viewMatrix, directionalLight);

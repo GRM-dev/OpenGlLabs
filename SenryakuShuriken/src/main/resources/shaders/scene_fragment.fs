@@ -23,7 +23,6 @@ struct Attenuation
 struct PointLight
 {
     vec3 colour;
-    // Light position is assumed to be in view coordinates
     vec3 position;
     float intensity;
     Attenuation att;

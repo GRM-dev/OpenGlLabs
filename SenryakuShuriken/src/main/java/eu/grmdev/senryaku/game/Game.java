@@ -11,6 +11,7 @@ import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.*;
 import eu.grmdev.senryaku.core.entity.*;
 import eu.grmdev.senryaku.core.events.KeyEvent;
+import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
 import eu.grmdev.senryaku.core.handlers.EventHandler;
 import eu.grmdev.senryaku.core.handlers.MouseHandler;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
@@ -19,6 +20,7 @@ import eu.grmdev.senryaku.game.hud.Hud;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
+import eu.grmdev.senryaku.graphic.lights.PointLight;
 import lombok.Getter;
 
 public class Game implements IGame {
@@ -28,10 +30,13 @@ public class Game implements IGame {
 	private final Hud hud;
 	private final @Getter Camera camera;
 	private final LevelManager levelManager;
-	private float lightAngleInc;
-	private float lightAngle;
+	private float lightDirAngle;
+	private float lightDirAngleInc;
+	private float lightSpotAngle;
+	private float lightSpotAngleInc;
 	private @Getter List<Movable> movable;
 	private Player player;
+	private GameEventListener gameMainKeylistener;
 	
 	public Game() throws Exception {
 		renderer = new Renderer();
@@ -42,8 +47,8 @@ public class Game implements IGame {
 		movable = new ArrayList<>();
 		
 		cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
-		lightAngle = 90;
-		lightAngleInc = 0;
+		lightDirAngle = 90;
+		lightDirAngleInc = 0;
 	}
 	
 	/**
@@ -109,15 +114,25 @@ public class Game implements IGame {
 	 */
 	private void setupLights() {
 		SceneLight sceneLight = new SceneLight();
-		scene.setSceneLight(sceneLight);
 		
 		sceneLight.setAmbientLight(new Vector3f(0.3f, 0.3f, 0.3f));
 		sceneLight.setSkyBoxLight(new Vector3f(1.0f, 1.0f, 1.0f));
 		
-		float lightIntensity = 1.0f;
+		float lightIntensity = 2.0f;
 		Vector3f lightDirection = new Vector3f(0, 1, 1);
 		DirectionalLight directionalLight = new DirectionalLight(new Vector3f(1, 1, 1), lightDirection, lightIntensity);
 		sceneLight.setDirectionalLight(directionalLight);
+		
+		Vector3f lightColour = new Vector3f(1, 1, 1);
+		Vector3f lightPosition = new Vector3f(5f, 4f, 6f);
+		lightIntensity = 1.0f;
+		PointLight pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
+		PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 0.2f);
+		pointLight.setAttenuation(att);
+		PointLight[] pointLightList = new PointLight[]{pointLight};
+		sceneLight.setPointLightList(pointLightList);
+		
+		scene.setSceneLight(sceneLight);
 	}
 	
 	/**
@@ -138,7 +153,7 @@ public class Game implements IGame {
 				event.setConsumed(true);
 			}
 		}, KeyEvent.RELEASED);
-		eHandler.addTickGameEventListener(event -> {
+		gameMainKeylistener = event -> {
 			Window window = event.getWindow();
 			if (window.isKeyPressed(GLFW_KEY_PAGE_UP)) {
 				cameraInc.y -= 1;
@@ -146,13 +161,51 @@ public class Game implements IGame {
 				cameraInc.y += 1;
 			}
 			if (window.isKeyPressed(GLFW_KEY_LEFT_BRACKET)) {
-				lightAngleInc -= 0.05f;
+				lightDirAngleInc -= 0.05f;
 			} else if (window.isKeyPressed(GLFW_KEY_RIGHT_BRACKET)) {
-				lightAngleInc += 0.05f;
+				lightDirAngleInc += 0.05f;
 			} else {
-				lightAngleInc = 0;
+				lightDirAngleInc = 0;
 			}
-		});
+			if (window.isKeyPressed(GLFW_KEY_SEMICOLON)) {
+				lightSpotAngleInc -= 0.05f;
+			} else if (window.isKeyPressed(GLFW_KEY_APOSTROPHE)) {
+				lightSpotAngleInc += 0.05f;
+			} else {
+				lightSpotAngleInc = 0;
+			}
+			lightDirAngle += lightDirAngleInc;
+			if (lightDirAngle < 0) {
+				lightDirAngle = 0;
+			} else if (lightDirAngle > 180) {
+				lightDirAngle = 180;
+			}
+			lightSpotAngle += lightSpotAngleInc;
+			if (lightSpotAngle < 0) {
+				lightSpotAngle = 0;
+			} else if (lightSpotAngle > 180) {
+				lightSpotAngle = 180;
+			}
+			float zdValue = (float) Math.cos(Math.toRadians(lightDirAngle));
+			float ydValue = (float) Math.sin(Math.toRadians(lightDirAngle));
+			float zsValue = (float) Math.cos(Math.toRadians(lightSpotAngle));
+			float ysValue = (float) Math.sin(Math.toRadians(lightSpotAngle));
+			Vector3f lightPos = this.scene.getSceneLight().getDirectionalLight().getDirection();
+			lightPos.x = 0;
+			lightPos.y = ydValue;
+			lightPos.z = zdValue;
+			lightPos.normalize();
+			PointLight[] pointLightList = this.scene.getSceneLight().getPointLightList();
+			if (pointLightList != null && pointLightList.length > 0) {
+				lightPos = pointLightList[0].getPosition();
+				lightPos.y = 0.814f;
+				lightPos.x = ysValue * 4;
+				lightPos.z = zsValue * 4;
+				// lightPos.normalize();
+				System.out.println(lightPos);
+			}
+		};
+		eHandler.addTickGameEventListener(gameMainKeylistener);
 	}
 	
 	@Override
@@ -184,20 +237,6 @@ public class Game implements IGame {
 		}
 		camera.movePosition(cameraInc.x * Config.CAMERA_POS_STEP, cameraInc.y * Config.CAMERA_POS_STEP, cameraInc.z * Config.CAMERA_POS_STEP);
 		cameraInc.set(0, 0, 0);
-		lightAngle += lightAngleInc;
-		if (lightAngle < 0) {
-			lightAngle = 0;
-		} else if (lightAngle > 180) {
-			lightAngle = 180;
-		}
-		float zValue = (float) Math.cos(Math.toRadians(lightAngle));
-		float yValue = (float) Math.sin(Math.toRadians(lightAngle));
-		Vector3f lightDirection = this.scene.getSceneLight().getDirectionalLight().getDirection();
-		lightDirection.x = 0;
-		lightDirection.y = yValue;
-		lightDirection.z = zValue;
-		lightDirection.normalize();
-		
 		camera.updateViewMatrix();
 	}
 	

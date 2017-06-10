@@ -13,7 +13,6 @@ import eu.grmdev.senryaku.core.misc.VectorUtils;
 public class GameMapFactory {
 	private static int rows;
 	private static int columns;
-	private static Terrain terrain;
 	private static String backgroundTextureFile;
 	private static String title;
 	private static Vector2i startPos;
@@ -25,7 +24,7 @@ public class GameMapFactory {
 		parseHeader(fileLines);
 		
 		Tile[][] tiles = getTiles(fileLines);
-		terrain = new Terrain(tiles, backgroundTextureFile, game);
+		Terrain terrain = new Terrain(tiles, backgroundTextureFile, game);
 		GameMap gm = new GameMap(level, title, rows, columns, terrain, startPos, endPos);
 		return gm;
 	}

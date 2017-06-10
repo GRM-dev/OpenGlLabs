@@ -26,6 +26,7 @@ public class Mesh {
 	private @Getter final int vertexCount;
 	private @Getter @Setter Material material;
 	private @Getter @Setter float boundingRadius;
+	private @Getter @Setter boolean normalsEnabled;
 	
 	public Mesh(float[] positions, float[] textCoords, float[] normals, int[] indices) {
 		this(positions, textCoords, normals, indices, createEmptyIntArray(MAX_WEIGHTS * positions.length / 3, 0), createEmptyFloatArray(MAX_WEIGHTS * positions.length / 3, 0));
@@ -41,6 +42,7 @@ public class Mesh {
 		try {
 			calculateBoundingRadius(positions);
 			
+			normalsEnabled = true;
 			vertexCount = indices.length;
 			vboIdList = new ArrayList<>();
 			
@@ -170,7 +172,9 @@ public class Mesh {
 			glBindTexture(GL_TEXTURE_2D, texture.getId());
 		}
 		Texture normalMap = material != null ? material.getNormalMap() : null;
-		if (normalMap != null) {
+		if (normalMap != null && normalsEnabled) {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, normalMap.getId());
 		}

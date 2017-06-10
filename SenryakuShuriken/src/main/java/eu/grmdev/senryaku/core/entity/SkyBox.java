@@ -15,6 +15,7 @@ public class SkyBox extends Entity {
 		Mesh skyBoxMesh = StaticMeshesLoader.load(objModel, "")[0];
 		Texture skyBoxtexture = new Texture(textureFile);
 		skyBoxMesh.setMaterial(new Material(skyBoxtexture, 0.0f));
+		skyBoxMesh.setNormalsEnabled(false);
 		setMesh(skyBoxMesh);
 		setPosition(0, 0, 0);
 	}
@@ -27,4 +28,5 @@ public class SkyBox extends Entity {
 		setMesh(skyBoxMesh);
 		setPosition(0, 0, 0);
 	}
+	
 }

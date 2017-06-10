@@ -13,10 +13,8 @@ import lombok.Getter;
 public class ShadowCascade {
 	private static final int FRUSTUM_CORNERS = 8;
 	private final Matrix4f projViewMatrix;
-	@Getter
-	private final Matrix4f orthoProjMatrix;
-	@Getter
-	private final Matrix4f lightViewMatrix;
+	private @Getter final Matrix4f orthoProjMatrix;
+	private @Getter final Matrix4f lightViewMatrix;
 	/**
 	 * Center of the view cuboid un world space coordinates.
 	 */
@@ -44,7 +42,6 @@ public class ShadowCascade {
 		float aspectRatio = (float) window.getWidth() / (float) window.getHeight();
 		projViewMatrix.setPerspective(Config.FOV, aspectRatio, zNear, zFar);
 		projViewMatrix.mul(viewMatrix);
-		
 		// Calculate frustum corners in world space matrix
 		float maxZ = Float.MIN_VALUE;
 		float minZ = Float.MAX_VALUE;
@@ -58,7 +55,6 @@ public class ShadowCascade {
 			maxZ = Math.max(maxZ, corner.z);
 		}
 		
-		// Go back from the centroid up to max.z - min.z in the direction of light
 		Vector3f lightDirection = light.getDirection();
 		Vector3f lightPosInc = new Vector3f().set(lightDirection);
 		float distance = maxZ - minZ;
