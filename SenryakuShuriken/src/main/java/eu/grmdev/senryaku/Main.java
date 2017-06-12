@@ -7,6 +7,7 @@ import eu.grmdev.senryaku.game.Game;
 import eu.grmdev.senryaku.graphic.Window.WindowOptions;
 import eu.grmdev.senryaku.jfx.FxGui;
 import javafx.application.Application;
+import lombok.Getter;
 
 public class Main {
 	private static GameEngine gameEng;
@@ -15,12 +16,14 @@ public class Main {
 	private static boolean running;
 	public static final boolean DEBUG = !false;
 	private static WindowOptions opts;
-	private static Configuration c;
+	private static @Getter Configuration c;
 	
 	public static void main(String[] args) {
 		c = new Configuration("senryaku.conf");
 		if (!c.loadFromFile()) {
 			System.err.println("Config file was not loaded!");
+		} else {
+			System.out.println("Configuration loaded.");
 		}
 		initWindowOptions();
 		start();
@@ -28,6 +31,7 @@ public class Main {
 	
 	private static synchronized void start() {
 		try {
+			System.out.println("Launcher starting");
 			game = new Game();
 			FxGui.init(game);
 			new Thread(() -> Application.launch(FxGui.class)).start();;
@@ -37,7 +41,8 @@ public class Main {
 						game.wait();
 					}
 				}
-				startGame();
+				// startGame();
+				FxGui.getInstance().openSettings(true);
 			}
 		}
 		catch (Exception e) {

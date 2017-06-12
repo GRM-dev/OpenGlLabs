@@ -18,8 +18,10 @@ import javafx.stage.StageStyle;
 import lombok.Getter;
 
 public class FxGui extends Application {
-	private Stage stage;
+	private Stage primaryStage;
 	private Scene startScene;
+	private Scene settingsScene;
+	private Stage settingsStage;
 	private static @Getter FxGui instance;
 	private static IGame game;
 	
@@ -29,7 +31,8 @@ public class FxGui extends Application {
 	
 	@Override
 	public synchronized void start(Stage primaryStage) throws Exception {
-		this.stage = primaryStage;
+		instance = this;
+		this.primaryStage = primaryStage;
 		Thread.currentThread().setName("FxGui Startup Thread");
 		Platform.setImplicitExit(false);
 		setUserAgentStylesheet(STYLESHEET_MODENA);
@@ -39,22 +42,29 @@ public class FxGui extends Application {
 			startScene = new Scene(startRoot);
 			startScene.setFill(Color.TRANSPARENT);
 			
+			settingsStage = new Stage(StageStyle.UTILITY);
+			settingsStage.setTitle("Settings");
+			settingsStage.setAlwaysOnTop(true);
+			URL settingsScreenUrl = getClass().getResource("/views/SettingsScreen.fxml");
+			Parent settingsRoot = FXMLLoader.load(settingsScreenUrl);
+			settingsScene = new Scene(settingsRoot);
+			settingsStage.setScene(settingsScene);
+			
 			addCss();
 			
-			stage.setScene(startScene);
-			stage.setTitle("Senryaku Shuriken");
-			stage.sizeToScene();
-			stage.setOnCloseRequest(event -> {
+			primaryStage.setScene(startScene);
+			primaryStage.setTitle("Senryaku Shuriken");
+			primaryStage.sizeToScene();
+			primaryStage.setOnCloseRequest(event -> {
 				event.consume();
-				stage.hide();
+				primaryStage.hide();
 			});
-			stage.centerOnScreen();
-			stage.setResizable(false);
-			stage.initStyle(StageStyle.TRANSPARENT);
-			stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon.png")));
-			stage.show();
+			primaryStage.centerOnScreen();
+			primaryStage.setResizable(false);
+			primaryStage.initStyle(StageStyle.TRANSPARENT);
+			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon.png")));
+			primaryStage.show();
 			
-			instance = this;
 			synchronized (game) {
 				game.notifyAll();
 			}
@@ -69,6 +79,17 @@ public class FxGui extends Application {
 		startScene.getStylesheets().add(tempStyleSheetDest.toString());
 		tempStyleSheetDest = Utils.loadResourceForTemp("/styles/dark_style.css", "javafx_stylesheet", "b");
 		startScene.getStylesheets().add(tempStyleSheetDest.toString());
+	}
+	
+	public void openSettings(boolean open) {
+		System.out.println("Launcher: Settings open: " + open);
+		Platform.runLater(() -> {
+			if (open) {
+				settingsStage.show();
+			} else {
+				settingsStage.hide();
+			}
+		});
 	}
 	
 	public void closeGui() {

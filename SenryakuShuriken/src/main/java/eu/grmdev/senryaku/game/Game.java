@@ -50,6 +50,8 @@ public class Game implements IGame {
 		cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
 		lightDirAngle = 90;
 		lightDirAngleInc = 0;
+		lightSpotAngle = 90;
+		lightSpotAngleInc = 0;
 	}
 	
 	/**

@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import eu.grmdev.senryaku.Main;
+import eu.grmdev.senryaku.jfx.FxGui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,8 +31,7 @@ public class StartScreenController implements Initializable {
 	}
 	
 	private void settings(ActionEvent event) {
-		System.out.println("Launcher: Settings");
-		
+		FxGui.getInstance().openSettings(true);
 	}
 	
 	private void close(ActionEvent event) {

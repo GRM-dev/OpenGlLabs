@@ -5,12 +5,15 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.leftAnchor="500.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane cacheShape="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="380.0" scaleShape="false" AnchorPane.leftAnchor="500.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.grmdev.senryaku.jfx.controllers.SettingsScreenController">
          <top>
             <Label text="Senryaku Shuriken Settings" textAlignment="CENTER" BorderPane.alignment="CENTER">
                <font>
@@ -26,22 +29,49 @@
       <URL value="@/styles/dark_style.css" />
    </stylesheets>
    <bottom>
-      <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="3.0" BorderPane.alignment="CENTER">
          <children>
-                  <Button defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Apply" textAlignment="CENTER" />
-                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Save" textAlignment="CENTER" />
-                  <Button cancelButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Close" textAlignment="CENTER" />
+                  <Button fx:id="btnApply" defaultButton="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Apply" textAlignment="CENTER" />
+                  <Button fx:id="btnSave" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Save" textAlignment="CENTER" />
+            <Button fx:id="btnDefs" mnemonicParsing="false" text="Defaults" />
+                  <Button fx:id="btnClose" cancelButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Close" textAlignment="CENTER" />
          </children>
+         <BorderPane.margin>
+            <Insets bottom="5.0" top="5.0" />
+         </BorderPane.margin>
       </HBox>
    </bottom>
    <center>
-      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-        </content>
-      </ScrollPane>
+      <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Objects">
+               <content>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                     <content>
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                     </content>
+                  </ScrollPane>
+               </content>
+          </Tab>
+          <Tab text="Lights">
+               <content>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                     <content>
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                     </content>
+                  </ScrollPane>
+               </content>
+          </Tab>
+            <Tab text="Map">
+               <content>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                     <content>
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                     </content>
+                  </ScrollPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
    </center>
-   <right>
-      <ScrollPane BorderPane.alignment="CENTER" />
-   </right>
       </BorderPane>

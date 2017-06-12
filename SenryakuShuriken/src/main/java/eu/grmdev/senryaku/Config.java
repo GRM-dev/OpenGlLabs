@@ -38,39 +38,51 @@ public enum Config {
 	private @Setter Boolean b;
 	private @Setter Integer i;
 	private @Setter String s;
-	private @Setter float[] va;
-	private byte type = 0;
+	private @Setter float[] fa;
+	
+	private Float df;
+	private Boolean db;
+	private Integer di;
+	private String ds;
+	private float[] dfa;
+	
 	/*
-	 * byte fT=1;
-	 * byte faT=2;
-	 * byte sT=3;
-	 * byte bT=4;
-	 * byte iT=5;
+	 * f=1;
+	 * fa=2;
+	 * s=3;
+	 * b=4;
+	 * i=5;
 	 */
+	private byte type = 0;
 	
 	private Config(float f) {
 		this.f = f;
 		type = 1;
+		df = f;
 	}
 	
 	private Config(boolean b) {
 		this.b = b;
 		type = 4;
+		db = b;
 	}
 	
 	private Config(int i) {
 		this.i = i;
 		type = 5;
+		di = i;
 	}
 	
 	private Config(String s) {
 		this.s = s;
 		type = 3;
+		ds = s;
 	}
 	
-	private Config(float... va) {
-		this.va = va;
+	private Config(float... fa) {
+		this.fa = fa;
 		type = 2;
+		dfa = fa;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -96,7 +108,7 @@ public enum Config {
 			case 1 :
 				return f + "";
 			case 2 :
-				return new String(Arrays.toString(getArray()));
+				return Arrays.toString(getArray());
 			case 3 :
 				return s + "";
 			case 4 :
@@ -109,7 +121,7 @@ public enum Config {
 	}
 	
 	public float[] getArray() {
-		return va;
+		return fa;
 	}
 	
 	public boolean isBoolean() {
@@ -130,5 +142,14 @@ public enum Config {
 	
 	public boolean isFloatArray() {
 		return type == 2;
+	}
+	
+	public void resetToDefault() {
+		fa = dfa;
+		f = df;
+		b = db;
+		i = di;
+		s = ds;
+		
 	}
 }

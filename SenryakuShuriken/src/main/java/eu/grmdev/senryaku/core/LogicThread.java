@@ -3,7 +3,9 @@ package eu.grmdev.senryaku.core;
 import static org.lwjgl.glfw.GLFW.*;
 
 import eu.grmdev.senryaku.Config;
+import eu.grmdev.senryaku.core.config.Configuration;
 import eu.grmdev.senryaku.core.events.GameEvent;
+import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
 import eu.grmdev.senryaku.core.handlers.*;
 import eu.grmdev.senryaku.graphic.Window;
 
@@ -24,6 +26,7 @@ public class LogicThread extends Thread {
 	private GameEvent tickLoopEvent;
 	private GameEvent cycleLoopEvent;
 	private int lastTickCounter;
+	private GameEventListener showTpsListener;
 	
 	public LogicThread(IGame game, Window window) {
 		this.game = game;
@@ -43,6 +46,45 @@ public class LogicThread extends Thread {
 	
 	@Override
 	public void run() {
+		waitForRenderStart();
+		try {
+			game.initLogic(eHandler, mouseHandler);
+			tickLoopEvent = new GameEvent(window, game) {};
+			cycleLoopEvent = new GameEvent(window, game) {};
+			showTpsListener = event -> {
+				System.out.println("TPS: " + lastTickCounter);
+			};
+			onConfigurationChanged();
+			startTickTime = System.currentTimeMillis();
+			startCycleTime = startTickTime;
+			System.out.println("Start Logic Thread");
+			while (!shouldStop()) {
+				loop();
+				if (Configuration.isChanged()) {
+					onConfigurationChanged();
+				}
+			}
+			tickLoopEvent.setConsumed(true);
+			cycleLoopEvent.setConsumed(true);
+			System.out.println("Stop Logic Thread");
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	private void onConfigurationChanged() {
+		System.out.println("Config: changed");
+		Configuration.setChanged(false);
+		if (Config.SHOW_DEBUG_INFO.<Boolean> get()) {
+			eHandler.addCycleGameEventListener(showTpsListener);
+		} else {
+			eHandler.removeCycleGameEventListener(showTpsListener);
+		}
+		
+	}
+	
+	private void waitForRenderStart() {
 		indicateStop = false;
 		while (!isReady) {
 			try {
@@ -52,28 +94,6 @@ public class LogicThread extends Thread {
 			catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
-		try {
-			game.initLogic(eHandler, mouseHandler);
-			tickLoopEvent = new GameEvent(window, game) {};
-			cycleLoopEvent = new GameEvent(window, game) {};
-			if (Config.SHOW_DEBUG_INFO.<Boolean> get()) {
-				eHandler.addCycleGameEventListener(event -> {
-					System.out.println("TPS: " + lastTickCounter);
-				});
-			}
-			System.out.println("Start Logic Thread");
-			startTickTime = System.currentTimeMillis();
-			startCycleTime = startTickTime;
-			while (!shouldStop()) {
-				loop();
-			}
-			tickLoopEvent.setConsumed(true);
-			cycleLoopEvent.setConsumed(true);
-			System.out.println("Stop Logic Thread");
-		}
-		catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
 	

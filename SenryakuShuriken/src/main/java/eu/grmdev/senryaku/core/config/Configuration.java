@@ -5,15 +5,19 @@ import java.util.Properties;
 
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.misc.Utils;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Configuration {
 	private String configFile;
+	private static @Setter @Getter boolean changed;
 	
 	public Configuration(String configFile) {
 		this.configFile = configFile;
 	}
 	
 	public boolean saveToFile() {
+		System.out.println("Config: Save to file");
 		try {
 			checkFile();
 			Properties config = new Properties();
@@ -30,6 +34,7 @@ public class Configuration {
 	}
 	
 	public boolean loadFromFile() {
+		System.out.println("Config: Load from file");
 		Properties config = new Properties();
 		try {
 			checkFile();
@@ -47,15 +52,15 @@ public class Configuration {
 				p = config.getProperty(name);
 				if (c != null && p != null) {
 					if (c.isBoolean()) {
-						c.setB(Boolean.valueOf(p));
+						change(c, Boolean.valueOf(p));
 					} else if (c.isFloat()) {
-						c.setF(Float.parseFloat(p));
+						change(c, Float.parseFloat(p));
 					} else if (c.isFloatArray()) {
-						c.setVa(Utils.extractFloats(p));
+						change(c, Utils.extractFloats(p));
 					} else if (c.isInt()) {
-						c.setI(Integer.parseInt(p));
+						change(c, Integer.parseInt(p));
 					} else if (c.isString()) {
-						c.setS(p);
+						change(c, p);
 					}
 				}
 			}
@@ -73,7 +78,14 @@ public class Configuration {
 		}
 	}
 	
-	public void change(Config c, boolean o) {
+	public void loadDefaults() {
+		System.out.println("Config: Reset to defaults");
+		for (Config c : Config.values()) {
+			c.resetToDefault();
+		}
+	}
+	
+	public static void change(Config c, boolean o) {
 		if (c.isBoolean()) {
 			c.setB(o);
 		} else {
@@ -81,7 +93,7 @@ public class Configuration {
 		}
 	}
 	
-	public void change(Config c, int o) {
+	public static void change(Config c, int o) {
 		if (c.isInt()) {
 			c.setI(o);
 		} else {
@@ -89,7 +101,7 @@ public class Configuration {
 		}
 	}
 	
-	public void change(Config c, float o) {
+	public static void change(Config c, float o) {
 		if (c.isFloat()) {
 			c.setF(o);
 		} else {
@@ -97,15 +109,15 @@ public class Configuration {
 		}
 	}
 	
-	public void change(Config c, float[] o) {
+	public static void change(Config c, float[] o) {
 		if (c.isFloatArray()) {
-			c.setVa(o);
+			c.setFa(o);
 		} else {
 			System.err.println("Wrong parameter type when saving to config " + c.name());
 		}
 	}
 	
-	public void change(Config c, String o) {
+	public static void change(Config c, String o) {
 		if (c.isString()) {
 			c.setS(o);
 		} else {

@@ -134,4 +134,10 @@ public class EventHandler {
 			cycleGameEventsListeners.add(listener);
 		}
 	}
+	
+	public void removeCycleGameEventListener(GameEventListener listener) {
+		if (cycleGameEventsListeners.contains(listener)) {
+			cycleGameEventsListeners.remove(listener);
+		}
+	}
 }
