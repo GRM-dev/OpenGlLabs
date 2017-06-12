@@ -32,7 +32,11 @@ public enum Config {
 	CAMERA_OFFSET_X(0.3f) ,
 	CAMERA_OFFSET_Y(0f) ,
 	CAMERA_OFFSET_Z(3f) ,
-	CLOSE_GUI_ON_GAME_START(false);
+	CLOSE_GUI_ON_GAME_START(false) ,
+	MAX_PARICLES(200) ,
+	PARTICLE_LIFE_TIME(1000) ,
+	PARTICLE_SCALE(0.1f) ,
+	PARTICLE_RANGE(0.2f);
 	
 	private @Setter Float f;
 	private @Setter Boolean b;

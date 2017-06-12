@@ -3,7 +3,6 @@ package eu.grmdev.senryaku.graphic;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,28 +20,32 @@ import eu.grmdev.senryaku.graphic.effects.shadow.ShadowCascade;
 import eu.grmdev.senryaku.graphic.effects.shadow.ShadowRenderer;
 import eu.grmdev.senryaku.graphic.lights.*;
 import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.particles.IParticleEmitter;
 
 public class Renderer {
 	private final Transformation transformation;
 	private final ShadowRenderer shadowRenderer;
 	private ShaderProgram sceneShaderProgram;
 	private ShaderProgram skyBoxShaderProgram;
+	private ShaderProgram particlesShaderProgram;
 	private final float specularPower;
 	private final FrustumCullingFilter frustumFilter;
-	private final List<Entity> filteredItems;
+	private final ConcurrentHashMap<Integer, Entity> filteredItems;
+	private int nextId = 0;
 	
 	public Renderer() {
 		transformation = new Transformation();
 		specularPower = 10f;
 		shadowRenderer = new ShadowRenderer();
 		frustumFilter = new FrustumCullingFilter();
-		filteredItems = new ArrayList<>();
+		filteredItems = new ConcurrentHashMap<>();
 	}
 	
 	public void init(Window window) throws Exception {
 		shadowRenderer.init(window);
 		setupSkyBoxShader();
 		setupSceneShader();
+		setupParticlesShader();
 	}
 	
 	private void setupSkyBoxShader() throws Exception {
@@ -95,6 +98,20 @@ public class Renderer {
 		sceneShaderProgram.createUniform("selectedNonInstanced");
 	}
 	
+	private void setupParticlesShader() throws Exception {
+		particlesShaderProgram = new ShaderProgram();
+		particlesShaderProgram.createVertexShader(Utils.loadResourceContent("/shaders/particles_vertex.vs"));
+		particlesShaderProgram.createFragmentShader(Utils.loadResourceContent("/shaders/particles_fragment.fs"));
+		particlesShaderProgram.link();
+		
+		particlesShaderProgram.createUniform("viewMatrix");
+		particlesShaderProgram.createUniform("projectionMatrix");
+		particlesShaderProgram.createUniform("texture_sampler");
+		
+		particlesShaderProgram.createUniform("numCols");
+		particlesShaderProgram.createUniform("numRows");
+	}
+	
 	public void render(Window window, Camera camera, Scene scene, LevelManager levelManager) {
 		clear();
 		
@@ -113,6 +130,7 @@ public class Renderer {
 		
 		renderScene(window, camera, scene, levelManager);
 		renderSkyBox(window, camera, scene);
+		renderParticles(window, camera, scene);
 		
 		if (Main.DEBUG) {
 			renderAxes(window, camera);
@@ -129,8 +147,8 @@ public class Renderer {
 		
 		Matrix4f viewMatrix = camera.getViewMatrix();
 		Matrix4f projectionMatrix = window.getProjectionMatrix();
-		sceneShaderProgram.setUniform("viewMatrix", viewMatrix);
-		sceneShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+		sceneShaderProgram.setUniformm4f("viewMatrix", viewMatrix);
+		sceneShaderProgram.setUniformm4f("projectionMatrix", projectionMatrix);
 		
 		List<ShadowCascade> shadowCascades = shadowRenderer.getShadowCascades();
 		for (int i = 0; i < Config.NUM_SHADOW_CASCADES.<Integer> get(); i++) {
@@ -176,7 +194,7 @@ public class Renderer {
 			skyBoxShaderProgram.setUniformi("texture_sampler", 0);
 			
 			Matrix4f projectionMatrix = window.getProjectionMatrix();
-			skyBoxShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+			skyBoxShaderProgram.setUniformm4f("projectionMatrix", projectionMatrix);
 			Matrix4f viewMatrix = camera.getViewMatrix();
 			float m30 = viewMatrix.m30();
 			viewMatrix.m30(0);
@@ -187,7 +205,7 @@ public class Renderer {
 			
 			Mesh mesh = skyBox.getMesh();
 			Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(skyBox, viewMatrix);
-			skyBoxShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+			skyBoxShaderProgram.setUniformm4f("modelViewMatrix", modelViewMatrix);
 			skyBoxShaderProgram.setUniformv3f("ambientLight", scene.getSceneLight().getSkyBoxLight());
 			skyBoxShaderProgram.setUniformv4f("colour", mesh.getMaterial().getAmbientColor());
 			skyBoxShaderProgram.setUniformi("hasTexture", mesh.getMaterial().isTextured() ? 1 : 0);
@@ -218,7 +236,7 @@ public class Renderer {
 			}
 			shadowRenderer.bindTextures(GL_TEXTURE2);
 			Matrix4f modelMatrix = transformation.buildModelMatrix(terrain);
-			sceneShaderProgram.setUniform("modelNonInstancedMatrix", modelMatrix);
+			sceneShaderProgram.setUniformm4f("modelNonInstancedMatrix", modelMatrix);
 			terrainMesh.render();
 			
 			for (Mesh mesh : terrain.getEntitiesByMesh().keySet())
@@ -237,7 +255,7 @@ public class Renderer {
 		mesh.renderList(entities, (Entity entity) -> {
 			sceneShaderProgram.setUniformf("selectedNonInstanced", entity.isSelected() ? 1.0f : 0.0f);
 			Matrix4f modelMatrix = transformation.buildModelMatrix(entity);
-			sceneShaderProgram.setUniform("modelNonInstancedMatrix", modelMatrix);
+			sceneShaderProgram.setUniformm4f("modelNonInstancedMatrix", modelMatrix);
 		});
 	}
 	
@@ -258,7 +276,7 @@ public class Renderer {
 			mesh.renderList(mapMeshes.get(mesh), (Entity entity) -> {
 				sceneShaderProgram.setUniformf("selectedNonInstanced", entity.isSelected() ? 1.0f : 0.0f);
 				Matrix4f modelMatrix = transformation.buildModelMatrix(entity);
-				sceneShaderProgram.setUniform("modelNonInstancedMatrix", modelMatrix);
+				sceneShaderProgram.setUniformm4f("modelNonInstancedMatrix", modelMatrix);
 			});
 		}
 	}
@@ -277,9 +295,10 @@ public class Renderer {
 			sceneShaderProgram.setUniformMat("material", mesh.getMaterial());
 			
 			filteredItems.clear();
+			nextId = 0;
 			for (Entity gameItem : mapMeshes.get(mesh)) {
 				if (gameItem.isInsideFrustum()) {
-					filteredItems.add(gameItem);
+					filteredItems.put(nextId++, gameItem);
 				}
 			}
 			shadowRenderer.bindTextures(GL_TEXTURE2);
@@ -331,6 +350,39 @@ public class Renderer {
 		dir.mul(viewMatrix);
 		currDirLight.setDirection(new Vector3f(dir.x, dir.y, dir.z));
 		sceneShaderProgram.setUniformDl("directionalLight", currDirLight);
+	}
+	
+	private void renderParticles(Window window, Camera camera, Scene scene) {
+		particlesShaderProgram.bind();
+		
+		Matrix4f viewMatrix = camera.getViewMatrix();
+		particlesShaderProgram.setUniformm4f("viewMatrix", viewMatrix);
+		particlesShaderProgram.setUniformi("texture_sampler", 0);
+		Matrix4f projectionMatrix = window.getProjectionMatrix();
+		particlesShaderProgram.setUniformm4f("projectionMatrix", projectionMatrix);
+		
+		glDepthMask(false);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		
+		IParticleEmitter[] emitters = scene.getParticleEmitters();
+		int numEmitters = emitters != null ? emitters.length : 0;
+		for (int i = 0; i < numEmitters; i++) {
+			IParticleEmitter emitter = emitters[i];
+			if (emitter.isActive()) {
+				InstancedMesh mesh = (InstancedMesh) emitter.getBaseParticle().getMesh();
+				
+				Texture text = mesh.getMaterial().getTexture();
+				particlesShaderProgram.setUniformi("numCols", text.getNumCols());
+				particlesShaderProgram.setUniformi("numRows", text.getNumRows());
+				
+				mesh.renderListInstanced(emitter.getParticles(), true, transformation, viewMatrix);
+			}
+		}
+		
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDepthMask(true);
+		
+		particlesShaderProgram.unbind();
 	}
 	
 	private void renderCrossHair(Window window) {
@@ -406,6 +458,9 @@ public class Renderer {
 		}
 		if (sceneShaderProgram != null) {
 			sceneShaderProgram.cleanup();
+		}
+		if (particlesShaderProgram != null) {
+			particlesShaderProgram.cleanup();
 		}
 	}
 }

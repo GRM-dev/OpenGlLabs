@@ -143,7 +143,7 @@ public class ShaderProgram {
 		createUniform(uniformName + ".density");
 	}
 	
-	public void setUniform(String uniformName, Matrix4f value) {
+	public void setUniformm4f(String uniformName, Matrix4f value) {
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			FloatBuffer fb = stack.mallocFloat(16);
 			value.get(fb);
@@ -152,10 +152,10 @@ public class ShaderProgram {
 	}
 	
 	public void setUniformm4fi(String uniformName, Matrix4f value, int index) {
-		setUniform(uniformName + "[" + index + "]", value);
+		setUniformm4f(uniformName + "[" + index + "]", value);
 	}
 	
-	public void setUniformm4f(String uniformName, Matrix4f[] matrices) {
+	public void setUniformm4fa(String uniformName, Matrix4f[] matrices) {
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			int length = matrices != null ? matrices.length : 0;
 			FloatBuffer fb = stack.mallocFloat(16 * length);

@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL30.*;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.joml.Matrix4f;
 
@@ -22,10 +23,11 @@ public class ShadowRenderer {
 	@Getter
 	private List<ShadowCascade> shadowCascades;
 	private ShadowBuffer shadowBuffer;
-	private final List<Entity> filteredItems;
+	private final ConcurrentHashMap<Integer, Entity> filteredItems;
+	private int nextId;
 	
 	public ShadowRenderer() {
-		filteredItems = new ArrayList<>();
+		filteredItems = new ConcurrentHashMap<>();
 	}
 	
 	public void init(Window window) throws Exception {
@@ -81,8 +83,8 @@ public class ShadowRenderer {
 		for (int i = 0; i < Config.NUM_SHADOW_CASCADES.<Integer> get(); i++) {
 			ShadowCascade shadowCascade = shadowCascades.get(i);
 			
-			depthShaderProgram.setUniform("orthoProjectionMatrix", shadowCascade.getOrthoProjMatrix());
-			depthShaderProgram.setUniform("lightViewMatrix", shadowCascade.getLightViewMatrix());
+			depthShaderProgram.setUniformm4f("orthoProjectionMatrix", shadowCascade.getOrthoProjMatrix());
+			depthShaderProgram.setUniformm4f("lightViewMatrix", shadowCascade.getLightViewMatrix());
 			
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowBuffer.getDepthMapTexture().getIds()[i], 0);
 			glClear(GL_DEPTH_BUFFER_BIT);
@@ -100,7 +102,7 @@ public class ShadowRenderer {
 		for (Mesh mesh : mapMeshes.keySet()) {
 			mesh.renderList(mapMeshes.get(mesh), (Entity gameItem) -> {
 				Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
-				depthShaderProgram.setUniform("modelNonInstancedMatrix", modelMatrix);
+				depthShaderProgram.setUniformm4f("modelNonInstancedMatrix", modelMatrix);
 			});
 		}
 	}
@@ -111,9 +113,10 @@ public class ShadowRenderer {
 		Map<InstancedMesh, List<Entity>> mapMeshes = scene.getGameInstancedMeshes();
 		for (InstancedMesh mesh : mapMeshes.keySet()) {
 			filteredItems.clear();
+			nextId = 0;
 			for (Entity gameItem : mapMeshes.get(mesh)) {
 				if (gameItem.isInsideFrustum()) {
-					filteredItems.add(gameItem);
+					filteredItems.put(nextId++, gameItem);
 				}
 			}
 			bindTextures(GL_TEXTURE2);

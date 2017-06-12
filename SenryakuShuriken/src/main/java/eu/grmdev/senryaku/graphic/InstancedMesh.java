@@ -8,7 +8,8 @@ import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
 
 import java.nio.FloatBuffer;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryUtil;
@@ -81,39 +82,41 @@ public class InstancedMesh extends Mesh {
 		super.endRender();
 	}
 	
-	public void renderListInstanced(List<Entity> gameItems, Transformation transformation, Matrix4f viewMatrix) {
-		renderListInstanced(gameItems, false, transformation, viewMatrix);
+	public void renderListInstanced(ConcurrentHashMap<Integer, Entity> entities, Transformation transformation, Matrix4f viewMatrix) {
+		renderListInstanced(entities, false, transformation, viewMatrix);
 	}
 	
-	public void renderListInstanced(List<Entity> gameItems, boolean billBoard, Transformation transformation, Matrix4f viewMatrix) {
+	public void renderListInstanced(ConcurrentHashMap<Integer, Entity> entities, boolean billBoard, Transformation transformation, Matrix4f viewMatrix) {
 		initRender();
 		
 		int chunkSize = numInstances;
-		int length = gameItems.size();
+		int length = entities.size();
 		for (int i = 0; i < length; i += chunkSize) {
 			int end = Math.min(length, i + chunkSize);
-			List<Entity> subList = gameItems.subList(i, end);
+			List<Entity> subList = new ArrayList<>();
+			Iterator<Integer> it = entities.keySet().iterator();
+			for (int j = 0; j < end; j++) {
+				subList.add(entities.get(it.next()));
+			}
 			renderChunkInstanced(subList, billBoard, transformation, viewMatrix);
 		}
 		
 		endRender();
 	}
 	
-	private void renderChunkInstanced(List<Entity> gameItems, boolean billBoard, Transformation transformation, Matrix4f viewMatrix) {
+	private void renderChunkInstanced(List<Entity> entities, boolean billBoard, Transformation transformation, Matrix4f viewMatrix) {
 		this.instanceDataBuffer.clear();
-		
 		int i = 0;
-		
 		Texture text = getMaterial().getTexture();
-		for (Entity gameItem : gameItems) {
-			Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
+		for (Entity entity : entities) {
+			Matrix4f modelMatrix = transformation.buildModelMatrix(entity);
 			if (viewMatrix != null && billBoard) {
 				viewMatrix.transpose3x3(modelMatrix);
 			}
 			modelMatrix.get(INSTANCE_SIZE_FLOATS * i, instanceDataBuffer);
 			if (text != null) {
-				int col = gameItem.getTextPos() % text.getNumCols();
-				int row = gameItem.getTextPos() / text.getNumCols();
+				int col = entity.getTextPos() % text.getNumCols();
+				int row = entity.getTextPos() / text.getNumCols();
 				float textXOffset = (float) col / text.getNumCols();
 				float textYOffset = (float) row / text.getNumRows();
 				int buffPos = INSTANCE_SIZE_FLOATS * i + MATRIX_SIZE_FLOATS;
@@ -122,7 +125,7 @@ public class InstancedMesh extends Mesh {
 			}
 			
 			int buffPos = INSTANCE_SIZE_FLOATS * i + MATRIX_SIZE_FLOATS + 2;
-			this.instanceDataBuffer.put(buffPos, gameItem.isSelected() ? 1 : 0);
+			this.instanceDataBuffer.put(buffPos, entity.isSelected() ? 1 : 0);
 			
 			i++;
 		}
@@ -130,7 +133,7 @@ public class InstancedMesh extends Mesh {
 		glBindBuffer(GL_ARRAY_BUFFER, instanceDataVBO);
 		glBufferData(GL_ARRAY_BUFFER, instanceDataBuffer, GL_DYNAMIC_READ);
 		
-		glDrawElementsInstanced(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0, gameItems.size());
+		glDrawElementsInstanced(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0, entities.size());
 		
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
