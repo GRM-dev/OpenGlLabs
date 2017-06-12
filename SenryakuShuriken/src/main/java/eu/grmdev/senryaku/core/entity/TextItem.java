@@ -5,17 +5,14 @@ import java.util.List;
 
 import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.misc.Utils;
-import eu.grmdev.senryaku.graphic.Mesh;
-import eu.grmdev.senryaku.graphic.material.FontTexture;
-import eu.grmdev.senryaku.graphic.material.Material;
+import eu.grmdev.senryaku.graphic.mesh.*;
 import lombok.Getter;
 
 public class TextItem extends Entity {
 	private static final float ZPOS = 0.0f;
 	private static final int VERTICES_PER_QUAD = 4;
 	private final FontTexture fontTexture;
-	@Getter
-	private String text;
+	private @Getter String text;
 	
 	public TextItem(String text, FontTexture fontTexture, IGame game) throws Exception {
 		super(game);

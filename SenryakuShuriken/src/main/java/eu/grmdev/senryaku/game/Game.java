@@ -22,6 +22,7 @@ import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
 import eu.grmdev.senryaku.graphic.lights.PointLight;
+import eu.grmdev.senryaku.graphic.mesh.Mesh;
 import lombok.Getter;
 
 public class Game implements IGame {

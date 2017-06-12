@@ -6,6 +6,7 @@ import java.util.Map;
 import org.joml.*;
 
 import eu.grmdev.senryaku.core.entity.Entity;
+import eu.grmdev.senryaku.graphic.mesh.Mesh;
 
 public class FrustumCullingFilter {
 	private final Matrix4f prjViewMatrix;

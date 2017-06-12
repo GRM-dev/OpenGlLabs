@@ -1,4 +1,4 @@
-package eu.grmdev.senryaku.graphic;
+package eu.grmdev.senryaku.graphic.anim;
 
 import org.joml.Vector3f;
 

@@ -7,9 +7,7 @@ import org.joml.Vector3f;
 import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.misc.VectorUtils;
-import eu.grmdev.senryaku.graphic.Mesh;
-import eu.grmdev.senryaku.graphic.material.Material;
-import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.mesh.*;
 import lombok.Getter;
 
 public class Terrain extends Entity {

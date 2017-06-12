@@ -11,7 +11,7 @@ import org.lwjgl.system.MemoryStack;
 
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.*;
-import eu.grmdev.senryaku.graphic.material.Material;
+import eu.grmdev.senryaku.graphic.mesh.Material;
 
 public class ShaderProgram {
 	private final int id;

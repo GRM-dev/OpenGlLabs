@@ -1,4 +1,4 @@
-package eu.grmdev.senryaku.graphic;
+package eu.grmdev.senryaku.graphic.mesh;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -14,8 +14,6 @@ import java.util.function.Consumer;
 import org.lwjgl.system.MemoryUtil;
 
 import eu.grmdev.senryaku.core.entity.Entity;
-import eu.grmdev.senryaku.graphic.material.Material;
-import eu.grmdev.senryaku.graphic.material.Texture;
 import lombok.Getter;
 import lombok.Setter;
 

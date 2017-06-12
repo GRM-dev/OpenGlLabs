@@ -6,8 +6,8 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import eu.grmdev.senryaku.core.IGame;
-import eu.grmdev.senryaku.graphic.Mesh;
-import eu.grmdev.senryaku.graphic.TranslateAnimation;
+import eu.grmdev.senryaku.graphic.anim.TranslateAnimation;
+import eu.grmdev.senryaku.graphic.mesh.Mesh;
 import lombok.*;
 
 public class Entity {

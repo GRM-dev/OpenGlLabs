@@ -4,9 +4,7 @@ import java.io.FileNotFoundException;
 
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.misc.VectorUtils;
-import eu.grmdev.senryaku.graphic.Mesh;
-import eu.grmdev.senryaku.graphic.material.Material;
-import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.mesh.*;
 import eu.grmdev.senryaku.graphic.particles.ParticleType;
 import lombok.Getter;
 

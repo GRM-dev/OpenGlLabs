@@ -11,9 +11,7 @@ import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.core.misc.VectorUtils;
-import eu.grmdev.senryaku.graphic.Mesh;
-import eu.grmdev.senryaku.graphic.material.Material;
-import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.mesh.*;
 import eu.grmdev.senryaku.graphic.particles.*;
 
 public class GameMapFactory {

@@ -11,10 +11,7 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
 
 import eu.grmdev.senryaku.core.misc.Utils;
-import eu.grmdev.senryaku.graphic.InstancedMesh;
-import eu.grmdev.senryaku.graphic.Mesh;
-import eu.grmdev.senryaku.graphic.material.Material;
-import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.mesh.*;
 
 public class StaticMeshesLoader {
 	public static final int DEF_FLAGS = aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals;

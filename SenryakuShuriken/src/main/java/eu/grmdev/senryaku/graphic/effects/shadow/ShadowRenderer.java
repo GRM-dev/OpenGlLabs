@@ -16,6 +16,8 @@ import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
+import eu.grmdev.senryaku.graphic.mesh.InstancedMesh;
+import eu.grmdev.senryaku.graphic.mesh.Mesh;
 import lombok.Getter;
 
 public class ShadowRenderer {

@@ -1,4 +1,4 @@
-package eu.grmdev.senryaku.graphic;
+package eu.grmdev.senryaku.graphic.mesh;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -15,7 +15,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryUtil;
 
 import eu.grmdev.senryaku.core.entity.Entity;
-import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.Transformation;
 
 public class InstancedMesh extends Mesh {
 	private static final int FLOAT_SIZE_BYTES = 4;

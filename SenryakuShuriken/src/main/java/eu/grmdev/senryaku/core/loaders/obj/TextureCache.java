@@ -3,7 +3,7 @@ package eu.grmdev.senryaku.core.loaders.obj;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.mesh.Texture;
 
 public class TextureCache {
 	

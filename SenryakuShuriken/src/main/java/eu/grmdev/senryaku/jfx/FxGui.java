@@ -9,12 +9,12 @@ import eu.grmdev.senryaku.core.misc.Utils;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.stage.*;
 import lombok.Getter;
 
 public class FxGui extends Application {
@@ -49,6 +49,7 @@ public class FxGui extends Application {
 			Parent settingsRoot = FXMLLoader.load(settingsScreenUrl);
 			settingsScene = new Scene(settingsRoot);
 			settingsStage.setScene(settingsScene);
+			settingsStage.sizeToScene();
 			
 			addCss();
 			
@@ -86,6 +87,15 @@ public class FxGui extends Application {
 		Platform.runLater(() -> {
 			if (open) {
 				settingsStage.show();
+				
+				Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+				double screenRightEdge = primScreenBounds.getMaxX();
+				
+				double xp = screenRightEdge - settingsStage.getWidth();
+				double yp = primScreenBounds.getMinY() + settingsScene.getHeight() / 2;
+				
+				settingsStage.setX(xp);
+				settingsStage.setY(yp);
 			} else {
 				settingsStage.hide();
 			}

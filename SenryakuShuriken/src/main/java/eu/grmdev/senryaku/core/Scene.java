@@ -5,9 +5,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
-import eu.grmdev.senryaku.graphic.InstancedMesh;
-import eu.grmdev.senryaku.graphic.Mesh;
 import eu.grmdev.senryaku.graphic.effects.Fog;
+import eu.grmdev.senryaku.graphic.mesh.InstancedMesh;
+import eu.grmdev.senryaku.graphic.mesh.Mesh;
 import eu.grmdev.senryaku.graphic.particles.IParticleEmitter;
 import lombok.Getter;
 import lombok.Setter;

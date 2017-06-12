@@ -19,7 +19,7 @@ import eu.grmdev.senryaku.core.map.GameMap;
 import eu.grmdev.senryaku.core.map.LevelManager;
 import eu.grmdev.senryaku.game.hud.Hud;
 import eu.grmdev.senryaku.graphic.Camera;
-import eu.grmdev.senryaku.graphic.Mesh;
+import eu.grmdev.senryaku.graphic.mesh.Mesh;
 
 public class Player extends Entity implements Movable {
 	private Camera camera;

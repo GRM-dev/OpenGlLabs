@@ -83,10 +83,9 @@ dependencies {
 	compile group: 'org.apache.logging.log4j', 				name: 'log4j-core', 				version: '2.8.2'
 	compile group: 'org.apache.logging.log4j', 				name: 'log4j', 						version: '2.8.2'
 	compile group: 'com.guigarage', 						name: 'flatter', 					version: '0.7'
-	compile group: 'org.l33tlabs.twl', 						name: 'pngdecoder', 				version: '1.0'
+	//compile group: 'org.l33tlabs.twl', 						name: 'pngdecoder', 				version: '1.0'
 	compile group: 'org.joml', 								name: 'joml-camera', 				version:'1.2.0-SNAPSHOT'
-	compile group: 'org.ode4j', 							name: 'parent', 					version: '0.3.0'
-	//compile group: 'org.l33tlabs.twl', 						name: 'pngdecoder', 				version:'1.0'
+	compile group: 'org.ode4j', 							name: 'core', 					version: '0.3.0'
 	compile "org.joml:joml:${jomlVersion}"
 	compile "org.lwjgl:lwjgl:${lwjglVersion}"
 	compile "org.lwjgl:lwjgl-assimp:${lwjglVersion}"

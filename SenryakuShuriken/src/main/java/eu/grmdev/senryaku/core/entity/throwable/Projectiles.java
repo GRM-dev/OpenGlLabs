@@ -4,7 +4,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
-import eu.grmdev.senryaku.graphic.Mesh;
+import eu.grmdev.senryaku.graphic.mesh.Mesh;
 import lombok.Getter;
 
 public enum Projectiles {

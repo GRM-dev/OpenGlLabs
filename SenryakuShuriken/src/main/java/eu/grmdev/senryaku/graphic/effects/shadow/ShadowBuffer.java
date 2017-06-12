@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL30.*;
 
 import eu.grmdev.senryaku.Config;
-import eu.grmdev.senryaku.graphic.material.ArrTexture;
+import eu.grmdev.senryaku.graphic.mesh.ArrTexture;
 import lombok.Getter;
 
 public class ShadowBuffer {

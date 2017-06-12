@@ -4,8 +4,8 @@ import org.joml.Vector3f;
 
 import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.entity.Entity;
-import eu.grmdev.senryaku.graphic.Mesh;
-import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.mesh.Mesh;
+import eu.grmdev.senryaku.graphic.mesh.Texture;
 import lombok.Getter;
 import lombok.Setter;
 

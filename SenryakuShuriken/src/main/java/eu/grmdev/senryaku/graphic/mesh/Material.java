@@ -1,4 +1,4 @@
-package eu.grmdev.senryaku.graphic.material;
+package eu.grmdev.senryaku.graphic.mesh;
 
 import org.joml.Vector4f;
 

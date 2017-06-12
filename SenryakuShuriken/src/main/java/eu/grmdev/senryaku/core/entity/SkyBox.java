@@ -4,9 +4,7 @@ import org.joml.Vector4f;
 
 import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
-import eu.grmdev.senryaku.graphic.Mesh;
-import eu.grmdev.senryaku.graphic.material.Material;
-import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.mesh.*;
 
 public class SkyBox extends Entity {
 	

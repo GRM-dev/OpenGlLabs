@@ -19,7 +19,7 @@ import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.graphic.effects.shadow.ShadowCascade;
 import eu.grmdev.senryaku.graphic.effects.shadow.ShadowRenderer;
 import eu.grmdev.senryaku.graphic.lights.*;
-import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.mesh.*;
 import eu.grmdev.senryaku.graphic.particles.IParticleEmitter;
 
 public class Renderer {
