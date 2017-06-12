@@ -41,7 +41,7 @@ public class Main {
 						game.wait();
 					}
 				}
-				// startGame();
+				startGame();
 				FxGui.getInstance().openSettings(true);
 			}
 		}

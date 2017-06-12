@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import eu.grmdev.senryaku.core.entity.Entity;
 import eu.grmdev.senryaku.core.entity.SkyBox;
-import eu.grmdev.senryaku.core.map.GameMap;
 import eu.grmdev.senryaku.graphic.InstancedMesh;
 import eu.grmdev.senryaku.graphic.Mesh;
 import eu.grmdev.senryaku.graphic.effects.Fog;
@@ -19,9 +18,8 @@ public class Scene {
 	private @Getter @Setter SkyBox skyBox;
 	private @Getter @Setter SceneLight sceneLight;
 	private @Getter @Setter Fog fog;
-	private @Getter @Setter GameMap map;
 	private @Getter @Setter boolean renderShadows;
-	private @Getter @Setter IParticleEmitter[] particleEmitters;
+	private @Getter @Setter List<IParticleEmitter> particleEmitters;
 	
 	public Scene() {
 		entityMeshes = new ConcurrentHashMap<>();

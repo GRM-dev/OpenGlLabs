@@ -22,10 +22,6 @@ import eu.grmdev.senryaku.graphic.*;
 import eu.grmdev.senryaku.graphic.effects.Fog;
 import eu.grmdev.senryaku.graphic.lights.DirectionalLight;
 import eu.grmdev.senryaku.graphic.lights.PointLight;
-import eu.grmdev.senryaku.graphic.material.Material;
-import eu.grmdev.senryaku.graphic.material.Texture;
-import eu.grmdev.senryaku.graphic.particles.FlowParticleEmitter;
-import eu.grmdev.senryaku.graphic.particles.Particle;
 import lombok.Getter;
 
 public class Game implements IGame {
@@ -42,7 +38,6 @@ public class Game implements IGame {
 	private @Getter List<Movable> movable;
 	private Player player;
 	private GameEventListener gameMainKeylistener;
-	private FlowParticleEmitter particleEmitter;
 	
 	public Game() throws Exception {
 		renderer = new Renderer();
@@ -74,30 +69,10 @@ public class Game implements IGame {
 		Vector3f fogColour = new Vector3f(0.5f, 0.5f, 0.5f);
 		scene.setFog(new Fog(Config.FOG_ENABLED.<Boolean> get(), fogColour, 0.02f));
 		
-		setupParticlesEmitter();
-		
 		setupWorld();
 		setupLights();
 		setupCameraParams();
 		hud.initRender(window);
-	}
-	
-	private void setupParticlesEmitter() throws Exception {
-		Mesh partMesh = StaticMeshesLoader.loadMesh("/models/particle.obj", Config.MAX_PARICLES.<Integer> get());
-		Texture particleTexture = new Texture("/textures/particle_anim.png", 4, 4);
-		Material partMaterial = new Material(particleTexture, 1f);
-		partMesh.setMaterial(partMaterial);
-		Vector3f particleSpeed = new Vector3f(0, 0.6f, 0);
-		particleSpeed.mul(2.5f);
-		Particle particle = new Particle(partMesh, particleSpeed, Config.PARTICLE_LIFE_TIME.<Integer> get(), 100, this);
-		particle.setPosition(2f, 0.5f, 3f);
-		particle.setScale(Config.PARTICLE_SCALE.get());
-		particleEmitter = new FlowParticleEmitter(particle, Config.MAX_PARICLES.get(), 300);
-		particleEmitter.setActive(true);
-		particleEmitter.setPositionRndRange(Config.PARTICLE_RANGE.get());
-		particleEmitter.setSpeedRndRange(Config.PARTICLE_RANGE.get());
-		particleEmitter.setAnimRange(10);
-		this.scene.setParticleEmitters(new FlowParticleEmitter[]{particleEmitter});
 	}
 	
 	/**
@@ -263,7 +238,7 @@ public class Game implements IGame {
 				it.remove();
 			}
 		}
-		particleEmitter.update((long) interval);
+		levelManager.update(interval);
 		
 		Float camPosStep = Config.CAMERA_POS_STEP.<Float> get();
 		camera.movePosition(cameraInc.x * camPosStep, cameraInc.y * camPosStep, cameraInc.z * camPosStep);

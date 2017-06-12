@@ -13,17 +13,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class LevelManager {
-	private @Getter GameMap currentMap;
 	private Map<Integer, GameMap> maps;
+	private @Getter GameMap currentMap;
 	private @Setter Player player;
 	private @Setter Entity portal;
 	private static @Getter LevelManager instance;
 	private IGame game;
 	
 	public LevelManager(IGame game) {
-		this.game = game;
 		instance = this;
-		maps = new HashMap<>();
+		this.game = game;
+		this.maps = new HashMap<>();
 	}
 	
 	/**
@@ -75,5 +75,9 @@ public class LevelManager {
 	public boolean nextMapExist() {
 		int i = currentMap.getLevel();
 		return GameMapFactory.exist(i + 1);
+	}
+	
+	public void update(float interval) {
+		currentMap.update(interval);
 	}
 }

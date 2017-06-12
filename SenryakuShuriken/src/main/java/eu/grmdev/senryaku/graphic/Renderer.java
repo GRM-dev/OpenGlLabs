@@ -130,7 +130,10 @@ public class Renderer {
 		
 		renderScene(window, camera, scene, levelManager);
 		renderSkyBox(window, camera, scene);
-		renderParticles(window, camera, scene);
+		GameMap map = levelManager.getCurrentMap();
+		if (map != null) {
+			renderParticles(window, camera, map.getParticleEmitters());
+		}
 		
 		if (Main.DEBUG) {
 			renderAxes(window, camera);
@@ -234,13 +237,14 @@ public class Renderer {
 				sceneShaderProgram.setUniformi("numCols", texture.getNumCols());
 				sceneShaderProgram.setUniformi("numRows", texture.getNumRows());
 			}
+			
 			shadowRenderer.bindTextures(GL_TEXTURE2);
 			Matrix4f modelMatrix = transformation.buildModelMatrix(terrain);
 			sceneShaderProgram.setUniformm4f("modelNonInstancedMatrix", modelMatrix);
 			terrainMesh.render();
-			
-			for (Mesh mesh : terrain.getEntitiesByMesh().keySet())
+			for (Mesh mesh : terrain.getEntitiesByMesh().keySet()) {
 				renderTiles(mesh, terrain.getEntitiesByMesh().get(mesh));
+			}
 		}
 	}
 	
@@ -352,7 +356,8 @@ public class Renderer {
 		sceneShaderProgram.setUniformDl("directionalLight", currDirLight);
 	}
 	
-	private void renderParticles(Window window, Camera camera, Scene scene) {
+	private void renderParticles(Window window, Camera camera, List<IParticleEmitter> list) {
+		if (list == null || list.isEmpty()) { return; }
 		particlesShaderProgram.bind();
 		
 		Matrix4f viewMatrix = camera.getViewMatrix();
@@ -364,13 +369,11 @@ public class Renderer {
 		glDepthMask(false);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		
-		IParticleEmitter[] emitters = scene.getParticleEmitters();
-		int numEmitters = emitters != null ? emitters.length : 0;
+		int numEmitters = list.size();
 		for (int i = 0; i < numEmitters; i++) {
-			IParticleEmitter emitter = emitters[i];
+			IParticleEmitter emitter = list.get(i);
 			if (emitter.isActive()) {
 				InstancedMesh mesh = (InstancedMesh) emitter.getBaseParticle().getMesh();
-				
 				Texture text = mesh.getMaterial().getTexture();
 				particlesShaderProgram.setUniformi("numCols", text.getNumCols());
 				particlesShaderProgram.setUniformi("numRows", text.getNumRows());

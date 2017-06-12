@@ -1,14 +1,20 @@
 package eu.grmdev.senryaku.core.map;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import org.joml.Vector2i;
+import org.joml.Vector3f;
 
+import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.IGame;
+import eu.grmdev.senryaku.core.loaders.obj.StaticMeshesLoader;
 import eu.grmdev.senryaku.core.misc.Utils;
 import eu.grmdev.senryaku.core.misc.VectorUtils;
+import eu.grmdev.senryaku.graphic.Mesh;
+import eu.grmdev.senryaku.graphic.material.Material;
+import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.particles.*;
 
 public class GameMapFactory {
 	private static int rows;
@@ -25,7 +31,7 @@ public class GameMapFactory {
 		
 		Tile[][] tiles = getTiles(fileLines);
 		Terrain terrain = new Terrain(tiles, backgroundTextureFile, game);
-		GameMap gm = new GameMap(level, title, rows, columns, terrain, startPos, endPos);
+		GameMap gm = new GameMap(level, title, rows, columns, terrain, startPos, endPos, game);
 		return gm;
 	}
 	
@@ -84,5 +90,36 @@ public class GameMapFactory {
 	
 	private static String getFileName(int level) {
 		return "/maps/map_" + level + ".smap";
+	}
+	
+	public static List<IParticleEmitter> prepareEmitters(Tile[][] tiles, IGame game) throws Exception {
+		List<IParticleEmitter> list = new ArrayList<>();
+		for (int i = 0; i < tiles.length; i++) {
+			for (int j = 0; j < tiles[i].length; j++) {
+				if (tiles[i][j] == Tile.CONE) {
+					ParticleType emitter = Tile.CONE.getEmitter();
+					list.add(setupParticlesEmitter(emitter, game, i, j));
+				}
+			}
+		}
+		return list;
+	}
+	
+	private static IParticleEmitter setupParticlesEmitter(ParticleType emitter, IGame game, int x, int z) throws Exception {
+		Mesh partMesh = StaticMeshesLoader.loadMesh(emitter.getRes(), Config.MAX_PARICLES.<Integer> get());
+		Texture particleTexture = new Texture(emitter.getTex(), 4, 4);
+		Material partMaterial = new Material(particleTexture, 1f);
+		partMesh.setMaterial(partMaterial);
+		Vector3f particleSpeed = new Vector3f(0, 0.6f, 0);
+		particleSpeed.mul(2.5f);
+		Particle particle = new Particle(partMesh, particleSpeed, Config.PARTICLE_LIFE_TIME.<Integer> get(), 100, game);
+		particle.setPosition(x, 0.5f, z);
+		particle.setScale(Config.PARTICLE_SCALE.get());
+		FlowParticleEmitter particleEmitter = new FlowParticleEmitter(particle, Config.MAX_PARICLES.get(), 300);
+		particleEmitter.setActive(true);
+		particleEmitter.setPositionRndRange(Config.PARTICLE_RANGE.get());
+		particleEmitter.setSpeedRndRange(Config.PARTICLE_RANGE.get());
+		particleEmitter.setAnimRange(10);
+		return particleEmitter;
 	}
 }

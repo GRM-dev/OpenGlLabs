@@ -1,14 +1,20 @@
 package eu.grmdev.senryaku.core.map;
 
+import java.util.List;
+
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 
+import eu.grmdev.senryaku.core.IGame;
 import eu.grmdev.senryaku.game.GameSave;
+import eu.grmdev.senryaku.graphic.particles.FlowParticleEmitter;
+import eu.grmdev.senryaku.graphic.particles.IParticleEmitter;
 import lombok.Getter;
 import lombok.Setter;
 
 public class GameMap {
 	private @Getter Terrain terrain;
+	private @Getter List<IParticleEmitter> particleEmitters;
 	private final @Getter int level;
 	private @Getter String title;
 	private int columns;
@@ -19,8 +25,9 @@ public class GameMap {
 	private boolean finished;
 	private @Getter @Setter int stepCounter = 0;
 	private @Getter int score = 0;
+	private IGame game;
 	
-	public GameMap(int level, String title, int rows, int columns, Terrain terrain, Vector2i startPos, Vector2i endPos) throws Exception {
+	public GameMap(int level, String title, int rows, int columns, Terrain terrain, Vector2i startPos, Vector2i endPos, IGame game) throws Exception {
 		this.level = level;
 		this.title = title;
 		this.rows = rows;
@@ -28,11 +35,21 @@ public class GameMap {
 		this.terrain = terrain;
 		this.startPos = startPos;
 		this.endPos = endPos;
+		this.game = game;
 	}
 	
 	public void init() throws Exception {
 		terrain.init();
+		particleEmitters = GameMapFactory.prepareEmitters(terrain.getTiles(), game);
 		initialized = true;
+	}
+	
+	public void update(float interval) {
+		if (particleEmitters != null && !particleEmitters.isEmpty()) {
+			for (IParticleEmitter emitter : particleEmitters) {
+				((FlowParticleEmitter) emitter).update((long) interval);
+			}
+		}
 	}
 	
 	public boolean canPassTo(float x, float y, float z) {

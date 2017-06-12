@@ -7,6 +7,7 @@ import eu.grmdev.senryaku.core.misc.VectorUtils;
 import eu.grmdev.senryaku.graphic.Mesh;
 import eu.grmdev.senryaku.graphic.material.Material;
 import eu.grmdev.senryaku.graphic.material.Texture;
+import eu.grmdev.senryaku.graphic.particles.ParticleType;
 import lombok.Getter;
 
 public enum Tile {
@@ -14,14 +15,20 @@ public enum Tile {
 	FLOOR(1,"floor2",true,0f,true) ,
 	GRASS(3,"grass",true,0f,true) ,
 	WALL(2,"wall",false,1f,false) ,
-	CONE(4,"cone",false,0f,false);
+	CONE(4,"cone",false,0f,false,ParticleType.FIRE);
 	
 	private @Getter int id;
 	private @Getter String textureFile;
 	private @Getter boolean passable;
 	private @Getter boolean throwable;
 	private @Getter float height;
+	private @Getter ParticleType emitter;
 	private Mesh mesh;
+	
+	private Tile(int id, String textureFile, boolean throwable, float height, boolean passable, ParticleType emitter) {
+		this(id, textureFile, throwable, height, passable);
+		this.emitter = emitter;
+	}
 	
 	private Tile(int id, String textureFile, boolean throwable, float height, boolean passable) {
 		this.id = id;
