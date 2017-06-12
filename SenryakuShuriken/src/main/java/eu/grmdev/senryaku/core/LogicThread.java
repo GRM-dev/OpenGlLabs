@@ -11,8 +11,8 @@ import eu.grmdev.senryaku.graphic.Window;
 
 public class LogicThread extends Thread {
 	private long startTickTime;
-	private float tps = Config.TARGET_UPS.<Integer> get();
-	private long tickTime = (long) (1000 / tps);
+	private float tps;
+	private long tickTime;
 	private long lastTickSpan;
 	private int tickCounter;
 	private double startCycleTime;
@@ -81,7 +81,8 @@ public class LogicThread extends Thread {
 		} else {
 			eHandler.removeCycleGameEventListener(showTpsListener);
 		}
-		
+		tps = Config.TARGET_UPS.<Integer> get();
+		tickTime = (long) (1000 / tps);
 	}
 	
 	private void waitForRenderStart() {
