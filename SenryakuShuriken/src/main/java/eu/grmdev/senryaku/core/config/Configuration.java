@@ -6,11 +6,10 @@ import java.util.Properties;
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.core.misc.Utils;
 import lombok.Getter;
-import lombok.Setter;
 
 public class Configuration {
 	private String configFile;
-	private static @Setter @Getter boolean changed;
+	private static @Getter boolean changed;
 	
 	public Configuration(String configFile) {
 		this.configFile = configFile;
@@ -88,6 +87,7 @@ public class Configuration {
 	public static void change(Config c, boolean o) {
 		if (c.isBoolean()) {
 			c.setB(o);
+			changed = true;
 		} else {
 			System.err.println("Wrong parameter type when saving to config " + c.name());
 		}
@@ -96,6 +96,7 @@ public class Configuration {
 	public static void change(Config c, int o) {
 		if (c.isInt()) {
 			c.setI(o);
+			changed = true;
 		} else {
 			System.err.println("Wrong parameter type when saving to config " + c.name());
 		}
@@ -104,6 +105,7 @@ public class Configuration {
 	public static void change(Config c, float o) {
 		if (c.isFloat()) {
 			c.setF(o);
+			changed = true;
 		} else {
 			System.err.println("Wrong parameter type when saving to config " + c.name());
 		}
@@ -112,6 +114,7 @@ public class Configuration {
 	public static void change(Config c, float[] o) {
 		if (c.isFloatArray()) {
 			c.setFa(o);
+			changed = true;
 		} else {
 			System.err.println("Wrong parameter type when saving to config " + c.name());
 		}
@@ -120,8 +123,13 @@ public class Configuration {
 	public static void change(Config c, String o) {
 		if (c.isString()) {
 			c.setS(o);
+			changed = true;
 		} else {
 			System.err.println("Wrong parameter type when saving to config " + c.name());
 		}
+	}
+	
+	public static void resetChanged(boolean b) {
+		changed = false;
 	}
 }

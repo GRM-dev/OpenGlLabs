@@ -47,6 +47,10 @@ public class Camera {
 		position.z = z;
 	}
 	
+	public void movePosition(Vector3f pos) {
+		movePosition(pos.x, pos.y, pos.z);
+	}
+	
 	public void moveRotation(float offsetX, float offsetY, float offsetZ) {
 		rotation.x += offsetX;
 		rotation.y += offsetY;

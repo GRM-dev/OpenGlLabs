@@ -27,6 +27,7 @@ public class LogicThread extends Thread {
 	private GameEvent cycleLoopEvent;
 	private int lastTickCounter;
 	private GameEventListener showTpsListener;
+	private boolean confWasChanged;
 	
 	public LogicThread(IGame game, Window window) {
 		this.game = game;
@@ -60,6 +61,10 @@ public class LogicThread extends Thread {
 			System.out.println("Start Logic Thread");
 			while (!shouldStop()) {
 				loop();
+				if (confWasChanged) {
+					confWasChanged = false;
+					Configuration.resetChanged(false);
+				}
 				if (Configuration.isChanged()) {
 					onConfigurationChanged();
 				}
@@ -75,7 +80,7 @@ public class LogicThread extends Thread {
 	
 	private void onConfigurationChanged() {
 		System.out.println("Config: changed");
-		Configuration.setChanged(false);
+		confWasChanged = true;
 		if (Config.SHOW_DEBUG_INFO.<Boolean> get()) {
 			eHandler.addCycleGameEventListener(showTpsListener);
 		} else {

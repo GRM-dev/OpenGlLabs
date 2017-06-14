@@ -27,7 +27,7 @@ public enum Config {
 	SHADOW_MAP_HEIGHT(SHADOW_MAP_WIDTH.<Integer> get()) ,
 	FOG_ENABLED(false) ,
 	SAVE_FILE_NAME("save.dat") ,
-	START_LEVEL(3) ,
+	START_LEVEL(1) ,
 	SHOW_DEBUG_INFO(false) ,
 	CAMERA_OFFSET_X(0.3f) ,
 	CAMERA_OFFSET_Y(0f) ,
@@ -36,7 +36,12 @@ public enum Config {
 	MAX_PARICLES(200) ,
 	PARTICLE_LIFE_TIME(1000) ,
 	PARTICLE_SCALE(0.1f) ,
-	PARTICLE_RANGE(0.2f);
+	PARTICLE_RANGE(0.2f) ,
+	CURRENT_CAMERA(1) ,
+	CAMERA_POS_X(0f) ,
+	CAMERA_POS_Y(0f) ,
+	CAMERA_POS_Z(0f) ,
+	LAST_MAP_ID(3);
 	
 	private @Setter Float f;
 	private @Setter Boolean b;

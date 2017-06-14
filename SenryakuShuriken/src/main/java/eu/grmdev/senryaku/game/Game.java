@@ -10,6 +10,7 @@ import org.joml.*;
 import eu.grmdev.senryaku.Config;
 import eu.grmdev.senryaku.Main;
 import eu.grmdev.senryaku.core.*;
+import eu.grmdev.senryaku.core.config.Configuration;
 import eu.grmdev.senryaku.core.entity.*;
 import eu.grmdev.senryaku.core.events.KeyEvent;
 import eu.grmdev.senryaku.core.events.listeners.GameEventListener;
@@ -66,13 +67,14 @@ public class Game implements IGame {
 		List<Entity> entities = setupStartEntities();
 		scene.setEntities(entities.toArray(new Entity[0]));
 		
+		setupCamera1Params();
+		
 		scene.setRenderShadows(Config.SHADOWS_ENABLED.<Boolean> get());
 		Vector3f fogColour = new Vector3f(0.5f, 0.5f, 0.5f);
 		scene.setFog(new Fog(Config.FOG_ENABLED.<Boolean> get(), fogColour, 0.02f));
 		
 		setupWorld();
 		setupLights();
-		setupCameraParams();
 		hud.initRender(window);
 	}
 	
@@ -97,6 +99,11 @@ public class Game implements IGame {
 		Entity portal = new Entity(mesh, 0.05f, this);
 		levelManager.setPortal(portal);
 		entities.add(portal);
+		
+		mesh = StaticMeshesLoader.load("models/entities/cruiser.obj", "/models/entities");
+		Entity cruiser = new Entity(mesh, 0.5f, this);
+		cruiser.setPosition(-3f, 0f, -1.0f);
+		entities.add(cruiser);
 		
 		return entities;
 	}
@@ -142,11 +149,23 @@ public class Game implements IGame {
 	/**
 	 * Changes position of camera to startup position
 	 */
-	private void setupCameraParams() {
+	private void setupCamera1Params() {
 		camera.setPosition(0.0f, 7.0f, 3.0f);
+		camera.movePosition(player.getPosition());
 		camera.getRotation().x = 65.0f;
-		camera.getOffset().z = Config.CAMERA_OFFSET_X.<Float> get();
-		camera.getOffset().z = Config.CAMERA_OFFSET_Y.<Float> get();
+		camera.getOffset().x = Config.CAMERA_OFFSET_X.<Float> get();
+		camera.getOffset().y = Config.CAMERA_OFFSET_Y.<Float> get();
+		camera.getOffset().z = Config.CAMERA_OFFSET_Z.<Float> get();
+	}
+	
+	/**
+	 * Changes position of camera to player eye position
+	 */
+	private void setupCamera2Params() {
+		camera.setPosition(0.0f, 7.0f, 3.0f);
+		camera.getRotation().x = player.getDirection().angle(Direction.UP);
+		camera.getOffset().x = Config.CAMERA_OFFSET_X.<Float> get();
+		camera.getOffset().y = Config.CAMERA_OFFSET_Y.<Float> get();
 		camera.getOffset().z = Config.CAMERA_OFFSET_Z.<Float> get();
 	}
 	
@@ -242,9 +261,26 @@ public class Game implements IGame {
 		levelManager.update(interval);
 		
 		Float camPosStep = Config.CAMERA_POS_STEP.<Float> get();
+		cameraInc.x += Config.CAMERA_POS_X.<Float> get();
+		cameraInc.y += Config.CAMERA_POS_Y.<Float> get();
+		cameraInc.z += Config.CAMERA_POS_Z.<Float> get();
 		camera.movePosition(cameraInc.x * camPosStep, cameraInc.y * camPosStep, cameraInc.z * camPosStep);
 		cameraInc.set(0, 0, 0);
 		camera.updateViewMatrix();
+		if (Configuration.isChanged()) {
+			onConfigurationChanged();
+		}
+	}
+	
+	private void onConfigurationChanged() {
+		switch (Config.CURRENT_CAMERA.<Integer> get()) {
+			case 1 :
+				setupCamera1Params();
+				break;
+			case 2 :
+				setupCamera2Params();
+				break;
+		}
 	}
 	
 	@Override
